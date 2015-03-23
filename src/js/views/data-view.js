@@ -1,5 +1,5 @@
 define([
-    'views/base/view',
+    'fx-d-m/views/base/view',
     'text!fx-d-m/templates/data.hbs',
     'fx-DataEditor/start',
     'fx-d-m/components/resource-manager',
