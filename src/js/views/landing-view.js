@@ -1,6 +1,6 @@
 define([
     'fx-d-m/views/base/view',
-    'text!templates/landing.hbs'
+    'text!fx-d-m/templates/landing.hbs'
 ], function (View, template) {
     'use strict';
 
