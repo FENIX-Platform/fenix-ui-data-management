@@ -104,6 +104,29 @@ define([
 
         bindEventListeners: function () {
             var me = this;
+
+            $('#metaeditor-loadMeta-btn').on('click', function () {
+                var uid = $('#resourceUid').val();
+                var version = $('#resourceVersion').val();
+                amplify.publish("fx.editor.metadata.copy", { version: version, uid: uid });
+            });
+            /*
+                    event.preventDefault();
+
+    var uid = document.getElementById('resourceUid');
+    var version = document.getElementById('resourceVersion');
+
+    // Create the event and pass uid and version values
+    var event = new CustomEvent("fx.editor.metadata.copy", {
+        "detail": {
+            "version": version.value,
+            "uid": uid.value
+        }
+    });
+    // Dispatch/Trigger/Fire the event
+    document.body.dispatchEvent(event);
+            */
+
             $('#metaeditor-close-btn').on('click', function () {
                 // Dispatch/Trigger/Fire the event
                 //var event = new CustomEvent("fx.editor.metadata.exit", {});
@@ -129,13 +152,14 @@ define([
              document.body.addEventListener("fx.editor.finish", function (e) {
              console.log(e.detail.data)
              // then call your function passing the �e.detail.data�
-
+        
              }, false);
              */
 
         },
         unbindEventListeners: function () {
-            $('#test-close-btn').off('click');
+            $('#metaeditor-loadMeta-btn').on('click', function () { });
+            $('#metaeditor-close-btn').off('click');
             //document.body.removeEventListener("fx.editor.finish", this.editorFinish, false);
             amplify.unsubscribe("fx.editor.finish", this.editorFinish);
         },
