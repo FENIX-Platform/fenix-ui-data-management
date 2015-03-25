@@ -35,7 +35,7 @@ define([
     ResourceManager.prototype.deleteCurrentResource = function (o) {
         this.resource = null;
         Chaplin.mediator.publish(Events.RESOURCE_DELETED);
-                      console.warn("WARNING: delete method not implemented yet")
+        console.warn("WARNING: delete method not implemented yet")
         o.success();
 
     };
@@ -49,6 +49,30 @@ define([
     ResourceManager.prototype.getCurrentResource = function () {
         return this.resource;
     };
+
+
+    ResourceManager.prototype.loadDSD = function (resource, callB) {
+        var self = this;
+        var addr = Services.service_getDataAndMetaURL(resource.metadata.uid, resource.metadata.version);
+        var params = Services.SERVICE_GET_DATA_METADATA.queryParams;
+        ajaxGET(addr, params, function (data) {
+            var dsd = null;
+            if (data && data.metadata && data.metadata.dsd)
+                dsd = data.metadata.dsd;
+            if (callB) callB(dsd);
+        })
+    };
+    ResourceManager.prototype.loadDSDColumns = function (resource, callB) {
+        this.loadDSD(resource, function (dsd) {
+            if (dsd == null) {
+                if (callB) callB(null);
+                return;
+            }
+            if (callB)
+                callB(dsd.columns);
+        });
+    };
+
 
     ResourceManager.prototype.updateDSD = function (resource, callB) {
         if (!resource.metadata.dsd)
@@ -74,7 +98,7 @@ define([
             }
         }
         else {
-            var toPatch = {uid: meta.uid};
+            var toPatch = { uid: meta.uid };
             if (meta.version)
                 toPatch.version = meta.version;
             toPatch.dsd = meta.dsd;
@@ -91,7 +115,7 @@ define([
 
     ResourceManager.prototype.putData = function (resource, callB) {
         var url = Services.service_saveDataURL();
-        var toPut = {metadata: {uid: resource.metadata.uid}};
+        var toPut = { metadata: { uid: resource.metadata.uid } };
         if (resource.metadata.version)
             toPut.metadata.version = resource.metadata.version;
         toPut.data = resource.data;

@@ -8,15 +8,42 @@
 
   <div class="row">
     <div class="col-sm-12   ">
+      <div class="row">
+        <button id="btnColsLoad" type="button" class="btn btn-default">__Copy Columns</button>
+      </div>
       <div id="DSDEditorMainContainer" class="row"></div>
       Upload a CSV
-      <div id="divUplaodCSV"></div>
-      <!--<button id="btnUploadDone" type="button" class="btn btn-default">Upload Done</button>-->
-      <!--<hr>-->
+      <div id="divUplaodCSV" class="row"></div>
       <button id="btnColsEditDone" type="button" class="btn btn-default pull-right">DSD Done</button>
-      <hr>
-        <a href="sampledata/management/fenix_data_upload_sample.csv">Download Sample CSV</a>
-        <hr>
-        </div>
+      <hr/>
+      <a href="sampledata/management/fenix_data_upload_sample.csv">Download Sample CSV</a>
+      <hr/>
+    </div>
   </div>
-</div>
+
+  <div id="uidVerPopup" class="modal" data-backdrop="static">
+    <div class="modal-dialog modal-sm">
+      <div class="modal-content">
+        <div class="modal-body">
+          <table>
+            <tr>
+              <td>UID</td>
+              <td>
+                <input id="txtUID" type="text"/>
+              </td>
+            </tr>
+            <tr>
+              <td>Version</td>
+              <td>
+                <input id="txtVersion" type="text"/>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div class="modal-footer">
+          <button id="btnUidVerCanc" type="button" class="btn btn-default">__Cancel</button>
+          <button id="btnUidVerOk" type="button" class="btn btn-primary">__OK</button>
+        </div>
+      </div>
+    </div>
+  </div>

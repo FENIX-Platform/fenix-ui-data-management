@@ -4,8 +4,9 @@ define([
     'text!fx-d-m/templates/dsd.hbs',
     'fx-DSDEditor/start',
     'fx-DataUpload/start',
-    'fx-d-m/components/resource-manager'
-], function (Chaplin, View, template, DSDEditor, DataUpload, ResourceManager) {
+    'fx-d-m/components/resource-manager',
+    'pnotify'
+], function (Chaplin, View, template, DSDEditor, DataUpload, ResourceManager, PNotify) {
     'use strict';
 
     var DsdView = View.extend({
@@ -55,47 +56,16 @@ define([
 
             if (this.resource && this.resource.metadata.dsd && this.resource.metadata.dsd.columns)
                 DSDEditor.setColumns(this.resource.metadata.dsd.columns);
-
-            /*TEST*/
-
-            /*DSDEditor.setColumns(
-                [
-                    { "id": "CODE", "title": { "EN": "hh" }, "key": true, "dataType": "code", "domain": { "codes": [{ "idCodeList": "ECO_GAUL", "codes": [{ "code": "281" }] }] }, "subject": "item", "supplemental": null },
-                    { "id": "YEAR", "title": { "EN": "time" }, "key": true, "dataType": "date", "domain": null, "subject": "time", "supplemental": null },
-                    { "id": "NUMBER", "title": { "EN": "val" }, "key": false, "dataType": "number", "subject": "value", "supplemental": null }
-                ]);*/
-
-
-
-            /*END TEST*/
         },
 
         bindEventListeners: function () {
             var data, columnsUpload, columnsDSD;
             var me = this;
 
-            //$('#btnUploadDone').on('click', function () {
             $('#divUplaodCSV').on('dataParsed.DataUpload.fenix', function () {
                 columnsUpload = DataUpload.getColumns();
                 if (columnsUpload) {
                     data = DataUpload.getData();
-                    /*TEST*/
-                    /*
-                    columnsUpload[0].key = true;
-                    columnsUpload[0].subject = 'time';
-                    columnsUpload[0].dataType = 'year';
-    
-                    columnsUpload[1].key = true;
-                    columnsUpload[1].subject = 'item';
-                    columnsUpload[1].dataType = 'code';
-                    columnsUpload[1].domain = { "codes": [{ "idCodeList": "ECO_GAUL" }] };
-    
-    
-                    columnsUpload[2].key = false;
-                    columnsUpload[2].subject = 'value';
-                    columnsUpload[2].dataType = 'number';
-                    */
-                    /*END TEST*/
                     DSDEditor.setColumns(columnsUpload);
                 }
                 else {
@@ -103,6 +73,59 @@ define([
                     DataUpload.alertValidation();
                 }
             })
+
+
+            //var $uidVerModal = $('#uidVerPopup');
+
+
+            //$('#btnColsLoad').on('click', function () { console.log('modal'); $uidVerModal.modal('show'); console.log($uidVerModal); });
+            var $uidVerModal = $('#uidVerPopup');
+            var $txtUID = $uidVerModal.find('#txtUID');
+            var $txtVersion = $uidVerModal.find('#txtVersion');
+            $('#btnColsLoad').on('click', function () { $uidVerModal.modal('show'); });
+            $('#btnUidVerCanc').on('click', function () { $txtUID.val(''); $txtVersion.val(''); $uidVerModal.modal('hide'); });
+            $('#btnUidVerOk').on('click', function () {
+                var uid = $txtUID.val();
+                if (uid.trim() == '') {
+                    new PNotify({
+                        title: '',
+                        text: '__UID cannot be blank',
+                        type: 'error'
+                    });
+                    return;
+                }
+                ResourceManager.loadDSDColumns({ metadata: { uid: uid, version: $txtVersion.val() } }, function (cols) {
+                    if (cols == null) {
+                        new PNotify({
+                            title: '',
+                            text: '__DSD not found',
+                            type: 'error'
+                        });
+                    }
+                    else {
+                        DSDEditor.setColumns(cols);
+                        new PNotify({
+                            title: '',
+                            text: '__DSD loaded',
+                        });
+                        $uidVerModal.modal('hide');
+                    }
+                });
+
+
+            });
+
+            /*$('#btnColsLoad').on('click', function () {
+                var uid = "dan2";
+                var version = "1.0";
+                var version = null;
+                ResourceManager.loadDSD({ metadata: { uid: uid, version: version } }, function (dsd) {
+                    if (dsd)
+                        DSDEditor.setColumns(dsd.columns);
+                    else
+                        DSDEditor.setColumns(null);
+                });
+            });*/
 
             $('#btnColsEditDone').on('click', function () {
                 columnsDSD = DSDEditor.getColumns();
@@ -120,7 +143,7 @@ define([
         },
 
         unbindEventListeners: function () {
-
+            $('#btnColsLoad').off('click');
             $('#divUplaodCSV').off('click');
             $('#btnColsEditDone').off('click')
         },
