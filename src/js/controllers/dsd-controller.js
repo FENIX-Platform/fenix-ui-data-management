@@ -25,13 +25,12 @@ define([
 
                 var resource;
 
-                if (ResourceManager.isResourceAvailable() === false) {
+                if (ResourceManager.isResourceAvailable() === false) 
                     rejected();
-                    return;
-                }
                 
                 if (ResourceManager.hasData())
-                    rejected();
+                    //rejected();
+                    fulfilled();
 
                 fulfilled();
             });

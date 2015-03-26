@@ -44,8 +44,13 @@ define([
                     codelists: "config/submodules/DSDEditor/CodelistsUAE.json",
                     servicesUrls: servicesUrls
                 }, function () {
-                    if (me.resource && me.resource.metadata.dsd && me.resource.metadata.dsd.columns)
+                    if (me.resource && me.resource.metadata.dsd && me.resource.metadata.dsd.columns) {
                         DSDEditor.setColumns(me.resource.metadata.dsd.columns);
+                        if (me.resource.data && me.resource.data.length > 0)
+                            me.isDSDEditable(false);
+                        else
+                            me.isDSDEditable(true);
+                    }
                 });
 
             //Data Upload
@@ -56,6 +61,20 @@ define([
 
             if (this.resource && this.resource.metadata.dsd && this.resource.metadata.dsd.columns)
                 DSDEditor.setColumns(this.resource.metadata.dsd.columns);
+        },
+
+        isDSDEditable: function (editable) {
+            DSDEditor.isEditable(editable);
+            if (editable) {
+                $('#divColsLoad').show();
+                $('#divCSV').show();
+                $('#btnColsEditDone').show();
+            }
+            else {
+                $('#divColsLoad').hide();
+                $('#divCSV').hide();
+                $('#btnColsEditDone').hide();
+            }
         },
 
         bindEventListeners: function () {
@@ -111,21 +130,7 @@ define([
                         $uidVerModal.modal('hide');
                     }
                 });
-
-
             });
-
-            /*$('#btnColsLoad').on('click', function () {
-                var uid = "dan2";
-                var version = "1.0";
-                var version = null;
-                ResourceManager.loadDSD({ metadata: { uid: uid, version: version } }, function (dsd) {
-                    if (dsd)
-                        DSDEditor.setColumns(dsd.columns);
-                    else
-                        DSDEditor.setColumns(null);
-                });
-            });*/
 
             $('#btnColsEditDone').on('click', function () {
                 columnsDSD = DSDEditor.getColumns();
@@ -143,9 +148,12 @@ define([
         },
 
         unbindEventListeners: function () {
-            $('#btnColsLoad').off('click');
             $('#divUplaodCSV').off('click');
             $('#btnColsEditDone').off('click')
+
+            $('#btnColsLoad').off('click');
+            $('#btnUidVerCanc').off('click');
+            $('#btnUidVerOk').off('click');
         },
 
         dispose: function () {
