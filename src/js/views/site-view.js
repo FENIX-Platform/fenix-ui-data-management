@@ -10,7 +10,7 @@ define([
     'use strict';
 
     var s = {
-        SEC_MENU: '#uae-data-mng-menu-container'
+        SEC_MENU: '#data-mng-menu-container'
     };
 
     var SiteView = View.extend({
@@ -39,7 +39,7 @@ define([
             //Secondary Menu
             this.secondaryMenu = new Menu({
                 container: s.SEC_MENU,
-                url: 'config/submodules/fx-menu/uae-data-mng_config.json',
+                url: 'config/submodules/fx-menu/data-mng_config.json',
                 disable: ['delete', 'close', 'data', 'dsd']
             });
         },
