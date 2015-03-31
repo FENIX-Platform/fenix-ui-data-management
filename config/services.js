@@ -4,7 +4,8 @@ define(function () {
     'use strict';
 
     return {
-        SERVICES_BASE_ADDRESS: "http://fenix.fao.org/d3s_dev/msd",
+        //SERVICES_BASE_ADDRESS: "http://fenix.fao.org/d3s_dev/msd",
+        SERVICES_BASE_ADDRESS: "http://lprapp16.fao.org:7733/v2/msd",
         SERVICE_GET_DATA_METADATA: {service: "resources", queryParams: {full: true, dsd: true}},
         SERVICE_SAVE_METADATA: {service: "resources/metadata"},
         SERVICE_SAVE_DSD: {service: "resources/dsd"},

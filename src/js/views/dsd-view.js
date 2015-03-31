@@ -131,7 +131,7 @@ define([
                         me.resource.metadata.dsd = {};
                     me.resource.metadata.dsd.columns = columnsDSD;
 
-                    me.resource.metadata.dsd.datasources = C.DSD_EDITOR_DATASOURCE || DC.DSD_EDITOR_DATASOURCE;
+                    me.resource.metadata.dsd.datasources = C.DSD_EDITOR_DATASOURCES || DC.DSD_EDITOR_DATASOURCES;
                     me.resource.metadata.dsd.contextSystem = C.DSD_EDITOR_CONTEXT_SYSTEM || DC.DSD_EDITOR_CONTEXT_SYSTEM;
 
                     ResourceManager.updateDSD(

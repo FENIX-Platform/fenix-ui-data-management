@@ -10,7 +10,7 @@ define(function () {
         },
 
         DSD_EDITOR_CONTEXT_SYSTEM: 'demo1',
-        DSD_EDITOR_DATASOURCE: 'D3S',
+        DSD_EDITOR_DATASOURCES: ['D3S'],
         DSD_EDITOR_SUBJECTS: "submodules/fenix-ui-DSDEditor/config/DSDEditor/Subjects.json",
         DSD_EDITOR_DATATYPES: "submodules/fenix-ui-DSDEditor/config/DSDEditor/Datatypes.json",
         DSD_EDITOR_CODELISTS: "config/submodules/DSDEditor/CodelistsUAE.json",

@@ -45,7 +45,6 @@ define([
         bindEventListeners: function () {
             var me = this;
             $('#dataEditEnd').on("click", function () {
-                console.log('click');
                 var data = DataEditor.getData();
                 var colDist = DataEditor.getColumnsWithDistincts();
 
