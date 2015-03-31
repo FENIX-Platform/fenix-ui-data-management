@@ -1,12 +1,14 @@
 define([
     'chaplin',
+    'fx-d-m/config/config',
+    'fx-d-m/config/config-default',
     'fx-d-m/views/base/view',
     'text!fx-d-m/templates/dsd.hbs',
     'fx-DSDEditor/start',
     'fx-DataUpload/start',
     'fx-d-m/components/resource-manager',
     'pnotify'
-], function (Chaplin, View, template, DSDEditor, DataUpload, ResourceManager, PNotify) {
+], function (Chaplin, C, DC, View, template, DSDEditor, DataUpload, ResourceManager, PNotify) {
     'use strict';
 
     var DsdView = View.extend({
@@ -27,22 +29,14 @@ define([
             this.resource = ResourceManager.getCurrentResource();
             var me = this;
 
-            //DSD Editor
-            var servicesUrls = {
-                metadataUrl: "http://faostat3.fao.org/d3s2/v2/msd/resources/metadata",
-                dsdUrl: "http://faostat3.fao.org/d3s2/v2/msd/resources/dsd",
-                dataUrl: "http://faostat3.fao.org/d3s2/v2/msd/resources"
-            },
             //DSDEditor container
-            DSDEditorContainerID = '#DSDEditorMainContainer';
+            var DSDEditorContainerID = '#DSDEditorMainContainer';
 
             DSDEditor.init(DSDEditorContainerID,
                 {
-                    subjects: "submodules/fenix-ui-DSDEditor/config/DSDEditor/Subjects.json",
-                    datatypes: "submodules/fenix-ui-DSDEditor/config/DSDEditor/Datatypes.json",
-                    //codelists: "submodules/fenix-ui-DSDEditor/config/DSDEditor/Codelists_UNECA.json",
-                    codelists: "config/submodules/DSDEditor/CodelistsUAE.json",
-                    servicesUrls: servicesUrls
+                    subjects: C.DSD_EDITOR_SUBJECTS || DC.DSD_EDITOR_SUBJECTS,
+                    datatypes: C.DSD_EDITOR_DATATYPES || DC.DSD_EDITOR_DATATYPES,
+                    codelists: C.DSD_EDITOR_CODELISTS || DC.DSD_EDITOR_CODELISTS
                 }, function () {
                     if (me.resource && me.resource.metadata.dsd && me.resource.metadata.dsd.columns) {
                         DSDEditor.setColumns(me.resource.metadata.dsd.columns);
@@ -91,11 +85,7 @@ define([
                     DSDEditor.reset();
                     DataUpload.alertValidation();
                 }
-            })
-
-
-            //var $uidVerModal = $('#uidVerPopup');
-
+            });
 
             //$('#btnColsLoad').on('click', function () { console.log('modal'); $uidVerModal.modal('show'); console.log($uidVerModal); });
             var $uidVerModal = $('#uidVerPopup');
@@ -125,7 +115,7 @@ define([
                         DSDEditor.setColumns(cols);
                         new PNotify({
                             title: '',
-                            text: '__DSD loaded',
+                            text: '__DSD loaded'
                         });
                         $uidVerModal.modal('hide');
                     }
@@ -149,15 +139,13 @@ define([
 
         unbindEventListeners: function () {
             $('#divUplaodCSV').off('click');
-            $('#btnColsEditDone').off('click')
-
+            $('#btnColsEditDone').off('click');
             $('#btnColsLoad').off('click');
             $('#btnUidVerCanc').off('click');
             $('#btnUidVerOk').off('click');
         },
 
         dispose: function () {
-
 
             DataUpload.destroy();
             DSDEditor.destroy();

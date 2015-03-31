@@ -23,12 +23,12 @@ define([
             'click #delete-undo': 'onUndo'
         },
 
-        onDelete : function () {
+        onDelete: function () {
 
             //Delete current resource
             ResourceManager.deleteCurrentResource({
-                success : function () {
-                   console.log("cancellata")
+                success: function () {
+                    console.log("deleted")
                 }
             });
 
@@ -38,7 +38,7 @@ define([
             Chaplin.utils.redirectTo({url: 'resume'});
         }
 
-        });
+    });
 
     return DeleteView;
 });
