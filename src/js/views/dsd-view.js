@@ -2,11 +2,12 @@ define([
     'chaplin',
     'fx-d-m/views/base/view',
     'text!fx-d-m/templates/dsd.hbs',
+    'fx-d-m/config/config',
     'fx-DSDEditor/start',
     'fx-DataUpload/start',
     'fx-d-m/components/resource-manager',
     'pnotify'
-], function (Chaplin, View, template, DSDEditor, DataUpload, ResourceManager, PNotify) {
+], function (Chaplin, View, template, Config, DSDEditor, DataUpload, ResourceManager, PNotify) {
     'use strict';
 
     var DsdView = View.extend({
@@ -140,6 +141,10 @@ define([
                     if (!me.resource.metadata.dsd)
                         me.resource.metadata.dsd = {};
                     me.resource.metadata.dsd.columns = columnsDSD;
+
+                    me.resource.metadata.dsd.datasources = Config.datasources;
+                    me.resource.metadata.dsd.contextSystem = Config.contextSystem;
+
                     ResourceManager.updateDSD(
                         me.resource, function () { ResourceManager.loadResource(me.resource, function () { Chaplin.utils.redirectTo('data#show'); }); }
                         );

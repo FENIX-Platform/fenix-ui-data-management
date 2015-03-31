@@ -4,7 +4,7 @@ define(function () {
 
     var ConfigCatalog = {
         contextSystem: 'demo1',
-        datasource: 'D3S'
+        datasources: ['D3S']
     };
 
 

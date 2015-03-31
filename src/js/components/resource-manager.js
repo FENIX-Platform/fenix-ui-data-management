@@ -2,11 +2,10 @@
 
 define([
     'chaplin',
-    'fx-d-m/config/config',
     'fx-d-m/config/events',
     'fx-d-m/config/services',
     'amplify'
-], function (Chaplin, Config, Events, Services) {
+], function (Chaplin, Events, Services) {
     'use strict';
 
     function ResourceManager() {
@@ -75,17 +74,18 @@ define([
 
 
     ResourceManager.prototype.updateDSD = function (resource, callB) {
-        if (!resource.metadata.dsd)
-            throw new Error("DSD to update cannot be null");
-        if (!Config.datasource)
-            throw new Error("Datasource cannot be null");
-        if (!Config.contextSystem)
-            throw new Error("ContextSystem cannot be null");
-
         var meta = this.resource.metadata;
+        if (!meta.dsd)
+            throw new Error("DSD to update cannot be null");
+        if (!meta.dsd.datasources)
+            throw new Error("Datasources cannot be null");
+        else if (meta.dsd.datasources.length == 0)
+            throw new Error("Datasources cannot be null");
+        if (!meta.dsd.contextSystem)
+            throw new Error("ContextSystem cannot be null");
         //ToDo move this?
-        meta.dsd.datasource = Config.datasource;
-        meta.dsd.contextSystem = Config.contextSystem;
+        /*meta.dsd.datasources = Config.datasources;
+        meta.dsd.contextSystem = Config.contextSystem;*/
 
         var me = this;
         if (meta.dsd && meta.dsd.rid) {
