@@ -1,16 +1,20 @@
 define([
+    'fx-d-m/config/config',
+    'fx-d-m/config/config-default',
+    'fx-d-m/config/services',
+    'fx-d-m/config/services-default',
     'fx-d-m/views/base/view',
     'text!fx-d-m/templates/metadata.hbs',
     'fx-editor/start',
     'fx-d-m/components/resource-manager',
     'chaplin',
     'amplify'
-], function (View, template, Editor, ResourceManager, Chaplin) {
+], function (C, DC, S, DS, View, template, Editor, ResourceManager, Chaplin) {
 
     'use strict';
     var s = {
         METADATA_CONTAINER: 'div#metadataEditorContainer'
-    }
+    };
 
     var MetadataView = View.extend({
 
@@ -30,19 +34,20 @@ define([
 
             this.resource = ResourceManager.getCurrentResource();
 
-            var sourceValues = null;
+            var sourceValues = null,
+                SERVICE_PREFIX = S.SERVICES_BASE_ADDRESS || DS.SERVICES_BASE_ADDRESS;
 
             if (this.resource) {
                 if (this.resource.metadata.uid != null && this.resource.metadata.version == null) {
                     sourceValues = {
-                        "url": "http://fenix.fao.org/d3s_dev/msd/resources/metadata/uid/" + this.resource.metadata.uid + "?full=true",
+                        "url": SERVICE_PREFIX + "/metadata/uid/" + this.resource.metadata.uid + "?full=true",
                         "type": "get"
                     };
                 }
 
                 if (this.resource.metadata.version != null && this.resource.metadata.uid != null) {
                     sourceValues = {
-                        "url": "http://fenix.fao.org/d3s_dev/msd/resources/metadata/" + this.resource.metadata.uid + "/" + this.resource.metadata.version + "?full=true",
+                        "url": SERVICE_PREFIX + "/metadata/" + this.resource.metadata.uid + "/" + this.resource.metadata.version + "?full=true",
                         "type": "get"
                     };
                 }
@@ -58,11 +63,11 @@ define([
                     lang: 'EN'
                 },
                 config: {
-                    gui: "./submodules/fenix-ui-metadata-editor/conf/json/fx-editor-gui-config.json",
-                    validation: "./submodules/fenix-ui-metadata-editor/conf/json/fx-editor-validation-config.json",
-                    jsonMapping: "./submodules/fenix-ui-metadata-editor/conf/json/fx-editor-mapping-config.json",
-                    ajaxEventCalls: "./submodules/fenix-ui-metadata-editor/conf/json/fx-editor-ajax-config_DEV.json",
-                    dates: "./submodules/fenix-ui-metadata-editor/conf/json/fx-editor-dates-config.json"
+                    gui: C.METADATA_EDITOR_GUI || DC.METADATA_EDITOR_GUI,
+                    validation: C.METADATA_EDITOR_VALIDATION || DC.METADATA_EDITOR_VALIDATION,
+                    jsonMapping: C.METADATA_EDITOR_JSON_MAPPING || DC.METADATA_EDITOR_JSON_MAPPING,
+                    ajaxEventCalls: C.METADATA_EDITOR_AJAX_EVENT_CALL || DC.METADATA_EDITOR_AJAX_EVENT_CALL,
+                    dates: C.METADATA_EDITOR_DATES || DC.METADATA_EDITOR_DATES
                 },
                 onFinishClick: function (data) {
                     console.log(data)
@@ -91,7 +96,7 @@ define([
                 this.resource.metadata.dsd = existingDSD;
 
             ResourceManager.setCurrentResource(this.resource);
-            Chaplin.utils.redirectTo({ url: 'resume' });
+            Chaplin.utils.redirectTo({url: 'resume'});
 
             /*
              ResourceManager.updateDSD(
@@ -108,24 +113,24 @@ define([
             $('#metaeditor-loadMeta-btn').on('click', function () {
                 var uid = $('#resourceUid').val();
                 var version = $('#resourceVersion').val();
-                amplify.publish("fx.editor.metadata.copy", { version: version, uid: uid });
+                amplify.publish("fx.editor.metadata.copy", {version: version, uid: uid});
             });
             /*
-                    event.preventDefault();
+             event.preventDefault();
 
-    var uid = document.getElementById('resourceUid');
-    var version = document.getElementById('resourceVersion');
+             var uid = document.getElementById('resourceUid');
+             var version = document.getElementById('resourceVersion');
 
-    // Create the event and pass uid and version values
-    var event = new CustomEvent("fx.editor.metadata.copy", {
-        "detail": {
-            "version": version.value,
-            "uid": uid.value
-        }
-    });
-    // Dispatch/Trigger/Fire the event
-    document.body.dispatchEvent(event);
-            */
+             // Create the event and pass uid and version values
+             var event = new CustomEvent("fx.editor.metadata.copy", {
+             "detail": {
+             "version": version.value,
+             "uid": uid.value
+             }
+             });
+             // Dispatch/Trigger/Fire the event
+             document.body.dispatchEvent(event);
+             */
 
             $('#metaeditor-close-btn').on('click', function () {
                 // Dispatch/Trigger/Fire the event
@@ -152,13 +157,14 @@ define([
              document.body.addEventListener("fx.editor.finish", function (e) {
              console.log(e.detail.data)
              // then call your function passing the �e.detail.data�
-        
+
              }, false);
              */
 
         },
         unbindEventListeners: function () {
-            $('#metaeditor-loadMeta-btn').on('click', function () { });
+            $('#metaeditor-loadMeta-btn').on('click', function () {
+            });
             $('#metaeditor-close-btn').off('click');
             //document.body.removeEventListener("fx.editor.finish", this.editorFinish, false);
             amplify.unsubscribe("fx.editor.finish", this.editorFinish);

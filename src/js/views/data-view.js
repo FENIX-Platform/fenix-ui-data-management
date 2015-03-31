@@ -29,28 +29,16 @@ define([
             columns = this.resource.metadata.dsd.columns;
             data = this.resource.data;
 
-            //columns = [{"id":"Year","title":{"EN":"Year"},"key":true,"dataType":"year","domain":null,"subject":"time","supplemental":null},{"id":"Item","title":{"EN":"Item"},"key":true,"dataType":"code","domain":{"codes":[{"idCodeList":"ECO_Elements"}]},"subject":"item","supplemental":null},{"id":"Value","title":{"EN":"Value"},"key":false,"dataType":"number","subject":"value","supplemental":null}]
-            //data = [["2000","310229","100"],["2000","310500","200"],["2001","310229","150"],["2001","31","20"]]
-
-            /*console.log("Columns")
-            console.log(columns)
-            console.log("Data")
-            console.log(data)*/
-
-            //DSD Editor service URLs
-            var servicesUrls = {
-                metadataUrl: "http://faostat3.fao.org/d3s2/v2/msd/resources/metadata",
-                dsdUrl: "http://faostat3.fao.org/d3s2/v2/msd/resources/dsd",
-                dataUrl: "http://faostat3.fao.org/d3s2/v2/msd/resources"
-            };
             this.bindEventListeners();
             //Data Editor container
             var dataEditorContainerID = "#DataEditorMainContainer";
             DataEditor.init(dataEditorContainerID,
-                { servicesUrls: servicesUrls },
+                {},
                 function () {
                     DataEditor.setColumns(columns,
-                        function () { DataEditor.setData(data); })
+                        function () {
+                            DataEditor.setData(data);
+                        })
                 });
         },
 
@@ -67,41 +55,13 @@ define([
                 ResourceManager.putData(me.resource,
                     ResourceManager.updateDSD(me.resource, function () {
                         ResourceManager.loadResource(me.resource,
-                        function () { Chaplin.utils.redirectTo('data#show'); })
+                            function () {
+                                Chaplin.utils.redirectTo('data#show');
+                            })
                     })
-                    );
-
-                console.log(JSON.stringify(data));
-                console.log(JSON.stringify(colDist));
-
-                console.log("---------------------")
+                );
 
             });
-
-
-            /*
-
-
-            $('#btnColsEditDone').on('click', function () {
-                columnsDSD = DSDEditor.getColumns();
-                if (columnsDSD) {
-                    if (data)
-                        me.resource.data = data;
-                    if (!me.resource.metadata.dsd)
-                        me.resource.metadata.dsd = {};
-                    me.resource.metadata.dsd.columns = columnsDSD;
-                    ResourceManager.updateDSD(me.resource.metadata.uid,
-                        me.resource.metadata.version,
-                        me.resource.metadata.dsd,
-                        function () {
-                            ResourceManager.loadResource(me.resource,
-                            function () { Chaplin.utils.redirectTo('data#show'); })
-                        });
-                }
-            })
-
-
-            */
         },
 
         unbindEventListeners: function () {
@@ -111,11 +71,8 @@ define([
         dispose: function () {
 
             DataEditor.destroy();
-
             View.prototype.dispose.call(this, arguments);
         }
-
-
 
     });
 

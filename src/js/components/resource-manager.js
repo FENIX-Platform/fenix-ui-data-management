@@ -3,9 +3,12 @@
 define([
     'chaplin',
     'fx-d-m/config/events',
+    'fx-d-m/config/config',
+    'fx-d-m/config/config-default',
     'fx-d-m/config/services',
+    'fx-d-m/config/services-default',
     'amplify'
-], function (Chaplin, Events, Services) {
+], function (Chaplin, Events, C, DC, Services, ServicesDefault) {
     'use strict';
 
     function ResourceManager() {
@@ -34,7 +37,7 @@ define([
     ResourceManager.prototype.deleteCurrentResource = function (o) {
         this.resource = null;
         Chaplin.mediator.publish(Events.RESOURCE_DELETED);
-        console.warn("WARNING: delete method not implemented yet")
+        console.warn("WARNING: delete method not implemented yet");
         o.success();
 
     };
@@ -74,20 +77,23 @@ define([
 
 
     ResourceManager.prototype.updateDSD = function (resource, callB) {
-        var meta = this.resource.metadata;
-        if (!meta.dsd)
-            throw new Error("DSD to update cannot be null");
-        if (!meta.dsd.datasources)
-            throw new Error("Datasources cannot be null");
-        else if (meta.dsd.datasources.length == 0)
-            throw new Error("Datasources cannot be null");
-        if (!meta.dsd.contextSystem)
-            throw new Error("ContextSystem cannot be null");
-        //ToDo move this?
-        /*meta.dsd.datasources = Config.datasources;
-        meta.dsd.contextSystem = Config.contextSystem;*/
 
-        var me = this;
+        if (!resource.metadata.dsd)  {
+            throw new Error("DSD to update cannot be null");
+        }
+
+        if (!DC.DSD_EDITOR_DATASOURCE && !C.DSD_EDITOR_DATASOURCE) {
+            throw new Error("Datasource cannot be null");
+        }
+
+        if (!DC.DSD_EDITOR_CONTEXT_SYSTEM && !C.DSD_EDITOR_CONTEXT_SYSTEM)
+            throw new Error("ContextSystem cannot be null");
+
+        var meta = this.resource.metadata;
+        //ToDo move this?
+        meta.dsd.datasource = C.DSD_EDITOR_DATASOURCE|| DC.DSD_EDITOR_DATASOURCE;
+        meta.dsd.contextSystem = C.DSD_EDITOR_CONTEXT_SYSTEM || DC.DSD_EDITOR_CONTEXT_SYSTEM;
+
         if (meta.dsd && meta.dsd.rid) {
             try {
                 var addr = Services.service_saveDsdURL();
@@ -98,7 +104,7 @@ define([
             }
         }
         else {
-            var toPatch = { uid: meta.uid };
+            var toPatch = {uid: meta.uid};
             if (meta.version)
                 toPatch.version = meta.version;
             toPatch.dsd = meta.dsd;
@@ -115,7 +121,7 @@ define([
 
     ResourceManager.prototype.putData = function (resource, callB) {
         var url = Services.service_saveDataURL();
-        var toPut = { metadata: { uid: resource.metadata.uid } };
+        var toPut = {metadata: {uid: resource.metadata.uid}};
         if (resource.metadata.version)
             toPut.metadata.version = resource.metadata.version;
         toPut.data = resource.data;

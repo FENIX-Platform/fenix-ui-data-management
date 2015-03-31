@@ -1,16 +1,18 @@
 define([
     'chaplin',
+    'fx-d-m/config/config',
+    'fx-d-m/config/config-default',
     'fx-d-m/views/base/view',
     'text!fx-d-m/templates/site.hbs',
     'fx-menu/start',
     'fx-d-m/config/events',
     'fx-d-m/components/resource-manager'
-], function (Chaplin, View, template, Menu, Events, ResourceManager) {
+], function (Chaplin, C, DC, View, template, Menu, Events, ResourceManager) {
 
     'use strict';
 
     var s = {
-        SEC_MENU: '#uae-data-mng-menu-container'
+        SEC_MENU: '#data-mng-menu-container'
     };
 
     var SiteView = View.extend({
@@ -31,15 +33,12 @@ define([
             this.bindEventListeners();
 
             //Top Menu
-            this.topMenu = new Menu({
-                url: 'config/submodules/fx-menu/fenix-ui-topmenu_config.json',
-                active: "createdataset"
-            });
+            this.topMenu = new Menu(DC.TOP_MENU || C.TOP_MENU);
 
             //Secondary Menu
             this.secondaryMenu = new Menu({
                 container: s.SEC_MENU,
-                url: 'config/submodules/fx-menu/uae-data-mng_config.json',
+                url: 'config/submodules/fx-menu/data-mng_config.json',
                 disable: ['delete', 'close', 'data', 'dsd']
             });
         },

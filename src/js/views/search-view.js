@@ -1,12 +1,14 @@
 /*global define, amplify*/
 define([
     'chaplin',
+    'fx-d-m/config/config',
+    'fx-d-m/config/config-default',
     'fx-d-m/views/base/view',
     'text!fx-d-m/templates/search.hbs',
     'fx-cat-br/start',
     'fx-d-m/config/events',
     'amplify'
-], function (Chaplin, View, template, Catalog, Events) {
+], function (Chaplin, C, DC, View, template, Catalog, Events) {
 
     'use strict';
 
@@ -35,7 +37,7 @@ define([
 
             this.catalog = new Catalog({
                 catalog: {
-                    BLANK_FILTER: 'config/submodules/catalog/uae-catalog-blank-filter.json'
+                    BLANK_FILTER: DC.CATALOG_BLANK_FILTER || C.CATALOG_BLANK_FILTER
                 },
                 results: {
                     actions: {

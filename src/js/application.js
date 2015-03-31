@@ -24,7 +24,7 @@ define([
 
         // Set your application name here so the document title is set to
         // “Controller title – Site title” (see Layout#adjustTitle)
-        title: 'United Arab Emirates - Data Management',
+        title: 'FENIX - Data Management',
 
         start: function () {
 
