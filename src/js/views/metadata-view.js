@@ -163,8 +163,7 @@ define([
 
         },
         unbindEventListeners: function () {
-            $('#metaeditor-loadMeta-btn').on('click', function () {
-            });
+            $('#metaeditor-loadMeta-btn').off();
             $('#metaeditor-close-btn').off('click');
             //document.body.removeEventListener("fx.editor.finish", this.editorFinish, false);
             amplify.unsubscribe("fx.editor.finish", this.editorFinish);

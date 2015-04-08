@@ -2,11 +2,12 @@
 
 define([
     'chaplin',
+    'underscore',
     'fx-d-m/config/events',
     'fx-d-m/config/services',
     'fx-d-m/config/services-default',
     'amplify'
-], function (Chaplin, Events, Services, ServicesDefault) {
+], function (Chaplin, _, Events, Services, ServicesDefault) {
     'use strict';
 
     function ResourceManager() {
@@ -33,10 +34,31 @@ define([
     };
 
     ResourceManager.prototype.deleteCurrentResource = function (o) {
-        this.resource = null;
-        Chaplin.mediator.publish(Events.RESOURCE_DELETED);
-        console.warn("WARNING: delete method not implemented yet");
-        o.success();
+
+        $.ajax({
+            url:  Services.service_getDataAndMetaURL(this.resource.metadata.uid, this.resource.metadata.version),
+            type: 'DELETE',
+            crossDomain: true,
+            //dataType: 'json',
+            success: _.bind(function () {
+                console.log("success")
+                this.resource = null;
+                Chaplin.mediator.publish(Events.RESOURCE_DELETED);
+
+                if (o.success && typeof o.success === 'function'){
+                    o.success();
+                }
+
+            },this),
+            error: _.bind(function () {
+                console.log("error")
+                if (o.error && typeof o.error === 'function'){
+                    o.error();
+                }
+
+            },this)
+        });
+
 
     };
 

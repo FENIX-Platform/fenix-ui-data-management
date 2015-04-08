@@ -26,11 +26,7 @@ define([
         onDelete: function () {
 
             //Delete current resource
-            ResourceManager.deleteCurrentResource({
-                success: function () {
-                    console.log("deleted")
-                }
-            });
+            ResourceManager.deleteCurrentResource({});
 
         },
 
