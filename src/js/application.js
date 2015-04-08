@@ -52,14 +52,21 @@ define([
 
 
             Chaplin.mediator.subscribe(Events.RESOURCE_ABSENT, function () {
-
                 new PNotify({
                     title: 'Resource Absent',
                     text: 'Please select a resource.'
                 });
-
                 Chaplin.utils.redirectTo({url: 'landing'});
             });
+
+            Chaplin.mediator.subscribe(Events.DSD_ABSENT, function () {
+                new PNotify({
+                    title: 'DSD Absent',
+                    text: 'Please add a DSD.'
+                });
+                Chaplin.utils.redirectTo({ url: 'resume' });
+            });
+
 
             Chaplin.mediator.subscribe(Events.RESOURCE_DELETED, function () {
 

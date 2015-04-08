@@ -44,7 +44,7 @@ define([
 
             if (this.authorized === false) {
                 // user in not authorized
-                Chaplin.mediator.publish(Events.RESOURCE_ABSENT);
+                Chaplin.mediator.publish(Events.DSD_ABSENT);
                 return;
             }
 

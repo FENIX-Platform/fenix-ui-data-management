@@ -40,14 +40,14 @@ define([
             if (this.resource) {
                 if (this.resource.metadata.uid != null && this.resource.metadata.version == null) {
                     sourceValues = {
-                        "url": SERVICE_PREFIX + "/metadata/uid/" + this.resource.metadata.uid + "?full=true",
+                        "url": SERVICE_PREFIX + "/resources/metadata/uid/" + this.resource.metadata.uid + "?full=true",
                         "type": "get"
                     };
                 }
 
                 if (this.resource.metadata.version != null && this.resource.metadata.uid != null) {
                     sourceValues = {
-                        "url": SERVICE_PREFIX + "/metadata/" + this.resource.metadata.uid + "/" + this.resource.metadata.version + "?full=true",
+                        "url": SERVICE_PREFIX + "/resources/metadata/" + this.resource.metadata.uid + "/" + this.resource.metadata.version + "?full=true",
                         "type": "get"
                     };
                 }

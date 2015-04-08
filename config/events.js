@@ -7,7 +7,9 @@ define(function () {
         RESOURCE_CLOSED: 'fx.resource.closed',
         RESOURCE_DELETED: 'fx.resource.deleted',
         RESOURCE_SELECT: 'fx.resource.select',
-        RESOURCE_STORED: 'fx.resource.stored'
+        RESOURCE_STORED: 'fx.resource.stored',
+
+        DSD_ABSENT: 'fx.dsd.absent'
     };
 
     return EventsCatalog;
