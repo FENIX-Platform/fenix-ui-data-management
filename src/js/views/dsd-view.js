@@ -135,7 +135,7 @@ define([
                     me.resource.metadata.dsd.contextSystem = C.DSD_EDITOR_CONTEXT_SYSTEM || DC.DSD_EDITOR_CONTEXT_SYSTEM;
 
                     ResourceManager.updateDSD(
-                        me.resource, function () { ResourceManager.loadResource(me.resource, function () { Chaplin.utils.redirectTo('data#show'); }); }
+                        me.resource, function () { ResourceManager.loadResource(me.resource, function () { Chaplin.utils.redirectTo('resume#show'); }); }
                         );
                 }
             })
