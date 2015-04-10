@@ -33,14 +33,26 @@ define([
             this.bindEventListeners();
 
             //Top Menu
-            this.topMenu = new Menu(DC.TOP_MENU || C.TOP_MENU);
+            var me = this;
+            var topOpts = DC.TOP_MENU || C.TOP_MENU;
+            topOpts.callback = function () {
+                console.log('inCallB');
+                me.secondaryMenu = new Menu({
+                    container: s.SEC_MENU,
+                    url: 'config/submodules/fx-menu/data-mng_config.json',
+                    disable: ['delete', 'close', 'data', 'dsd']
+                });
+            };
+            this.topMenu = new Menu(topOpts);
+            //this.topMenu = new Menu(DC.TOP_MENU || C.TOP_MENU);
 
+            /*
             //Secondary Menu
             this.secondaryMenu = new Menu({
                 container: s.SEC_MENU,
                 url: 'config/submodules/fx-menu/data-mng_config.json',
                 disable: ['delete', 'close', 'data', 'dsd']
-            });
+            });*/
         },
 
         bindEventListeners: function () {
@@ -64,11 +76,11 @@ define([
                 if (ResourceManager.hasData())
                     this.secondaryMenu.disable(['dsd']);
                 else
-                    this.secondaryMenu.activateItem(['dsd']);
+                    this.secondaryMenu.activate(['dsd']);
                 if (!ResourceManager.hasColumns())
                     this.secondaryMenu.disable(['data']);
                 else
-                    this.secondaryMenu.activateItem(['data']);
+                    this.secondaryMenu.activate(['data']);
             }
             else {
                 this.secondaryMenu.disable(['dsd']);
