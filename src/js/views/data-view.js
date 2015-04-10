@@ -3,7 +3,8 @@ define([
     'text!fx-d-m/templates/data.hbs',
     'fx-DataEditor/start',
     'fx-d-m/components/resource-manager',
-    'chaplin'
+    'chaplin',
+    'pnotify'
 ], function (View, template, DataEditor, ResourceManager, Chaplin) {
     'use strict';
 
@@ -46,20 +47,30 @@ define([
             var me = this;
             $('#dataEditEnd').on("click", function () {
                 var data = DataEditor.getData();
-                var colDist = DataEditor.getColumnsWithDistincts();
+                //returns false if not valid
+                if (data) {
+                    var colDist = DataEditor.getColumnsWithDistincts();
 
-                me.resource.metadata.dsd.columns = colDist;
-                me.resource.data = data;
+                    me.resource.metadata.dsd.columns = colDist;
+                    me.resource.data = data;
 
-                ResourceManager.putData(me.resource,
-                    ResourceManager.updateDSD(me.resource, function () {
-                        ResourceManager.loadResource(me.resource,
-                            function () {
-                                Chaplin.utils.redirectTo('data#show');
-                            })
-                    })
-                );
-
+                    ResourceManager.putData(me.resource,
+                        ResourceManager.updateDSD(me.resource, function () {
+                            ResourceManager.loadResource(me.resource,
+                                function () {
+                                    Chaplin.utils.redirectTo('data#show');
+                                })
+                        })
+                    );
+                }
+                    //data is not valid
+                else {
+                    new PNotify({
+                        title: '',
+                        text: '__Data is not valid',
+                        type: 'error'
+                    });
+                }
             });
         },
 
