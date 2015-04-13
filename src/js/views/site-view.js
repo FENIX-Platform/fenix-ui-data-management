@@ -36,7 +36,6 @@ define([
             var me = this;
             var topOpts = DC.TOP_MENU || C.TOP_MENU;
             topOpts.callback = function () {
-                console.log('inCallB');
                 me.secondaryMenu = new Menu({
                     container: s.SEC_MENU,
                     url: 'config/submodules/fx-menu/data-mng_config.json',
