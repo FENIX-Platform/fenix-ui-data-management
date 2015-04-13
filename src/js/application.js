@@ -13,11 +13,11 @@ define([
     // Choose a meaningful name for your application
     var Application = Chaplin.Application.extend({
 
-        initialize : function () {
+        initialize: function () {
             var args = [].slice.call(arguments);
 
             //the coordinates (x, y) you want to scroll to on view replacement. Set to false to deactivate it.
-            this.initLayout({scrollTo: false});
+            this.initLayout({ scrollTo: false });
 
             Chaplin.Application.prototype.initialize.apply(this, args);
         },
@@ -37,17 +37,18 @@ define([
             Chaplin.Application.prototype.start.apply(this, args);
         },
 
-        bindEventListeners : function () {
+        bindEventListeners: function () {
 
             Chaplin.mediator.subscribe(Events.RESOURCE_STORED, function () {
 
                 new PNotify({
                     title: 'Resource Stored',
-                    text: 'Current resource correctly stored.'
+                    text: 'Current resource correctly stored.',
+                    type: 'success'
                 });
 
-               //Chaplin.utils.redirectTo('resume#show');
-               Chaplin.utils.redirectTo({url: 'resume'});
+                //Chaplin.utils.redirectTo('resume#show');
+                Chaplin.utils.redirectTo({ url: 'resume' });
             }, this);
 
 
@@ -56,7 +57,7 @@ define([
                     title: 'Resource Absent',
                     text: 'Please select a resource.'
                 });
-                Chaplin.utils.redirectTo({url: 'landing'});
+                Chaplin.utils.redirectTo({ url: 'landing' });
             });
 
             Chaplin.mediator.subscribe(Events.DSD_ABSENT, function () {
@@ -72,10 +73,11 @@ define([
 
                 new PNotify({
                     title: 'Resource Deleted',
-                    text: 'Resource deleted successfully'
+                    text: 'Resource deleted successfully',
+                    type: 'success'
                 });
 
-                Chaplin.utils.redirectTo({url: 'landing'});
+                Chaplin.utils.redirectTo({ url: 'landing' });
             });
 
 
