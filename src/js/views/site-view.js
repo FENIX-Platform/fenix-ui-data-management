@@ -58,15 +58,18 @@ define([
 
             Chaplin.mediator.subscribe(Events.RESOURCE_STORED, function () {
                 this.secondaryMenu.activate(['delete', 'close']);
+                this.secondaryMenu.disable(['add']);
                 this.updateMenuStatus();
             }, this);
 
             Chaplin.mediator.subscribe(Events.RESOURCE_CLOSED, function () {
                 this.secondaryMenu.disable(['delete', 'close']);
+                this.secondaryMenu.activate(['add']);
             }, this);
 
             Chaplin.mediator.subscribe(Events.RESOURCE_DELETED, function () {
                 this.secondaryMenu.disable(['delete', 'close']);
+                this.secondaryMenu.activate(['add']);
             }, this);
         },
 

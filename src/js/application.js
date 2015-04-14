@@ -60,6 +60,10 @@ define([
                 Chaplin.utils.redirectTo({ url: 'landing' });
             });
 
+            Chaplin.mediator.subscribe(Events.SKIP_LANDING_PAGE, function () {
+                Chaplin.utils.redirectTo({ url: 'resume' });
+            });
+
             Chaplin.mediator.subscribe(Events.DSD_ABSENT, function () {
                 new PNotify({
                     title: 'DSD Absent',
