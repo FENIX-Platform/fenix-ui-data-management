@@ -27,6 +27,7 @@ define([
             View.prototype.attach.call(this, arguments);
 
             this.resource = ResourceManager.getCurrentResource();
+            this.uploadedData;
             var me = this;
 
             //DSDEditor container
@@ -72,13 +73,13 @@ define([
         },
 
         bindEventListeners: function () {
-            var data, columnsUpload, columnsDSD;
+            var columnsUpload, columnsDSD;
             var me = this;
 
             $('#divUplaodCSV').on('dataParsed.DataUpload.fenix', function () {
                 columnsUpload = DataUpload.getColumns();
                 if (columnsUpload) {
-                    data = DataUpload.getData();
+                    me.uploadedData = DataUpload.getData();
                     DSDEditor.setColumns(columnsUpload);
                 }
                 else {
@@ -87,7 +88,6 @@ define([
                 }
             });
 
-            //$('#btnColsLoad').on('click', function () { console.log('modal'); $uidVerModal.modal('show'); console.log($uidVerModal); });
             var $uidVerModal = $('#uidVerPopup');
             var $txtUID = $uidVerModal.find('#txtUID');
             var $txtVersion = $uidVerModal.find('#txtVersion');
@@ -123,20 +123,27 @@ define([
             });
 
             $('#btnColsEditDone').on('click', function () {
+                //console.log(DSDEditor.hasChanged());
                 columnsDSD = DSDEditor.getColumns();
                 if (columnsDSD) {
-                    if (data)
+                    /*if (data)
                         me.resource.data = data;
                     if (!me.resource.metadata.dsd)
-                        me.resource.metadata.dsd = {};
+                        me.resource.metadata.dsd = {};*/
                     me.resource.metadata.dsd.columns = columnsDSD;
 
                     me.resource.metadata.dsd.datasources = C.DSD_EDITOR_DATASOURCES || DC.DSD_EDITOR_DATASOURCES;
                     me.resource.metadata.dsd.contextSystem = C.DSD_EDITOR_CONTEXT_SYSTEM || DC.DSD_EDITOR_CONTEXT_SYSTEM;
 
-                    ResourceManager.updateDSD(
-                        me.resource, function () { ResourceManager.loadResource(me.resource, function () { Chaplin.utils.redirectTo('resume#show'); }); }
-                        );
+                    ResourceManager.updateDSD(me.resource, function () {
+                        ResourceManager.loadResource(me.resource, function () {
+                            if (me.uploadedData) {
+                                me.resource.data = me.uploadedData;
+                                ResourceManager.setCurrentResource(me.resource);
+                            }
+                            Chaplin.utils.redirectTo('resume#show');
+                        });
+                    });
                 }
             })
         },
