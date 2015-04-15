@@ -131,9 +131,11 @@ define([
                 columnsDSD = DSDEditor.getColumns();
                 if (columnsDSD) {
                     /*if (data)
-                        me.resource.data = data;
-                    if (!me.resource.metadata.dsd)
-                        me.resource.metadata.dsd = {};*/
+                        me.resource.data = data;*/
+                    if (!me.resource.metadata.dsd) {
+                        me.resource.metadata.dsd = {};
+                    }
+
                     me.resource.metadata.dsd.columns = columnsDSD;
 
                     me.resource.metadata.dsd.datasources = C.DSD_EDITOR_DATASOURCES || DC.DSD_EDITOR_DATASOURCES;
