@@ -41,7 +41,7 @@ define([
             crossDomain: true,
             //dataType: 'json',
             success: _.bind(function () {
-                console.log("success")
+                //console.log("success")
                 this.resource = null;
                 Chaplin.mediator.publish(Events.RESOURCE_DELETED);
 
@@ -51,7 +51,7 @@ define([
 
             },this),
             error: _.bind(function () {
-                console.log("error")
+                //console.log("error")
                 if (o.error && typeof o.error === 'function'){
                     o.error();
                 }

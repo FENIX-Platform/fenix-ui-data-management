@@ -70,7 +70,7 @@ define([
                     dates: C.METADATA_EDITOR_DATES || DC.METADATA_EDITOR_DATES
                 },
                 onFinishClick: function (data) {
-                    console.log(data)
+                    //console.log(data)
                     // then call your function passing the "data" variable;
                 }
             };
@@ -82,8 +82,8 @@ define([
 
         editorFinish: function (e) {
 
-            console.log(e)
-            console.log("=== LISTENER  ====");
+            //console.log(e)
+            //console.log("=== LISTENER  ====");
             //Wrap in the standard resource's structure
 
             var existingDSD = null;
