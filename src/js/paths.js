@@ -22,7 +22,8 @@ define(function () {
                 'fx-d-m/lib' : './lib',
                 'fx-d-m/models' : './models',
                 'fx-d-m/templates' : './templates',
-                'fx-d-m/views' : './views'
+                'fx-d-m/views': './views',
+                'fx-d-m/i18n' : '../../i18n'
             },
 
             // Underscore and Backbone are not AMD-capable per default,

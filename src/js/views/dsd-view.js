@@ -7,8 +7,9 @@ define([
     'fx-DSDEditor/start',
     'fx-DataUpload/start',
     'fx-d-m/components/resource-manager',
+    'i18n!fx-d-m/i18n/nls/ML_DataManagement',
     'pnotify'
-], function (Chaplin, C, DC, View, template, DSDEditor, DataUpload, ResourceManager, PNotify) {
+], function (Chaplin, C, DC, View, template, DSDEditor, DataUpload, ResourceManager, MLRes, PNotify) {
     'use strict';
 
     var DsdView = View.extend({
@@ -56,6 +57,8 @@ define([
 
             if (this.resource && this.resource.metadata.dsd && this.resource.metadata.dsd.columns)
                 DSDEditor.setColumns(this.resource.metadata.dsd.columns);
+
+            this._doML();
         },
 
         isDSDEditable: function (editable) {
@@ -98,7 +101,7 @@ define([
                 if (uid.trim() == '') {
                     new PNotify({
                         title: '',
-                        text: '__UID cannot be blank',
+                        text: MLRes.UIDCannotBeBlank,
                         type: 'error'
                     });
                     return;
@@ -107,7 +110,7 @@ define([
                     if (cols == null) {
                         new PNotify({
                             title: '',
-                            text: '__DSD not found',
+                            text: MLRes.DSDNotFound,
                             type: 'error'
                         });
                     }
@@ -115,7 +118,8 @@ define([
                         DSDEditor.setColumns(cols);
                         new PNotify({
                             title: '',
-                            text: '__DSD loaded'
+                            text: MLRes.DSDLoaded,
+                            type: 'success'
                         });
                         $uidVerModal.modal('hide');
                     }
@@ -164,6 +168,10 @@ define([
             this.unbindEventListeners();
 
             View.prototype.dispose.call(this, arguments);
+        },
+
+        _doML: function () {
+            $('#btnColsLoad').html(MLRes.CopyDSD);
         }
     });
 
