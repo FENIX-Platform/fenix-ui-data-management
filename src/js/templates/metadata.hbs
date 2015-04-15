@@ -1,43 +1,44 @@
 <!-- Control toolbar -->
 <div class="container">
-  <div class="col-xs-12" id="fx-editor-navbar">
-    <div class="btn-toolbar">
-      
-      
-      <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown">
-        Copy Metadata <span class="caret"></span>
-      </button>
-      <div class="dropdown-menu">
-        <div class="col-sm-12">
-          <div class="col-sm-12">
-            Copy the metadata of a resource
-          </div>
-          <div class="col-sm-12">
-            <input type="text" placeholder="Enter Resource Identification Code"
-                   class="form-control input-sm" id="resourceUid"/>
-          </div>
-          <br/>
+    <div class="col-xs-12 dm-header" id="fx-editor-navbar">
+        <h2 class="dm-section-title pull-left">Metadata Editor</h2>
 
-          <div class="col-sm-12">
-            <input type="text" placeholder="Enter Resource Version (if applicable)"
-                   class="form-control input-sm" id="resourceVersion"/>
-          </div>
-          <div class="col-sm-12">
-            <button id="metaeditor-loadMeta-btn" type="button" class="btn btn-primary">
-              Load
+        <div class="btn-toolbar pull-right">
+
+            <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown">
+                Copy Metadata <span class="caret"></span>
             </button>
-            <!--<button type="submit" class="btn btn-success btn-sm editor-copy-btn">Load</button>-->
-          </div>
+
+            <div class="dropdown-menu">
+                <div class="col-sm-12">
+                    <div class="col-sm-12">
+                        Copy the metadata of a resource
+                    </div>
+                    <div class="col-sm-12">
+                        <input type="text" placeholder="Enter Resource Identification Code"
+                               class="form-control input-sm" id="resourceUid"/>
+                    </div>
+                    <br/>
+
+                    <div class="col-sm-12">
+                        <input type="text" placeholder="Enter Resource Version (if applicable)"
+                               class="form-control input-sm" id="resourceVersion"/>
+                    </div>
+                    <div class="col-sm-12">
+                        <button id="metaeditor-loadMeta-btn" type="button" class="btn btn-primary">
+                            Load
+                        </button>
+                        <!--<button type="submit" class="btn btn-success btn-sm editor-copy-btn">Load</button>-->
+                    </div>
+                </div>
+            </div>
+
+            <button id="metaeditor-close-btn" type="button" class="btn btn-primary">
+                Save
+            </button>
+
         </div>
-      </div>
-
-      <button id="metaeditor-close-btn" type="button" class="btn btn-primary">
-        Close
-      </button>
-      
-
     </div>
-  </div>
 </div>
 
 <!-- FENIX Metadata Editor-->

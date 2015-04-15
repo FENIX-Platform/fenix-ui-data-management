@@ -22,7 +22,7 @@ define([
         // Automatically render after initialize
         autoRender: true,
 
-        className: 'metadata-view',
+        className: 'search-view',
 
         // Save the template string in a prototype property.
         // This is overwritten with the compiled template function.
