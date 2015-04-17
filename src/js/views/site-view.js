@@ -34,7 +34,7 @@ define([
 
             //Top Menu
             var me = this;
-            var topOpts = DC.TOP_MENU || C.TOP_MENU;
+            var topOpts = C.TOP_MENU || DC.TOP_MENU ;
             topOpts.callback = function () {
                 me.secondaryMenu = new Menu({
                     container: s.SEC_MENU,
