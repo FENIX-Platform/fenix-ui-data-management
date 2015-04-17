@@ -3,10 +3,19 @@ define([
     'text!fx-d-m/templates/data.hbs',
     'fx-DataEditor/start',
     'fx-d-m/components/resource-manager',
+    'i18n!fx-d-m/i18n/nls/ML_DataManagement',
     'chaplin',
     'pnotify'
-], function (View, template, DataEditor, ResourceManager, Chaplin) {
+], function (View, template, DataEditor, ResourceManager, MLRes, Chaplin) {
     'use strict';
+
+    /*
+    Change check
+    if (DataEditor.hasChanged()) {
+                    if (!confirm(MLRes.unsavedWarning))
+                        return;
+                }
+                */
 
     var DataView = View.extend({
 
@@ -33,12 +42,19 @@ define([
             this.bindEventListeners();
             //Data Editor container
             var dataEditorContainerID = "#DataEditorMainContainer";
+            var $dataEditorContainer = $("#DataEditorMainContainer");
+            var $dataEditorContainerLoader = $("#DataEditorLoaderContainer");
+
             DataEditor.init(dataEditorContainerID,
                 {},
                 function () {
+                   // $dataEditorContainer.hide();
+                    $dataEditorContainerLoader.show();
                     DataEditor.setColumns(columns,
                         function () {
                             DataEditor.setData(data);
+                            //$dataEditorContainer.show();
+                            $dataEditorContainerLoader.hide();
                         })
                 });
         },
@@ -46,6 +62,7 @@ define([
         bindEventListeners: function () {
             var me = this;
             $('#dataEditEnd').on("click", function () {
+
                 var data = DataEditor.getData();
                 //returns false if not valid
                 if (data) {

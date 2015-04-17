@@ -55,8 +55,8 @@ define([
 
             this.bindEventListeners();
 
-            if (this.resource && this.resource.metadata.dsd && this.resource.metadata.dsd.columns)
-                DSDEditor.setColumns(this.resource.metadata.dsd.columns);
+            /*if (this.resource && this.resource.metadata.dsd && this.resource.metadata.dsd.columns)
+                DSDEditor.setColumns(this.resource.metadata.dsd.columns);*/
 
             this._doML();
         },
@@ -127,11 +127,13 @@ define([
             });
 
             $('#btnColsEditDone').on('click', function () {
-                //console.log(DSDEditor.hasChanged());
+                if (DSDEditor.hasChanged()) {
+                    if (!confirm(MLRes.unsavedWarning))
+                        return;
+                }
+
                 columnsDSD = DSDEditor.getColumns();
                 if (columnsDSD) {
-                    /*if (data)
-                        me.resource.data = data;*/
                     if (!me.resource.metadata.dsd) {
                         me.resource.metadata.dsd = {};
                     }
