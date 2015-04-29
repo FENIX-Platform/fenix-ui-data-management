@@ -43,20 +43,16 @@ define([
             //Data Editor container
             var dataEditorContainerID = "#DataEditorMainContainer";
             var $dataEditorContainer = $("#DataEditorMainContainer");
-            var $dataEditorContainerLoader = $("#DataEditorLoaderContainer");
 
             var me = this;
-            DataEditor.init(dataEditorContainerID,
-                {},
-                function () {
-                    // $dataEditorContainer.hide();
-                    $dataEditorContainerLoader.show();
-                    ResourceManager.getCodelistsFromCurrentResource(function (cl) {
-                        DataEditor.setColumns(columns, cl);
-                        DataEditor.setData(data);                        
-                        $dataEditorContainerLoader.hide();
-                    });
+
+            ResourceManager.getCodelistsFromCurrentResource(function (cl) {
+                cLists = cl;
+                DataEditor.init(dataEditorContainerID, {}, function () {
+                    DataEditor.setColumns(columns, cl);
+                    DataEditor.setData(data);
                 });
+            });
         },
 
         bindEventListeners: function () {
