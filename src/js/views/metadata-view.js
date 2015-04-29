@@ -1,15 +1,13 @@
 define([
     'fx-d-m/config/config',
     'fx-d-m/config/config-default',
-    'fx-d-m/config/services',
-    'fx-d-m/config/services-default',
     'fx-d-m/views/base/view',
     'text!fx-d-m/templates/metadata.hbs',
     'fx-editor/start',
     'fx-d-m/components/resource-manager',
     'chaplin',
     'amplify'
-], function (C, DC, S, DS, View, template, Editor, ResourceManager, Chaplin) {
+], function (C, DC, View, template, Editor, ResourceManager, Chaplin) {
 
     'use strict';
     var s = {
@@ -35,7 +33,7 @@ define([
             this.resource = ResourceManager.getCurrentResource();
 
             var sourceValues = null,
-                SERVICE_PREFIX = S.SERVICES_BASE_ADDRESS || DS.SERVICES_BASE_ADDRESS;
+                SERVICE_PREFIX = C.SERVICE_BASE_ADDRESS || DC.SERVICE_BASE_ADDRESS;
 
             if (this.resource) {
                 if (this.resource.metadata.uid != null && this.resource.metadata.version == null) {
@@ -81,11 +79,7 @@ define([
         },
 
         editorFinish: function (e) {
-
-            //console.log(e)
-            //console.log("=== LISTENER  ====");
             //Wrap in the standard resource's structure
-
             var existingDSD = null;
             if (this.resource && this.resource.metadata && this.resource.metadata.dsd)
                 existingDSD = this.resource.metadata.dsd;
@@ -96,15 +90,7 @@ define([
                 this.resource.metadata.dsd = existingDSD;
 
             ResourceManager.setCurrentResource(this.resource);
-            Chaplin.utils.redirectTo({url: 'resume'});
-
-            /*
-             ResourceManager.updateDSD(
-             me.resource, function () { ResourceManager.loadResource(me.resource, function () { Chaplin.utils.redirectTo('data#show'); }); }
-             );
-             */
-
-            //console.log(e.detail.data);
+            Chaplin.utils.redirectTo({ url: 'resume' });
         },
 
         bindEventListeners: function () {
@@ -113,59 +99,18 @@ define([
             $('#metaeditor-loadMeta-btn').on('click', function () {
                 var uid = $('#resourceUid').val();
                 var version = $('#resourceVersion').val();
-                amplify.publish("fx.editor.metadata.copy", {version: version, uid: uid});
+                amplify.publish("fx.editor.metadata.copy", { version: version, uid: uid });
             });
-            /*
-             event.preventDefault();
-
-             var uid = document.getElementById('resourceUid');
-             var version = document.getElementById('resourceVersion');
-
-             // Create the event and pass uid and version values
-             var event = new CustomEvent("fx.editor.metadata.copy", {
-             "detail": {
-             "version": version.value,
-             "uid": uid.value
-             }
-             });
-             // Dispatch/Trigger/Fire the event
-             document.body.dispatchEvent(event);
-             */
 
             $('#metaeditor-close-btn').on('click', function () {
                 // Dispatch/Trigger/Fire the event
-                //var event = new CustomEvent("fx.editor.metadata.exit", {});
-                //document.body.dispatchEvent(event);
-
                 amplify.publish("fx.editor.metadata.exit", {});
-                /*
-                 me.$container.trigger(EVT_CHANGE, null);
-                 //todo check if resource is saved
-                 Chaplin.utils.redirectTo('resume#show');*/
             });
-
-
-            //document.body.addEventListener("fx.editor.finish", me.editorFinish, false);
             amplify.subscribe("fx.editor.finish", this, this.editorFinish);
-
-
-            // $(s.METADATA_CONTAINER).on("fx.editor.finish", function (data) { alert('gk'); console.log(data); })
-
-            /*
-             */
-            /*
-             document.body.addEventListener("fx.editor.finish", function (e) {
-             console.log(e.detail.data)
-             // then call your function passing the �e.detail.data�
-
-             }, false);
-             */
-
         },
         unbindEventListeners: function () {
             $('#metaeditor-loadMeta-btn').off();
             $('#metaeditor-close-btn').off('click');
-            //document.body.removeEventListener("fx.editor.finish", this.editorFinish, false);
             amplify.unsubscribe("fx.editor.finish", this.editorFinish);
         },
 

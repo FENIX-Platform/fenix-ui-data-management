@@ -32,7 +32,7 @@ define([
         attach: function () {
             View.prototype.attach.call(this, arguments);
 
-            var columns, data;
+            var columns, data, cLists;
             this.resource = ResourceManager.getCurrentResource();
             if (!this.resource || !this.resource.metadata || !this.resource.metadata.dsd || !this.resource.metadata.dsd.columns)
                 return;
@@ -45,17 +45,17 @@ define([
             var $dataEditorContainer = $("#DataEditorMainContainer");
             var $dataEditorContainerLoader = $("#DataEditorLoaderContainer");
 
+            var me = this;
             DataEditor.init(dataEditorContainerID,
                 {},
                 function () {
-                   // $dataEditorContainer.hide();
+                    // $dataEditorContainer.hide();
                     $dataEditorContainerLoader.show();
-                    DataEditor.setColumns(columns,
-                        function () {
-                            DataEditor.setData(data);
-                            //$dataEditorContainer.show();
-                            $dataEditorContainerLoader.hide();
-                        })
+                    ResourceManager.getCodelistsFromCurrentResource(function (cl) {
+                        DataEditor.setColumns(columns, cl);
+                        DataEditor.setData(data);                        
+                        $dataEditorContainerLoader.hide();
+                    });
                 });
         },
 
@@ -100,7 +100,6 @@ define([
             DataEditor.destroy();
             View.prototype.dispose.call(this, arguments);
         }
-
     });
 
     return DataView;

@@ -1,14 +1,15 @@
 /*global define, amplify*/
-
 define([
     'chaplin',
     'underscore',
     'fx-d-m/config/events',
-    'fx-d-m/config/services',
-    'fx-d-m/config/services-default',
+    'fx-d-m/config/config',
+    'fx-d-m/config/config-default',
     'amplify'
-], function (Chaplin, _, Events, Services, ServicesDefault) {
+], function (Chaplin, _, Events, cfg, cfgDef) {
     'use strict';
+
+    var settings = { DATATYPE_CODE: 'code' }
 
     function ResourceManager() {
         this.bindEventListeners();
@@ -20,12 +21,18 @@ define([
 
     ResourceManager.prototype.loadResource = function (resource, callB) {
         var self = this;
-        var addr = Services.service_getDataAndMetaURL(resource.metadata.uid, resource.metadata.version);
-        var params = Services.SERVICE_GET_DATA_METADATA.queryParams;
+        var addr = getDataAndMetaURL(cfg, cfgDef, resource.metadata.uid, resource.metadata.version);
+        var srvc = cfg.SERVICE_GET_DATA_METADATA || cfgDef.SERVICE_GET_DATA_METADATA;
+        var params = srvc.queryParams;
         ajaxGET(addr, params, function (data) {
             self.setCurrentResource(data);
             if (callB) callB();
         })
+    };
+
+    ResourceManager.prototype.findResource = function (toPost, callBSuccess, callBComplete) {
+        var addr = getResourcesFindAddress(cfg, cfgDef);
+        ajaxPOST(addr, toPost, callBSuccess, callBComplete);
     };
 
     ResourceManager.prototype.closeCurrentResource = function () {
@@ -34,32 +41,26 @@ define([
     };
 
     ResourceManager.prototype.deleteCurrentResource = function (o) {
-
+        var addr = getDataAndMetaURL(cfg, cfgDef, resource.metadata.uid, resource.metadata.version);
         $.ajax({
-            url:  Services.service_getDataAndMetaURL(this.resource.metadata.uid, this.resource.metadata.version),
+            url: addr,
             type: 'DELETE',
             crossDomain: true,
-            //dataType: 'json',
             success: _.bind(function () {
-                //console.log("success")
                 this.resource = null;
                 Chaplin.mediator.publish(Events.RESOURCE_DELETED);
 
-                if (o.success && typeof o.success === 'function'){
+                if (o.success && typeof o.success === 'function') {
                     o.success();
                 }
 
-            },this),
+            }, this),
             error: _.bind(function () {
-                //console.log("error")
-                if (o.error && typeof o.error === 'function'){
+                if (o.error && typeof o.error === 'function') {
                     o.error();
                 }
-
-            },this)
+            }, this)
         });
-
-
     };
 
 
@@ -71,12 +72,11 @@ define([
     ResourceManager.prototype.getCurrentResource = function () {
         return this.resource;
     };
-
-
     ResourceManager.prototype.loadDSD = function (resource, callB) {
         var self = this;
-        var addr = Services.service_getDataAndMetaURL(resource.metadata.uid, resource.metadata.version);
-        var params = Services.SERVICE_GET_DATA_METADATA.queryParams;
+        var addr = getDataAndMetaURL(cfg, cfgDef, resource.metadata.uid, resource.metadata.version);
+        var srvc = cfg.SERVICE_GET_DATA_METADATA || cfgDef.SERVICE_GET_DATA_METADATA;
+        var params = srvc.queryParams;
         ajaxGET(addr, params, function (data) {
             var dsd = null;
             if (data && data.metadata && data.metadata.dsd)
@@ -95,7 +95,6 @@ define([
         });
     };
 
-
     ResourceManager.prototype.updateDSD = function (resource, callB) {
         var meta = this.resource.metadata;
         if (!meta.dsd)
@@ -109,7 +108,7 @@ define([
 
         if (meta.dsd && meta.dsd.rid) {
             try {
-                var addr = Services.service_saveDsdURL();
+                var addr = getSaveDSDURL(cfg, cfgDef);
                 ajaxPUT(addr, meta.dsd, callB);
             }
             catch (ex) {
@@ -122,7 +121,7 @@ define([
                 toPatch.version = meta.version;
             toPatch.dsd = meta.dsd;
             try {
-                var addr = Services.service_saveMetadataURL();
+                var addr = getSaveMetadataURL(cfg, cfgDef);
                 ajaxPATCH(addr, toPatch, callB);
             }
             catch (ex) {
@@ -133,19 +132,66 @@ define([
     };
 
     ResourceManager.prototype.putData = function (resource, callB) {
-        var url = Services.service_saveDataURL();
+        var addr = getSaveDataURL(cfg, cfgDef);
         var toPut = { metadata: { uid: resource.metadata.uid } };
         if (resource.metadata.version)
             toPut.metadata.version = resource.metadata.version;
         toPut.data = resource.data;
-
         try {
-            ajaxPUT(url, toPut, callB);
+            ajaxPUT(addr, toPut, callB);
         }
         catch (ex) {
             throw new Error("Cannot put data");
         }
     };
+
+    //Load codelists
+    ResourceManager.prototype.getCodelistsFromCurrentResource = function (callB) {
+        if (!this.hasColumns())
+            return null;
+        var cols = this.resource.metadata.dsd.columns;
+        var toGet = [];
+        for (var i = 0; i < cols.length; i++) {
+            if (cols[i].dataType.toLowerCase() == settings.DATATYPE_CODE.toLowerCase()) {
+                toGet.push({ uid: cols[i].domain.codes[0].idCodeList, version: cols[i].domain.codes[0].version });
+            }
+        }
+        this.getCodelists(toGet, callB);
+    }
+
+    ResourceManager.prototype.getCodelists = function (uids, callB) {
+        if (!uids || uids.length == 0)
+            if (callB) callB(null);
+        var calls = [];
+        var f = [];
+        for (var i = 0; i < uids.length; i++) {
+            calls[i] = getDataAndMetaURL(cfg, cfgDef, uids[i].uid, uids[i].version);
+            f[i] = $.ajax(calls[i]);
+        }
+        //Handle errors!
+        $.when.apply($, f).done(function () {
+            var results = {};
+            var id;
+            for (var j = 0; j < f.length; j++) {
+                if (f.length == 1) {
+                    id = getUIDVer(arguments[j])
+                    results[id] = arguments[j];
+                }
+                else {
+                    id = getUIDVer(arguments[j][0])
+                    results[id] = arguments[j][0];
+                }
+            }
+            if (callB) callB(results);
+        });
+    }
+
+    function getUIDVer(clResource) {
+        if (clResource.metadata.version)
+            return clResource.metadata.uid + "|" + clResource.metadata.version;
+        return clResource.metadata.uid;
+    }
+    //END Load codelists
 
     ResourceManager.prototype.isResourceAvailable = function () {
         var available = false;
@@ -190,19 +236,19 @@ define([
         });
     }
 
-    function ajaxPOST(url, JSONToPost, callB) {
-        ajaxPUT_PATCH(url, JSONToPost, 'POST', callB);
+    function ajaxPOST(url, JSONToPost, callBSuccess, callBComplete) {
+        ajaxPUT_PATCH(url, JSONToPost, 'POST', callBSuccess, callBComplete);
     }
 
-    function ajaxPUT(url, JSONToPut, callB) {
-        ajaxPUT_PATCH(url, JSONToPut, 'PUT', callB);
+    function ajaxPUT(url, JSONToPut, callBSuccess, callBComplete) {
+        ajaxPUT_PATCH(url, JSONToPut, 'PUT', callBSuccess, callBComplete);
     }
 
-    function ajaxPATCH(url, JSONToPatch, callB) {
-        ajaxPUT_PATCH(url, JSONToPatch, 'PATCH', callB);
+    function ajaxPATCH(url, JSONToPatch, callBSuccess, callBComplete) {
+        ajaxPUT_PATCH(url, JSONToPatch, 'PATCH', callBSuccess, callBComplete);
     }
 
-    function ajaxPUT_PATCH(url, JSONtoSend, method, callB) {
+    function ajaxPUT_PATCH(url, JSONtoSend, method, callBSuccess, callBComplete) {
         $.ajax({
             contentType: "application/json",
             url: url,
@@ -211,7 +257,10 @@ define([
             data: JSON.stringify(JSONtoSend),
             crossDomain: true,
             success: function (data, textStatus, jqXHR) {
-                if (callB) callB(data);
+                if (callBSuccess) callBSuccess(data);
+            },
+            complete: function () {
+                if (callBComplete) callBComplete();
             },
             error: function () {
                 console.log('Error on ajax ' + method);
@@ -220,6 +269,49 @@ define([
     }
 
     //END AJAX
+
+    //Helpers
+    function getBase(cfg, cfgDef) {
+        return cfg.SERVICE_BASE_ADDRESS || cfgDef.SERVICE_BASE_ADDRESS;
+    }
+    function appendUID_Version(addr, uid, version) {
+        if (!uid)
+            return addr;
+        if (version)
+            return addr + "/" + uid + "/" + version;
+        return addr + "/uid/" + uid;
+    }
+    function getDataAndMetaURL(cfg, cfgDef, uid, version) {
+        var srvc = cfg.SERVICE_GET_DATA_METADATA || cfgDef.SERVICE_GET_DATA_METADATA;
+        var addr = pathConcatenation(getBase(cfg, cfgDef), srvc.service);
+        return appendUID_Version(addr, uid, version);
+    }
+    function getSaveMetadataURL(cfg, cfgDef) {
+        var srvc = cfg.SERVICE_SAVE_METADATA || cfgDef.SERVICE_SAVE_METADATA;
+        return pathConcatenation(getBase(cfg, cfgDef), srvc.service);
+    }
+    function getSaveDSDURL(cfg, cfgDef) {
+        var srvc = cfg.SERVICE_SAVE_DSD || cfgDef.SERVICE_SAVE_DSD;
+        return pathConcatenation(getBase(cfg, cfgDef), srvc.service);
+    }
+    function getSaveDataURL(cfg, cfgDef) {
+        var srvc = cfg.SERVICE_SAVE_DATA || cfgDef.SERVICE_SAVE_DATA;
+        return pathConcatenation(getBase(cfg, cfgDef), srvc.service);
+    }
+    function getResourcesFindAddress(cfg, cfgDef) {
+        var srvc = cfg.SERVICE_RESOURCES_FIND || cfgDef.SERVICE_RESOURCES_FIND;
+        return pathConcatenation(getBase(cfg, cfgDef), srvc.service)
+    }
+
+
+
+    function pathConcatenation(path1, path2) {
+        if (path1.charAt(path1.length - 1) == '/') {
+            return path1 + path2;
+        }
+        return path1 + "/" + path2;
+    }
+    //END Helpers
 
     //Singleton
     return new ResourceManager();
