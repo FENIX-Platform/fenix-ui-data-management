@@ -61,8 +61,9 @@ define([
 
         bindEventListeners: function () {
             var me = this;
-            $('#dataEditEnd').on("click", function () {
-
+            var $btnSave = $('#dataEditEnd');
+            $btnSave.on("click", function () {
+                $btnSave.attr('disabled', 'disabled');
                 var data = DataEditor.getData();
                 //returns false if not valid
                 if (data) {
@@ -75,6 +76,7 @@ define([
                         ResourceManager.updateDSD(me.resource, function () {
                             ResourceManager.loadResource(me.resource,
                                 function () {
+                                    $btnSave.removeAttr('disabled');
                                     Chaplin.utils.redirectTo('data#show');
                                 })
                         })

@@ -126,12 +126,13 @@ define([
                 });
             });
 
-            $('#btnColsEditDone').on('click', function () {
+            var $btnColsEditDone = $('#btnColsEditDone');
+            $btnColsEditDone.on('click', function () {
                 if (DSDEditor.hasChanged()) {
                     if (!confirm(MLRes.unsavedWarning))
                         return;
                 }
-
+                $btnColsEditDone.attr('disabled', 'disabled');;
                 columnsDSD = DSDEditor.getColumns();
                 if (columnsDSD) {
                     if (!me.resource.metadata.dsd) {
@@ -148,6 +149,7 @@ define([
                             if (me.uploadedData) {
                                 me.resource.data = me.uploadedData;
                                 ResourceManager.setCurrentResource(me.resource);
+                                $btnColsEditDone.removeAttr('disabled');
                             }
                             Chaplin.utils.redirectTo('resume#show');
                         });
