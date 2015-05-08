@@ -79,6 +79,14 @@ define([
         },
 
         editorFinish: function (e) {
+            if (!e.data) {
+                new PNotify({
+                    title: '',
+                    text: 'Nothing to save',
+                    type: 'error'
+                });
+                return;
+            }
             //Wrap in the standard resource's structure
             var existingDSD = null;
             if (this.resource && this.resource.metadata && this.resource.metadata.dsd)

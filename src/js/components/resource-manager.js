@@ -194,10 +194,13 @@ define([
     //END Load codelists
 
     ResourceManager.prototype.isResourceAvailable = function () {
-        var available = false;
-        if (this.resource && this.resource.hasOwnProperty("metadata") && this.resource.metadata.hasOwnProperty("uid"))
-            available = true;
-        return available;
+        if (!this.resource)
+            return false;
+        if (!this.resource.metadata)
+            return false;
+        if (!this.resource.metadata.uid)
+            return false;
+        return true;
     }
 
     ResourceManager.prototype.hasData = function () {
