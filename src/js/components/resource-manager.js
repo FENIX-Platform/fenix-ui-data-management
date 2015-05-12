@@ -41,7 +41,7 @@ define([
     };
 
     ResourceManager.prototype.deleteCurrentResource = function (o) {
-        var addr = getDataAndMetaURL(cfg, cfgDef, resource.metadata.uid, resource.metadata.version);
+        var addr = getDataAndMetaURL(cfg, cfgDef, this.resource.metadata.uid, this.resource.metadata.version);
         $.ajax({
             url: addr,
             type: 'DELETE',
