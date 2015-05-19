@@ -2,8 +2,10 @@ define([
     'chaplin',
     'fx-d-m/views/base/view',
     'fx-d-m/components/resource-manager',
-    'text!fx-d-m/templates/delete.hbs'
-], function (Chaplin, View, ResourceManager, template) {
+    'text!fx-d-m/templates/delete.hbs',
+    'i18n!fx-d-m/i18n/nls/ML_DataManagement',
+    'pnotify'
+], function (Chaplin, View, ResourceManager, template, MLRes) {
     'use strict';
 
     var DeleteView = View.extend({
@@ -26,8 +28,12 @@ define([
         onDelete: function () {
 
             //Delete current resource
-            ResourceManager.deleteCurrentResource({});
-
+            var err = function () {
+                new PNotify({ title: '', text: MLRes.errorLoadinResource, type: 'error' });
+            };
+            
+            ResourceManager.deleteCurrentResource(null, err);
+            
         },
 
         onUndo: function () {

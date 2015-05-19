@@ -7,8 +7,10 @@ define([
     'text!fx-d-m/templates/search.hbs',
     'fx-cat-br/start',
     'fx-d-m/config/events',
-    'amplify'
-], function (Chaplin, C, DC, View, template, Catalog, Events) {
+    'i18n!fx-d-m/i18n/nls/ML_DataManagement',
+    'amplify',
+    'pnotify'
+], function (Chaplin, C, DC, View, template, Catalog, Events, MLRes) {
 
     'use strict';
 
@@ -46,7 +48,6 @@ define([
                             labels: {
                                 EN: 'Select Resource'
                             }
-
                         }
                     }
                 }
@@ -65,7 +66,12 @@ define([
 
         selectResource: function (resource) {
             //DAN_O:wrap the resource in the "standard" resource format
-            Chaplin.mediator.publish(Events.RESOURCE_SELECT, { metadata: resource });
+            var succ = null;
+            var err = function () {
+                new PNotify({ title: '', text: MLRes.errorLoadinResource, type: 'error' });
+            }
+
+            Chaplin.mediator.publish(Events.RESOURCE_SELECT, { metadata: resource }, succ, err);
         },
 
         dispose: function () {

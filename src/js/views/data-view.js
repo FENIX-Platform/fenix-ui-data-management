@@ -46,12 +46,17 @@ define([
 
             var me = this;
 
+
             ResourceManager.getCodelistsFromCurrentResource(function (cl) {
                 cLists = cl;
-                DataEditor.init(dataEditorContainerID, {}, function () {
-                    DataEditor.setColumns(columns, cl);
-                    DataEditor.setData(data);
-                });
+                DataEditor.init(dataEditorContainerID, {},
+                    function () {
+                        DataEditor.setColumns(columns, cl);
+                        DataEditor.setData(data);
+                    });
+            },
+            function () {
+                new PNotify({ title: '', text: MLRes.errorLoadinResource + " [codelists]", type: 'error' });
             });
         },
 
@@ -68,15 +73,32 @@ define([
                     me.resource.metadata.dsd.columns = colDist;
                     me.resource.data = data;
 
-                    ResourceManager.putData(me.resource,
+                    //Ajax error callbacks
+                    var loadErr = function () { new PNotify({ title: '', text: MLRes.errorLoadinResource, type: 'error' }); };
+                    var putDataErr = function () { new PNotify({ title: '', text: MLRes.errorSavingResource + " (data)", type: 'error' }); };
+                    var putDSDErr = function () { new PNotify({ title: '', text: MLRes.errorSavingResource + " (DSD)", type: 'error' }); };
+                    //Ajax success callbacks
+                    var loadSucc = function () {
+                        $btnSave.removeAttr('disabled');
+                        Chaplin.utils.redirectTo('data#show');
+                    };
+                    //if updateDSD is ok, reload the saved resource
+                    var updateDSDSucc = function () {
+                        ResourceManager.loadResource(me.resource, loadSucc, loadErr);
+                    };
+                    //If putData is ok update the DSD (values' distinct).
+                    var putDataSucc = function () {
+                        ResourceManager.updateDSD(me.resource, updateDSDSucc, putDSDErr);
+                    };
+                    //Start the save process: putData->UpdateDSD->Reload
+                    ResourceManager.putData(me.resource, putDataSucc, putDSDErr);
+
+
+                    /*ResourceManager.putData(me.resource,
                         ResourceManager.updateDSD(me.resource, function () {
-                            ResourceManager.loadResource(me.resource,
-                                function () {
-                                    $btnSave.removeAttr('disabled');
-                                    Chaplin.utils.redirectTo('data#show');
-                                })
+                            ResourceManager.loadResource(me.resource, succ, err);
                         })
-                    );
+                    );*/
                 }
                     //data is not valid
                 else {

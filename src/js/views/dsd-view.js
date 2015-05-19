@@ -105,8 +105,9 @@ define([
                         type: 'error'
                     });
                     return;
-                }
-                ResourceManager.loadDSDColumns({ metadata: { uid: uid, version: $txtVersion.val() } }, function (cols) {
+                };
+
+                var succ = function (cols) {
                     if (cols == null) {
                         new PNotify({
                             title: '',
@@ -123,7 +124,34 @@ define([
                         });
                         $uidVerModal.modal('hide');
                     }
-                });
+                }
+                var err = function () {
+                    new PNotify({
+                        title: '',
+                        text: MLRes.DSDNotFound,
+                        type: 'error'
+                    });
+                }
+                //MONDAY: Riscrivere il loadDSDColumns con le nuove callbacks
+                ResourceManager.loadDSDColumns({ metadata: { uid: uid, version: $txtVersion.val() } }, succ, err);
+                /*ResourceManager.loadDSDColumns({ metadata: { uid: uid, version: $txtVersion.val() } }, function (cols) {
+                    if (cols == null) {
+                        new PNotify({
+                            title: '',
+                            text: MLRes.DSDNotFound,
+                            type: 'error'
+                        });
+                    }
+                    else {
+                        DSDEditor.setColumns(cols);
+                        new PNotify({
+                            title: '',
+                            text: MLRes.DSDLoaded,
+                            type: 'success'
+                        });
+                        $uidVerModal.modal('hide');
+                    }
+                });*/
             });
 
             var $btnColsEditDone = $('#btnColsEditDone');
@@ -132,7 +160,7 @@ define([
                     if (!confirm(MLRes.unsavedWarning))
                         return;
                 }
-                $btnColsEditDone.attr('disabled', 'disabled');;
+                $btnColsEditDone.attr('disabled', 'disabled');
                 columnsDSD = DSDEditor.getColumns();
                 if (columnsDSD) {
                     if (!me.resource.metadata.dsd) {
@@ -144,16 +172,26 @@ define([
                     me.resource.metadata.dsd.datasources = C.DSD_EDITOR_DATASOURCES || DC.DSD_EDITOR_DATASOURCES;
                     me.resource.metadata.dsd.contextSystem = C.DSD_EDITOR_CONTEXT_SYSTEM || DC.DSD_EDITOR_CONTEXT_SYSTEM;
 
+                    //Ajax callbacks
+                    var succ = function () {
+                        if (me.uploadedData) {
+                            me.resource.data = me.uploadedData;
+                            ResourceManager.setCurrentResource(me.resource);
+                            $btnColsEditDone.removeAttr('disabled');
+                        }
+                        Chaplin.utils.redirectTo('resume#show');
+                    };
+                    var loadErr = function () {
+                        new PNotify({ title: '', text: MLRes.errorLoadinResource, type: 'error' });
+                    };
+                    var updateDSDErr = function () {
+                        new PNotify({ title: '', text: MLRes.errorSavingResource, type: 'error' });
+                        $btnColsEditDone.removeAttr('disabled');
+                    };
+                    //Update the DSD and reload
                     ResourceManager.updateDSD(me.resource, function () {
-                        ResourceManager.loadResource(me.resource, function () {
-                            if (me.uploadedData) {
-                                me.resource.data = me.uploadedData;
-                                ResourceManager.setCurrentResource(me.resource);
-                                $btnColsEditDone.removeAttr('disabled');
-                            }
-                            Chaplin.utils.redirectTo('resume#show');
-                        });
-                    });
+                        ResourceManager.loadResource(me.resource, succ, loadErr);
+                    }, updateDSDErr);
                 }
             })
         },

@@ -19,48 +19,41 @@ define([
         Chaplin.mediator.subscribe(Events.RESOURCE_SELECT, this.loadResource, this);
     };
 
-    ResourceManager.prototype.loadResource = function (resource, callB) {
+    //ResourceManager.prototype.loadResource = function (resource, callB, callB_Err) {
+    ResourceManager.prototype.loadResource = function (resource, success, err) {
         var self = this;
         var addr = getDataAndMetaURL(cfg, cfgDef, resource.metadata.uid, resource.metadata.version);
         var srvc = cfg.SERVICE_GET_DATA_METADATA || cfgDef.SERVICE_GET_DATA_METADATA;
         var params = srvc.queryParams;
-        ajaxGET(addr, params, function (data) {
+
+        var succ = function (data) {
             self.setCurrentResource(data);
-            if (callB) callB();
-        })
+            if (success)
+                success(data);
+        };
+        _ajaxGET(addr, params, succ, err);
     };
 
-    ResourceManager.prototype.findResource = function (toPost, callBSuccess, callBComplete) {
+    /*ResourceManager.prototype.findResource = function (toPost, callBSuccess, callBComplete, callB_Err) {
         var addr = getResourcesFindAddress(cfg, cfgDef);
         ajaxPOST(addr, toPost, callBSuccess, callBComplete);
-    };
+    };*/
 
     ResourceManager.prototype.closeCurrentResource = function () {
         this.resource = null;
         Chaplin.mediator.publish(Events.RESOURCE_CLOSED);
     };
 
-    ResourceManager.prototype.deleteCurrentResource = function (o) {
+    ResourceManager.prototype.deleteCurrentResource = function (success, err) {
         var addr = getDataAndMetaURL(cfg, cfgDef, this.resource.metadata.uid, this.resource.metadata.version);
-        $.ajax({
-            url: addr,
-            type: 'DELETE',
-            crossDomain: true,
-            success: _.bind(function () {
-                this.resource = null;
-                Chaplin.mediator.publish(Events.RESOURCE_DELETED);
-
-                if (o.success && typeof o.success === 'function') {
-                    o.success();
-                }
-
-            }, this),
-            error: _.bind(function () {
-                if (o.error && typeof o.error === 'function') {
-                    o.error();
-                }
-            }, this)
-        });
+        var me = this;
+        var succ = function () {
+            me.resource = null;
+            Chaplin.mediator.publish(Events.RESOURCE_DELETED);
+            if (success)
+                success();
+        };
+        _ajaxDELETE(addr, succ, err);
     };
 
 
@@ -72,30 +65,35 @@ define([
     ResourceManager.prototype.getCurrentResource = function () {
         return this.resource;
     };
-    ResourceManager.prototype.loadDSD = function (resource, callB) {
+    ResourceManager.prototype.loadDSD = function (resource, success, err) {
         var self = this;
         var addr = getDataAndMetaURL(cfg, cfgDef, resource.metadata.uid, resource.metadata.version);
         var srvc = cfg.SERVICE_GET_DATA_METADATA || cfgDef.SERVICE_GET_DATA_METADATA;
         var params = srvc.queryParams;
-        ajaxGET(addr, params, function (data) {
+
+        var succ = function (data) {
             var dsd = null;
             if (data && data.metadata && data.metadata.dsd)
                 dsd = data.metadata.dsd;
-            if (callB) callB(dsd);
-        })
-    };
-    ResourceManager.prototype.loadDSDColumns = function (resource, callB) {
-        this.loadDSD(resource, function (dsd) {
-            if (dsd == null) {
-                if (callB) callB(null);
-                return;
-            }
-            if (callB)
-                callB(dsd.columns);
-        });
+            if (success)
+                success(dsd);
+        };
+        _ajaxGET(addr, params, succ, err);
     };
 
-    ResourceManager.prototype.updateDSD = function (resource, callB) {
+    ResourceManager.prototype.loadDSDColumns = function (resource, success, err) {
+        var succ = function (dsd) {
+            var cols = null;
+            if (dsd)
+                cols = dsd.columns;
+            if (success)
+                success(cols);
+        };
+
+        this.loadDSD(resource, succ, err);
+    };
+
+    ResourceManager.prototype.updateDSD = function (resource, success, err) {
         var meta = this.resource.metadata;
         if (!meta.dsd)
             throw new Error("DSD to update cannot be null");
@@ -107,46 +105,31 @@ define([
             throw new Error("ContextSystem cannot be null");
 
         if (meta.dsd && meta.dsd.rid) {
-            try {
-                var addr = getSaveDSDURL(cfg, cfgDef);
-                ajaxPUT(addr, meta.dsd, callB);
-            }
-            catch (ex) {
-                throw new Error("Cannot PUT dsd");
-            }
+            var addr = getSaveDSDURL(cfg, cfgDef);
+            _ajaxPUT(addr, meta.dsd, success, null, err);
         }
         else {
             var toPatch = { uid: meta.uid };
             if (meta.version)
                 toPatch.version = meta.version;
             toPatch.dsd = meta.dsd;
-            try {
-                var addr = getSaveMetadataURL(cfg, cfgDef);
-                ajaxPATCH(addr, toPatch, callB);
-            }
-            catch (ex) {
-                console.log(ex);
-                throw new Error("Cannot PATCH dsd");
-            }
+
+            var addr = getSaveMetadataURL(cfg, cfgDef);
+            _ajaxPATCH(addr, toPatch, success, null, err);
         }
     };
 
-    ResourceManager.prototype.putData = function (resource, callB) {
+    ResourceManager.prototype.putData = function (resource, success, err) {
         var addr = getSaveDataURL(cfg, cfgDef);
         var toPut = { metadata: { uid: resource.metadata.uid } };
         if (resource.metadata.version)
             toPut.metadata.version = resource.metadata.version;
         toPut.data = resource.data;
-        try {
-            ajaxPUT(addr, toPut, callB);
-        }
-        catch (ex) {
-            throw new Error("Cannot put data");
-        }
+        _ajaxPUT(addr, toPut, success, null, err);
     };
 
     //Load codelists
-    ResourceManager.prototype.getCodelistsFromCurrentResource = function (callB) {
+    ResourceManager.prototype.getCodelistsFromCurrentResource = function (success, err) {
         if (!this.hasColumns())
             return null;
         var cols = this.resource.metadata.dsd.columns;
@@ -156,12 +139,12 @@ define([
                 toGet.push({ uid: cols[i].domain.codes[0].idCodeList, version: cols[i].domain.codes[0].version });
             }
         }
-        this.getCodelists(toGet, callB);
+        this.getCodelists(toGet, success, err);
     }
 
-    ResourceManager.prototype.getCodelists = function (uids, callB) {
+    ResourceManager.prototype.getCodelists = function (uids, success, err) {
         if (!uids || uids.length == 0)
-            if (callB) callB(null);
+            if (success) callB(null);
         var calls = [];
         var f = [];
         for (var i = 0; i < uids.length; i++) {
@@ -182,8 +165,9 @@ define([
                     results[id] = arguments[j][0];
                 }
             }
-            if (callB) callB(results);
-        });
+            if (success)
+                success(results);
+        }).fail(function () { if (err) err(); });
     }
 
     function getUIDVer(clResource) {
@@ -224,34 +208,56 @@ define([
 
 
     //AJAX
-    function ajaxGET(url, queryParam, callB) {
+    function _ajaxGET(url, queryParam, success, err) {
         $.ajax({
             url: url,
             crossDomain: true,
             dataType: 'json',
             data: queryParam,
             success: function (data) {
-                if (callB) callB(data);
+                if (success)
+                    success(data);
             },
             error: function () {
-                console.log('Error on ajax GET')
+                if (err)
+                    err();
+                else
+                    console.log('Error on ajax GET');
             }
         });
     }
 
-    function ajaxPOST(url, JSONToPost, callBSuccess, callBComplete) {
-        ajaxPUT_PATCH(url, JSONToPost, 'POST', callBSuccess, callBComplete);
+    function _ajaxDELETE(url, success, err) {
+        $.ajax({
+            url: url,
+            type: 'DELETE',
+            crossDomain: true,
+            success: function (data) {
+                if (success)
+                    success();
+            },
+            error: function () {
+                if (err)
+                    err('Error on ajax DELETE');
+                else
+                    console.log('Error on ajax DELETE')
+            }
+        });
     }
 
-    function ajaxPUT(url, JSONToPut, callBSuccess, callBComplete) {
-        ajaxPUT_PATCH(url, JSONToPut, 'PUT', callBSuccess, callBComplete);
+    function _ajaxPOST(url, JSONToPost, success, complete, err) {
+        _ajaxPUT_PATCH(url, JSONToPost, 'POST', success, complete, err);
     }
 
-    function ajaxPATCH(url, JSONToPatch, callBSuccess, callBComplete) {
-        ajaxPUT_PATCH(url, JSONToPatch, 'PATCH', callBSuccess, callBComplete);
+    function _ajaxPUT(url, JSONToPut, success, complete, err) {
+        _ajaxPUT_PATCH(url, JSONToPut, 'PUT', success, complete, err);
     }
 
-    function ajaxPUT_PATCH(url, JSONtoSend, method, callBSuccess, callBComplete) {
+    function _ajaxPATCH(url, JSONToPatch, success, complete, err) {
+        _ajaxPUT_PATCH(url, JSONToPatch, 'PATCH', success, complete, err);
+    }
+
+    function _ajaxPUT_PATCH(url, JSONtoSend, method, success, complete, err) {
         $.ajax({
             contentType: "application/json",
             url: url,
@@ -260,13 +266,13 @@ define([
             data: JSON.stringify(JSONtoSend),
             crossDomain: true,
             success: function (data, textStatus, jqXHR) {
-                if (callBSuccess) callBSuccess(data);
+                if (success) success(data);
             },
             complete: function () {
-                if (callBComplete) callBComplete();
+                if (complete) complete();
             },
             error: function () {
-                console.log('Error on ajax ' + method);
+                if (err) err();
             }
         });
     }
