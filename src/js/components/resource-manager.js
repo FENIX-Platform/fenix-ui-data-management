@@ -19,7 +19,6 @@ define([
         Chaplin.mediator.subscribe(Events.RESOURCE_SELECT, this.loadResource, this);
     };
 
-    //ResourceManager.prototype.loadResource = function (resource, callB, callB_Err) {
     ResourceManager.prototype.loadResource = function (resource, success, err) {
         var self = this;
         var addr = getDataAndMetaURL(cfg, cfgDef, resource.metadata.uid, resource.metadata.version);
@@ -144,7 +143,7 @@ define([
 
     ResourceManager.prototype.getCodelists = function (uids, success, err) {
         if (!uids || uids.length == 0)
-            if (success) callB(null);
+            if (success) success(null);
         var calls = [];
         var f = [];
         for (var i = 0; i < uids.length; i++) {
