@@ -132,26 +132,7 @@ define([
                         type: 'error'
                     });
                 }
-                //MONDAY: Riscrivere il loadDSDColumns con le nuove callbacks
                 ResourceManager.loadDSDColumns({ metadata: { uid: uid, version: $txtVersion.val() } }, succ, err);
-                /*ResourceManager.loadDSDColumns({ metadata: { uid: uid, version: $txtVersion.val() } }, function (cols) {
-                    if (cols == null) {
-                        new PNotify({
-                            title: '',
-                            text: MLRes.DSDNotFound,
-                            type: 'error'
-                        });
-                    }
-                    else {
-                        DSDEditor.setColumns(cols);
-                        new PNotify({
-                            title: '',
-                            text: MLRes.DSDLoaded,
-                            type: 'success'
-                        });
-                        $uidVerModal.modal('hide');
-                    }
-                });*/
             });
 
             var $btnColsEditDone = $('#btnColsEditDone');
