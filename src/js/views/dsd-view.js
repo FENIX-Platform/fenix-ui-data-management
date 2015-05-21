@@ -52,12 +52,9 @@ define([
             //Data Upload
 
             DataUpload.init('#divUplaodCSV');
-
             this.bindEventListeners();
 
-            /*if (this.resource && this.resource.metadata.dsd && this.resource.metadata.dsd.columns)
-                DSDEditor.setColumns(this.resource.metadata.dsd.columns);*/
-
+            $('#btnColsEditDone').removeAttr('disabled');
             this._doML();
         },
 
@@ -67,6 +64,7 @@ define([
                 $('#divColsLoad').show();
                 $('#divCSV').show();
                 $('#btnColsEditDone').show();
+                $('#btnColsEditDone').removeAttr('disabled');
             }
             else {
                 $('#divColsLoad').hide();
@@ -147,9 +145,7 @@ define([
                     if (!me.resource.metadata.dsd) {
                         me.resource.metadata.dsd = {};
                     }
-
                     me.resource.metadata.dsd.columns = columnsDSD;
-
                     me.resource.metadata.dsd.datasources = C.DSD_EDITOR_DATASOURCES || DC.DSD_EDITOR_DATASOURCES;
                     me.resource.metadata.dsd.contextSystem = C.DSD_EDITOR_CONTEXT_SYSTEM || DC.DSD_EDITOR_CONTEXT_SYSTEM;
 
@@ -174,6 +170,9 @@ define([
                         ResourceManager.loadResource(me.resource, succ, loadErr);
                     }, updateDSDErr);
                 }
+                else {
+                    $btnColsEditDone.removeAttr('disabled');
+                }
             })
         },
 
@@ -186,7 +185,6 @@ define([
         },
 
         dispose: function () {
-
             DataUpload.destroy();
             DSDEditor.destroy();
 
