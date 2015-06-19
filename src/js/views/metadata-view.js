@@ -57,6 +57,7 @@ define([
                 source: sourceValues,
                 resourceType: 'dataset', //dataset, geographic, codelist
                 readOnly: false,
+                leftSideMenu:true,
                 widget: {
                     lang: 'EN'
                 },
