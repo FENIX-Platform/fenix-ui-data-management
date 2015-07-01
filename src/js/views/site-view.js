@@ -3,7 +3,7 @@ define([
     'fx-d-m/config/config',
     'fx-d-m/config/config-default',
     'fx-d-m/views/base/view',
-    'text!fx-d-m/templates/site.hbs',
+    'text!fx-d-m/templates/site',
     'fx-menu/start',
     'fx-d-m/config/events',
     'fx-d-m/components/resource-manager'

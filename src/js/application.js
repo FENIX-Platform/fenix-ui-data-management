@@ -82,10 +82,6 @@ define([
 
                 Chaplin.utils.redirectTo({ url: 'landing' });
             });
-
-
-
-
         }
 
     });
