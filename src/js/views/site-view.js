@@ -3,7 +3,7 @@ define([
     'fx-d-m/config/config',
     'fx-d-m/config/config-default',
     'fx-d-m/views/base/view',
-    'text!fx-d-m/templates/site.hbs',
+    'text!fx-d-m/templates/site',
     'fx-menu/start',
     'fx-d-m/config/events',
     'fx-d-m/components/resource-manager'
@@ -36,6 +36,12 @@ define([
             var me = this;
             var topOpts = C.TOP_MENU || DC.TOP_MENU ;
             topOpts.callback = function () {
+
+                $("#menu-toggle").click(function(e) {
+                    e.preventDefault();
+                    $("#wrapper").toggleClass("toggled");
+                });
+
                 me.secondaryMenu = new Menu({
                     container: s.SEC_MENU,
                     url: 'config/submodules/fx-menu/data-mng_config.json',

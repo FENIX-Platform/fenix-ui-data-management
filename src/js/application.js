@@ -47,7 +47,6 @@ define([
                     type: 'success'
                 });
 
-                //Chaplin.utils.redirectTo('resume#show');
                 Chaplin.utils.redirectTo({ url: 'resume' });
             }, this);
 
@@ -92,10 +91,6 @@ define([
 
                 Chaplin.utils.redirectTo({ url: 'landing' });
             });
-
-
-
-
         }
 
     });

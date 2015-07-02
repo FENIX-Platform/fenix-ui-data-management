@@ -2,7 +2,13 @@
 
 define(function () {
 
+    'use strict';
+
     var config = {
+
+            config : {
+                SITE_TEMPLATE : 'topmenu'
+            },
 
             // Specify the paths of vendor libraries
             paths: {
@@ -23,7 +29,10 @@ define(function () {
                 'fx-d-m/models' : './models',
                 'fx-d-m/templates' : './templates',
                 'fx-d-m/views': './views',
-                'fx-d-m/i18n' : '../../i18n'
+                'fx-d-m/i18n' : '../../i18n',
+
+                'fx-d-m/templates/site' : './templates/site-topmenu.hbs'
+
             },
 
             // Underscore and Backbone are not AMD-capable per default,
