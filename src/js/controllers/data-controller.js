@@ -4,9 +4,10 @@ define([
     'fx-d-m/controllers/base/controller',
     'fx-d-m/views/data-view',
     'fx-d-m/components/resource-manager',
+    'fx-d-m/components/access-manager',
     'fx-d-m/config/events',
     'rsvp'
-], function (Chaplin, _, Controller, dataView, ResourceManager, Events, RSVP) {
+], function (Chaplin, _, Controller, dataView, ResourceManager, AccessManager, Events, RSVP) {
 
     'use strict';
 
@@ -18,17 +19,20 @@ define([
         },
 
         performAccessControlChecks: function () {
-
+            var me = this;
             return new RSVP.Promise(function (fulfilled, rejected) {
-                if (!ResourceManager.isResourceAvailable()) 
+                if (!AccessManager.isLogged()) {
+                    me.authorized = false;
                     rejected();
+                }
                 if (!ResourceManager.isResourceAvailable()) {
+                    me.resourceLoaded = false;
                     rejected();
-                    return;
                 }
 
                 var resource = ResourceManager.getCurrentResource();
                 if (!resource.metadata.dsd || !resource.metadata.dsd.columns) {
+                    me.resourceLoadedWithDSD = false;
                     rejected();
                     return;
                 }
@@ -37,13 +41,19 @@ define([
         },
 
         denyAccessControl: function () {
-            this.authorized = false;
+            //this.authorized = false;
         },
 
         show: function (params) {
-
             if (this.authorized === false) {
-                // user in not authorized
+                Chaplin.mediator.publish(Events.NOT_LOGGED);
+                return;
+            }
+            if (this.resourceLoaded === false) {
+                Chaplin.mediator.publish(Events.RESOURCE_ABSENT);
+                return;
+            }
+            if (this.resourceLoadedWithDSD === false) {
                 Chaplin.mediator.publish(Events.DSD_ABSENT);
                 return;
             }

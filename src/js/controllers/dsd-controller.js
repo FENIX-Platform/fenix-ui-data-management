@@ -4,9 +4,10 @@ define([
     'fx-d-m/controllers/base/controller',
     'fx-d-m/views/dsd-view',
     'fx-d-m/components/resource-manager',
+    'fx-d-m/components/access-manager',
     'fx-d-m/config/events',
     'rsvp'
-], function (Chaplin, _, Controller, DsdView, ResourceManager, Events, RSVP) {
+], function (Chaplin, _, Controller, DsdView, ResourceManager, AccessManager, Events, RSVP) {
 
     'use strict';
 
@@ -23,11 +24,20 @@ define([
 
             return new RSVP.Promise(function (fulfilled, rejected) {
 
-                var resource;
+                //var resource;
+                /*if (!AccessManager.isAuth())
+                    rejected();*/
 
-                if (ResourceManager.isResourceAvailable() === false) 
+                if (!AccessManager.isLogged()) {
+                    me.authorized = false;
                     rejected();
+                }
+                if (!ResourceManager.isResourceAvailable()) {
+                    me.resourceLoaded = false;
+                    rejected();
+                }
                 
+                //Fulfilled, the DSD interface will disable the edit features
                 if (ResourceManager.hasData())
                     //rejected();
                     fulfilled();
@@ -37,14 +47,16 @@ define([
         },
 
         denyAccessControl: function () {
-            this.authorized = false;
+            //this.authorized = false;
         },
         /* End Access control */
 
         show: function () {
-
             if (this.authorized === false) {
-                // user in not authorized
+                Chaplin.mediator.publish(Events.NOT_LOGGED);
+                return;
+            }
+            if (this.resourceLoaded === false) {
                 Chaplin.mediator.publish(Events.RESOURCE_ABSENT);
                 return;
             }

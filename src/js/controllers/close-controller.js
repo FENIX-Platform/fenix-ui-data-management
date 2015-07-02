@@ -3,9 +3,10 @@ define([
     'fx-d-m/controllers/base/controller',
     'fx-d-m/views/close-view',
     'fx-d-m/components/resource-manager',
+    'fx-d-m/components/access-manager',
     'fx-d-m/config/events',
     'rsvp'
-], function (Chaplin, Controller, CloseView, ResourceManager, Events, RSVP) {
+], function (Chaplin, Controller, CloseView, ResourceManager, AccessManager, Events, RSVP) {
     'use strict';
 
     var CloseController = Controller.extend({
@@ -16,12 +17,15 @@ define([
         },
 
         performAccessControlChecks: function () {
-
+            var me = this;
             return new RSVP.Promise(function (fulfilled, rejected) {
-
-                if (!ResourceManager.isResourceAvailable()) {
+                if (!AccessManager.isLogged()) {
+                    me.authorized = false;
                     rejected();
-                    return;
+                }
+                if (!ResourceManager.isResourceAvailable()) {
+                    me.resourceLoaded = false;
+                    rejected();
                 }
 
                 fulfilled();
@@ -29,13 +33,15 @@ define([
         },
 
         denyAccessControl: function () {
-            this.authorized = false;
+            //this.authorized = false;
         },
 
         show: function (params) {
-
             if (this.authorized === false) {
-                // user in not authorized
+                Chaplin.mediator.publish(Events.NOT_LOGGED);
+                return;
+            }
+            if (this.resourceLoaded === false) {
                 Chaplin.mediator.publish(Events.RESOURCE_ABSENT);
                 return;
             }

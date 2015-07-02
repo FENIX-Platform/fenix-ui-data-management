@@ -60,9 +60,18 @@ define([
                 Chaplin.utils.redirectTo({ url: 'landing' });
             });
 
-            Chaplin.mediator.subscribe(Events.SKIP_LANDING_PAGE, function () {
-                Chaplin.utils.redirectTo({ url: 'resume' });
+            Chaplin.mediator.subscribe(Events.NOT_LOGGED, function () {
+                new PNotify({
+                    title: 'Not logged in',
+                    text: 'Please log in.'
+                });
+                //Chaplin.utils.redirectTo({ changeURL: 'login' });
+                window.location.href = "index.html";
             });
+
+            /*Chaplin.mediator.subscribe(Events.SKIP_LANDING_PAGE, function () {
+                Chaplin.utils.redirectTo({ url: 'resume' });
+            });*/
 
             Chaplin.mediator.subscribe(Events.DSD_ABSENT, function () {
                 new PNotify({
