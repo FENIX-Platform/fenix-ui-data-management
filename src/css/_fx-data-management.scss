@@ -1,7 +1,6 @@
 /* Fenix - Data Management */
 
 
-
 #main-container {
   .container{
     padding: 0;
@@ -30,12 +29,13 @@
     display: inline-block;
     width: 75px;
     height: 75px;
-    background-color: $fenix-superlight-gray;
+    background-color: $fenix-light-gray;
     border: 2px solid transparent;
     cursor: pointer;
     @include fx-border-radius(3px);
     @include animate;
     margin: 5px;
+
 
     &:hover{
       border-color:$fx-cool-blue;
