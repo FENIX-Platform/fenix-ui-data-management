@@ -21,7 +21,7 @@ define([
         /* Access control */
 
         performAccessControlChecks: function () {
-
+            var me = this;
             return new RSVP.Promise(function (fulfilled, rejected) {
 
                 //var resource;
