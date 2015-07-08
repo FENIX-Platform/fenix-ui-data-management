@@ -5,6 +5,7 @@ define([
     'fx-d-m/config/events',
     'fx-d-m/config/config',
     'fx-d-m/config/config-default',
+    'fx-common/AuthManager',
     'amplify'
 ], function (Chaplin, _, Events, cfg, cfgDef) {
     'use strict';
@@ -16,7 +17,7 @@ define([
     }
 
     AccessManager.prototype.isLogged = function () {
-        return true;
+        return this.authManager.isLogged();
     }
     /*
     AccessManager.prototype.bindEventListeners = function () {

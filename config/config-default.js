@@ -5,7 +5,13 @@ define(function () {
 
         TOP_MENU: {
             url: 'config/submodules/fx-menu/fenix-ui-topmenu_config.json',
+            template: 'fx-menu/templates/blank-fluid.html',
             active: "createdataset"
+        },
+
+        SECONDARY_MENU : {
+            url : './submodules/fenix-ui-data-management/config/secondary_menu.json',
+            disable: ['delete', 'close', 'data', 'dsd']
         },
 
 
