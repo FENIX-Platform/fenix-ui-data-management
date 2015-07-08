@@ -2,10 +2,12 @@
 
 define([
     'chaplin',
+    'fx-d-m/config/config',
+    'fx-d-m/config/config-default',
     'fx-d-m/config/events',
     'fx-d-m/components/resource-manager',
     'pnotify'
-], function (Chaplin, Events, ResourceManager, PNotify) {
+], function (Chaplin, C, DC, Events, ResourceManager, PNotify) {
 
     'use strict';
 
@@ -65,7 +67,7 @@ define([
                     text: 'Please log in.'
                 });
                 //Chaplin.utils.redirectTo({ changeURL: 'login' });
-                window.location.href = "index.html";
+                window.location.href = C.DATA_MANAGEMENT_NOT_LOGGEDIN_URL || DC.DATA_MANAGEMENT_NOT_LOGGEDIN_URL;
             });
 
             /*Chaplin.mediator.subscribe(Events.SKIP_LANDING_PAGE, function () {
