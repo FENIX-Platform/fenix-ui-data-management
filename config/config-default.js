@@ -21,8 +21,8 @@ define(function () {
         DSD_EDITOR_DATATYPES: "submodules/fenix-ui-DSDEditor/config/DSDEditor/Datatypes.json",
         DSD_EDITOR_CODELISTS: "config/submodules/DSDEditor/CodelistsUAE.json",
 
-        DATA_MANAGEMENT_NOT_LOGGEDIN_URL:"index.html",
-
+        DATA_MANAGEMENT_NOT_LOGGEDIN_URL: "./index.html",
+        FAKE_AUTHENTICATION : true,
 
         CATALOG_BLANK_FILTER: 'config/submodules/catalog/uae-catalog-blank-filter.json',
 

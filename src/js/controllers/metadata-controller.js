@@ -6,7 +6,6 @@ define([
     'fx-d-m/components/access-manager',
     'fx-d-m/config/events',
     'rsvp'
-
 ], function (Chaplin, _, Controller, MetadataView, AccessManager, Events, RSVP) {
 
     'use strict';
@@ -20,10 +19,15 @@ define([
 
         performAccessControlChecks: function () {
             var me = this;
+            console.log(  AccessManager.isLogged())
+
             return new RSVP.Promise(function (fulfilled, rejected) {
+                console.log(AccessManager.isLogged())
+
                 if (!AccessManager.isLogged()) {
                     me.authorized = false;
                     rejected();
+                    return;
                 }
                 fulfilled();
             });

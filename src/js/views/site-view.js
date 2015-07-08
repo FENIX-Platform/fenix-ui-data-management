@@ -62,6 +62,7 @@ define([
                 },
                 onLogout: function () {
                     self.topMenu.refresh(menuConfPub);
+                    window.location.href = C.DATA_MANAGEMENT_NOT_LOGGEDIN_URL || DC.DATA_MANAGEMENT_NOT_LOGGEDIN_URL;
                 }
             });
 
