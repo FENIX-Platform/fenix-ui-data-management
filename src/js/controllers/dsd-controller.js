@@ -23,23 +23,19 @@ define([
         performAccessControlChecks: function () {
             var me = this;
             return new RSVP.Promise(function (fulfilled, rejected) {
-
-                //var resource;
-                /*if (!AccessManager.isAuth())
-                    rejected();*/
-
                 if (!AccessManager.isLogged()) {
                     me.authorized = false;
                     rejected();
+                    return;
                 }
                 if (!ResourceManager.isResourceAvailable()) {
                     me.resourceLoaded = false;
                     rejected();
+                    return;
                 }
                 
                 //Fulfilled, the DSD interface will disable the edit features
                 if (ResourceManager.hasData())
-                    //rejected();
                     fulfilled();
 
                 fulfilled();

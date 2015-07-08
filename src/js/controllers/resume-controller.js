@@ -24,16 +24,15 @@ define([
         performAccessControlChecks: function () {
             var me = this;
             return new RSVP.Promise(function (fulfilled, rejected) {
-            /*    me.resourceLoaded = false;
-                rejected();
-                return;*/
                 if (!AccessManager.isLogged()) {
                     me.authorized = false;
                     rejected();
+                    return;
                 }
                 if (!ResourceManager.isResourceAvailable()) {
                     me.resourceLoaded = false;
                     rejected();
+                    return;
                 }
                 fulfilled();
             });

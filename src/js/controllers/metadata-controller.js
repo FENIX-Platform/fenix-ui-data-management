@@ -19,11 +19,7 @@ define([
 
         performAccessControlChecks: function () {
             var me = this;
-            console.log(  AccessManager.isLogged())
-
             return new RSVP.Promise(function (fulfilled, rejected) {
-                console.log(AccessManager.isLogged())
-
                 if (!AccessManager.isLogged()) {
                     me.authorized = false;
                     rejected();

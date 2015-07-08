@@ -23,10 +23,12 @@ define([
                 if (!AccessManager.isLogged()) {
                     me.authorized = false;
                     rejected();
+                    return;
                 }
                 if (!ResourceManager.isResourceAvailable()) {
                     me.resourceLoaded = false;
                     rejected();
+                    return;
                 }
 
                 fulfilled();
