@@ -98,8 +98,11 @@ define([
             if (existingDSD)
                 this.resource.metadata.dsd = existingDSD;
 
-            ResourceManager.setCurrentResource(this.resource);
-            Chaplin.utils.redirectTo({ url: 'resume' });
+            //ResourceManager.setCurrentResource(this.resource);
+            ResourceManager.loadResource(this.resource, function () {
+                Chaplin.utils.redirectTo({ url: 'resume' });
+            });
+//            Chaplin.utils.redirectTo({ url: 'resume' });
         },
 
         bindEventListeners: function () {
