@@ -19,7 +19,7 @@ define([
         Chaplin.mediator.subscribe(Events.RESOURCE_SELECT, this.loadResource, this);
     };
 
-    ResourceManager.prototype.loadResource = function (resource, success, err) {
+    ResourceManager.prototype.loadResource = function (resource, success, err, complete) {
         var self = this;
         var addr = getDataAndMetaURL(cfg, cfgDef, resource.metadata.uid, resource.metadata.version);
         var srvc = cfg.SERVICE_GET_DATA_METADATA || cfgDef.SERVICE_GET_DATA_METADATA;
@@ -30,7 +30,7 @@ define([
             if (success)
                 success(data);
         };
-        _ajaxGET(addr, params, succ, err);
+        _ajaxGET(addr, params, succ, err, complete);
     };
 
     /*ResourceManager.prototype.findResource = function (toPost, callBSuccess, callBComplete, callB_Err) {
@@ -64,7 +64,7 @@ define([
     ResourceManager.prototype.getCurrentResource = function () {
         return this.resource;
     };
-    ResourceManager.prototype.loadDSD = function (resource, success, err) {
+    ResourceManager.prototype.loadDSD = function (resource, success, err, complete) {
         var self = this;
         var addr = getDataAndMetaURL(cfg, cfgDef, resource.metadata.uid, resource.metadata.version);
         var srvc = cfg.SERVICE_GET_DATA_METADATA || cfgDef.SERVICE_GET_DATA_METADATA;
@@ -77,7 +77,7 @@ define([
             if (success)
                 success(dsd);
         };
-        _ajaxGET(addr, params, succ, err);
+        _ajaxGET(addr, params, succ, err, complete);
     };
 
     ResourceManager.prototype.loadDSDColumns = function (resource, success, err) {
@@ -92,7 +92,7 @@ define([
         this.loadDSD(resource, succ, err);
     };
 
-    ResourceManager.prototype.updateDSD = function (resource, success, err) {
+    ResourceManager.prototype.updateDSD = function (resource, success, err, complete) {
         var meta = this.resource.metadata;
         if (!meta.dsd)
             throw new Error("DSD to update cannot be null");
@@ -105,7 +105,7 @@ define([
 
         if (meta.dsd && meta.dsd.rid) {
             var addr = getSaveDSDURL(cfg, cfgDef);
-            _ajaxPUT(addr, meta.dsd, success, null, err);
+            _ajaxPUT(addr, meta.dsd, success, complete, err);
         }
         else {
             var toPatch = { uid: meta.uid };
@@ -114,7 +114,7 @@ define([
             toPatch.dsd = meta.dsd;
 
             var addr = getSaveMetadataURL(cfg, cfgDef);
-            _ajaxPATCH(addr, toPatch, success, null, err);
+            _ajaxPATCH(addr, toPatch, success, complete, err);
         }
     };
 
@@ -207,7 +207,7 @@ define([
 
 
     //AJAX
-    function _ajaxGET(url, queryParam, success, err) {
+    function _ajaxGET(url, queryParam, success, err, complete) {
         $.ajax({
             url: url,
             crossDomain: true,
@@ -222,11 +222,14 @@ define([
                     err();
                 else
                     console.log('Error on ajax GET');
+            },
+            complete: function () {
+                if (complete) complete();
             }
         });
     }
 
-    function _ajaxDELETE(url, success, err) {
+    function _ajaxDELETE(url, success, err, complete) {
         $.ajax({
             url: url,
             type: 'DELETE',
@@ -240,6 +243,9 @@ define([
                     err('Error on ajax DELETE');
                 else
                     console.log('Error on ajax DELETE')
+            },
+            complete: function () {
+                if (complete) complete();
             }
         });
     }
