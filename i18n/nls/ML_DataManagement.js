@@ -1,16 +1,17 @@
 ﻿define({
     "root": {
-        //DSD
-        "UIDCannotBeBlank": "UID Cannot be blank",
-        "DSDNotFound": "DSD not found",
-        "DSDLoaded": "DSD Loaded",
-        "CopyDSD": "Copy DSD",
-        //END DSD
+        "error": "Error",
+        "errorParsingJson": "Error parsing Json file, check the structure and try again",
 
         "errorLoadinResource": "Error loading the resource",
         "errorSavingResource": "Error saving the resource",
 
-        "unsavedWarning": "Some changes are not saved, do you want to continue without saving?"
+        "overwriteExistingDSD": "This operation will overwrite the DSD you're working on, continue?",
+        "unsavedWarning": "Some changes are not saved, do you want to continue without saving?",
+
+        "save": "save",
+        "download": "download",
+        "upload": "upload"
     },
     "fr": true
 });

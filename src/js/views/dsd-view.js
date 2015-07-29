@@ -9,14 +9,17 @@ define([
     'fx-d-m/views/base/view',
     'text!fx-d-m/templates/dsd.hbs',
     'fx-DSDEditor/start',
-    'fx-DataUpload/start',
+    'fx-DSDEditor/js/dataManagementCommons/FileUploadHelper',
+    'fx-DSDEditor/js/dataManagementCommons/Notifications',
     'fx-d-m/components/resource-manager',
-    'i18n!fx-d-m/i18n/nls/ML_DataManagement',
-    'pnotify'
-], function (Chaplin, C, DC, View, template, DSDEditor, DataUpload, ResourceManager, MLRes, PNotify) {
+    'i18n!fx-d-m/i18n/nls/ML_DataManagement'
+], function (Chaplin, C, DC, View, template, DSDEditor, FUploadHelper, Notif, ResourceManager, MLRes) {
     'use strict';
     var h = {
-        btnColsEditDone: "#btnColsEditDone"
+        btnColsEditDone: "#btnColsEditDone",
+        btnDSDDownload: "#btnDSDDownload",
+        btnUploadGroup: "#btnUploadGroup",
+        lblUpload: "#lblUpload"
     };
     var DsdView = View.extend({
         // Automatically render after initialize
@@ -48,55 +51,64 @@ define([
                 }
             });
 
+            //FUpload
+            this.fUpload = new FUploadHelper({ accept: ['json'] });
+            this.fUpload.render('#dsdFUpload');
 
 
 
-/*
-            var test = {
-                "columns": [
-                    {
-                        "dataType": "code",
-                        "key": true,
-                        "id": "CODE",
-                        "title": {
-                            "EN": "Item"
-                        },
-                        "domain": {
-                            "codes": [
-                                {
-                                    "idCodeList": "FAOSTAT_CommodityList"
-                                }
-                            ]
-                        },
-                        "subject": "item"
-                    },
-                    {
-                        "dataType": "number",
-                        "key": false,
-                        "id": "NUMBER",
-                        "title": {
-                            "EN": "Val"
-                        },
-                        "subject": "value"
-                    }
-                ]
-            };
-            DSDEditor.set(test);*/
+
+
+
+
+            /* var test = {
+                 "columns": [
+                     {
+                         "dataType": "code",
+                         "key": true,
+                         "id": "CODE",
+                         "title": {
+                             "EN": "Item"
+                         },
+                         "domain": {
+                             "codes": [
+                                 {
+                                     "idCodeList": "FAOSTAT_CommodityList"
+                                 }
+                             ]
+                         },
+                         "subject": "item"
+                     },
+                     {
+                         "dataType": "number",
+                         "key": false,
+                         "id": "NUMBER",
+                         "title": {
+                             "EN": "Val"
+                         },
+                         "subject": "value"
+                     }
+                 ]
+             };
+             DSDEditor.set(test);*/
 
             this.bindEventListeners();
 
-            $('#btnColsEditDone').removeAttr('disabled');
+            $(h.btnColsEditDone).removeAttr('disabled');
             this._doML();
         },
 
         isDSDEditable: function (editable) {
             DSDEditor.editable(editable);
+            var $btn = $(h.btnColsEditDone);
             if (editable) {
-                $('#btnColsEditDone').show();
-                $('#btnColsEditDone').removeAttr('disabled');
+                $btn.show();
+                $(h.btnUploadGroup).show();
+                $btn.removeAttr('disabled');
             }
             else {
-                $('#btnColsEditDone').hide();
+                $btn.hide();
+                $(h.btnUploadGroup).hide();
             }
         },
 
@@ -115,18 +127,34 @@ define([
                     Chaplin.utils.redirectTo('resume#show');
                 };
                 var loadErr = function () {
-                    new PNotify({ title: '', text: MLRes.errorLoadinResource, type: 'error' });
+                    Notif.showError(MLRes.error, MLRes.errorLoadinResource);
                 };
                 var updateDSDErr = function () {
-                    new PNotify({ title: '', text: MLRes.errorSavingResource, type: 'error' });
+                    Notif.showError(MLRes.error, MLRes.errorSavingResource);
                 };
                 var complete = function () {
                     $btnColsEditDone.removeAttr('disabled');
                 };
+                //ajax call
                 ResourceManager.updateDSD(me.resource, function () {
                     ResourceManager.loadResource(me.resource, succ, loadErr, complete);
                 }, updateDSDErr, complete);
             });
+
+            $(h.btnDSDDownload).on('click', function () {
+                var toSave = JSON.stringify(DSDEditor.get());
+                var dLink = document.createElement('a');
+                dLink.download = 'DSD.json';
+                dLink.innerHTML = "Download file";
+                var textFileAsBlob = new Blob([toSave], { type: 'text/plain' });
+                dLink.href = window.URL.createObjectURL(textFileAsBlob);
+                dLink.onclick = function (evt) { document.body.removeChild(dLink); };
+                dLink.style.display = 'none';
+                document.body.appendChild(dLink);
+                dLink.click();
+            });
+
+            amplify.subscribe('textFileUploaded.FileUploadHelper.fenix', this, this._DSDLoaded);
 
             amplify.subscribe('fx.DSDEditor.toColumnEditor', this._toColumnEditor);
             amplify.subscribe('fx.DSDEditor.toColumnSummary', this._toColumnSummary);
@@ -138,23 +166,46 @@ define([
         _toColumnSummary: function () {
             $(h.btnColsEditDone).removeAttr('disabled');
         },
+        _DSDLoaded: function (data) {
+            var existingDSD = DSDEditor.get();
+            if (existingDSD.columns && existingDSD.columns.length > 0) {
+                if (!confirm(MLRes.overwriteExistingDSD)) {
+                    this.fUpload.reset();
+                    return;
+                }
+            }
+            try {
+                var dsd = JSON.parse(data);
+            }
+            catch (ex) {
+                Notif.showError(MLRes.error, MLRes.errorParsingJson);
+                this.fUpload.reset();
+                return;
+            }
+            DSDEditor.set(dsd);
+            DSDEditor.validate();
+            this.fUpload.reset();
+        },
 
         unbindEventListeners: function () {
             $(h.btnColsEditDone).off('click');
+            $(h.btnDSDDownload).off('click');
             amplify.unsubscribe('fx.DSDEditor.toColumnEditor', this._toColumnEditor);
             amplify.unsubscribe('fx.DSDEditor.toColumnSummary', this._toColumnSummary);
+            amplify.unsubscribe('textFileUploaded.FileUploadHelper.fenix', this._DSDLoaded);
         },
 
         dispose: function () {
             DSDEditor.destroy();
-
             this.unbindEventListeners();
-
             View.prototype.dispose.call(this, arguments);
         },
 
         _doML: function () {
-            //$('#btnColsLoad').html(MLRes.CopyDSD);
+            $(h.btnColsEditDone).html(MLRes.save);
+            $(h.btnDSDDownload).html(MLRes.download);
+            $(h.btnDSDDownload).html(MLRes.download);
+            $(h.lblUpload).html(MLRes.upload);
         }
     });
 
