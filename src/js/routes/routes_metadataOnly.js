@@ -8,6 +8,7 @@ define(function () {
         match('add', 'metadata#show');
         match('close', 'close#show');
         match('delete', 'delete#show');
+        match('data', 'data#show');
         match('landing', 'landing#show');
         match('metadata', 'metadata#show');
         match('resume', 'resume#show');
