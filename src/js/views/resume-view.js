@@ -1,7 +1,7 @@
 define([
     'chaplin',
     'fx-d-m/views/base/view',
-    'text!fx-d-m/templates/resume.hbs',
+    'text!fx-d-m/templates/resume',
     'fx-d-m/components/resource-manager'
 ], function (Chaplin, View, template, ResourceManager) {
     'use strict';
