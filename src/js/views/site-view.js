@@ -9,8 +9,9 @@ define([
     'fx-d-m/components/resource-manager',
     'text!fx-d-m/templates/site',
     'fx-menu/start',
+    'i18n!fx-d-m/i18n/nls/site',
     'fx-common/AuthManager'
-], function ($, Chaplin, C, DC, E, View, ResourceManager, template, Menu, AuthManager) {
+], function ($, Chaplin, C, DC, E, View, ResourceManager, template, Menu, i18nLabels, AuthManager) {
 
     'use strict';
 
@@ -29,6 +30,10 @@ define([
         },
 
         template: template,
+
+        getTemplateData: function () {
+            return i18nLabels;
+        },
 
         attach: function () {
 
