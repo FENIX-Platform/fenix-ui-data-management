@@ -33,8 +33,8 @@ define(function () {
 
             'fx-d-m/templates/site': './templates/site-topmenu.hbs',
 
-            'fx-d-m/templates/landing': './templates/landing.hbs',
-            'fx-d-m/templates/resume': './templates/resume.hbs'
+            'fx-d-m/templates/landing': './templates/landing/landing.hbs',
+            'fx-d-m/templates/resume': './templates/resume/resume.hbs'
 
         },
 
