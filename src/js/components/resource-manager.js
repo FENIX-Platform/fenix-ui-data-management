@@ -19,19 +19,58 @@ define([
         Chaplin.mediator.subscribe(Events.RESOURCE_SELECT, this.loadResource, this);
     };
 
-    ResourceManager.prototype.loadResource = function (resource, success, err) {
+    //When redesigning the new dataManagement use this instead of the old one,
+    //the self.setCurrentResource must be called separately
+    ResourceManager.prototype.loadResourceNew = function (resource, success, err, noData) {
+        var addr = getDataAndMetaURL(cfg, cfgDef, resource.metadata.uid, resource.metadata.version);
+        var srvc = cfg.SERVICE_GET_DATA_METADATA || cfgDef.SERVICE_GET_DATA_METADATA;
+        var params = srvc.queryParams;
+
+        var succ = function (data) {
+            if (data) {
+                if (success)
+                    success(data);
+            }
+            else {
+                if (noData) noData();
+            }
+        }
+        _ajaxGET(addr, params, succ, err);
+    };
+
+    ResourceManager.prototype.loadResource = function (resource, success, err, noData) {
+        var me = this;
+        var succ = function (data) {
+            me.setCurrentResource(data);
+            if (success)
+                success();
+        }
+
+        this.loadResourceNew(resource, succ, err, noData);
+    };
+    /*ResourceManager.prototype.loadResource = function (resource, success, err, noData) {
         var self = this;
         var addr = getDataAndMetaURL(cfg, cfgDef, resource.metadata.uid, resource.metadata.version);
         var srvc = cfg.SERVICE_GET_DATA_METADATA || cfgDef.SERVICE_GET_DATA_METADATA;
         var params = srvc.queryParams;
 
         var succ = function (data) {
-            self.setCurrentResource(data);
+
+            if (data) {
+                self.setCurrentResource(data);
+            }
+            else {
+                if (noData) noData();
+            }
+
             if (success)
                 success(data);
+            //self.setCurrentResource(data);
+            //if (success)
+            //    success(data);
         };
         _ajaxGET(addr, params, succ, err);
-    };
+    };*/
 
     /*ResourceManager.prototype.findResource = function (toPost, callBSuccess, callBComplete, callB_Err) {
         var addr = getResourcesFindAddress(cfg, cfgDef);
@@ -64,6 +103,66 @@ define([
     ResourceManager.prototype.getCurrentResource = function () {
         return this.resource;
     };
+
+    //Meta
+    ResourceManager.prototype.createMeta = function (resource, success, complete, err) {
+        var addr = getSaveMetadataURL(cfg, cfgDef);
+        if (!resource)
+            throw new Error("Nothing to save, resource cannot be null");
+        if (!resource.metadata)
+            throw new Error("Nothing to save, resource must contain a metdata section");
+        if (!resource.metadata.uid)
+            throw new Error("Nothing to save, the metadata section must contain a UID");
+        if (!resource.metadata.meContent.resourceRepresentationType)
+            throw new Error("Nothing to save, the metadata section must contain a meContent.resourceRepresentationType");
+
+        _ajaxPOST(addr, resource.metadata, success, complete, err);
+
+        /*
+       "create": {
+           "url" : "http://fenix.fao.org/d3s_dev/msd/resources/metadata",
+           "type": "post",
+           "content": "json",
+           "response": {
+               "keyFields": [{"meIdentification" : ["uid", "rid", "version"]}]
+           }
+        },
+        "overwrite": {
+            "url" : "http://fenix.fao.org/d3s_dev/msd/resources/metadata",
+            "type" : "put",
+            "content": "json",
+            "response": {
+                "keyFields": [{"meIdentification" : ["uid", "rid", "version"]}]
+            }
+        }
+}
+*/
+    };
+    ResourceManager.prototype.updateMeta = function (resource, success, complete, err) {
+        var addr = getSaveMetadataURL(cfg, cfgDef);
+        if (!resource)
+            throw new Error("Nothing to save, resource cannot be null");
+        if (!resource.metadata)
+            throw new Error("Nothing to save, resource must contain a metdata section");
+        if (!resource.metadata.uid)
+            throw new Error("Nothing to save, the metadata section must contain a UID");
+        if (!resource.metadata.meContent.resourceRepresentationType)
+            throw new Error("Nothing to save, the metadata section must contain a meContent.resourceRepresentationType");
+
+        var toSend = null;
+        if (resource.metadata.dsd.rid) {
+            toSend = $.extend(true, {}, resource.metadata);
+            toSend.dsd = {};
+            toSend.dsd.rid = resource.metadata.dsd.rid;
+        }
+        else {
+            toSend = resource.metadata;
+        }
+        _ajaxPUT(addr, toSend, success, complete, err);
+    };
+
+    //END Meta
+    //DSD
     ResourceManager.prototype.loadDSD = function (resource, success, err) {
         var self = this;
         var addr = getDataAndMetaURL(cfg, cfgDef, resource.metadata.uid, resource.metadata.version);
@@ -117,6 +216,8 @@ define([
             _ajaxPATCH(addr, toPatch, success, null, err);
         }
     };
+
+    //DSD End
 
     ResourceManager.prototype.putData = function (resource, success, err) {
         var addr = getSaveDataURL(cfg, cfgDef);
