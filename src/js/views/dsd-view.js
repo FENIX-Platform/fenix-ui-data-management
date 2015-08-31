@@ -1,7 +1,3 @@
-/*TODO*/
-//Multilanguage
-/*TODO*/
-
 define([
     'chaplin',
     'fx-d-m/config/config',
@@ -19,7 +15,8 @@ define([
         btnColsEditDone: "#btnColsEditDone",
         btnDSDDownload: "#btnDSDDownload",
         btnUploadGroup: "#btnUploadGroup",
-        lblUpload: "#lblUpload"
+        lblUpload: "#lblUpload",
+        DSDEditorContainer: '#DSDEditorMainContainer'
     };
     var DsdView = View.extend({
         // Automatically render after initialize
@@ -39,9 +36,7 @@ define([
             this.resource = ResourceManager.getCurrentResource();
             var me = this;
 
-            var DSDEditorContainerID = '#DSDEditorMainContainer';
-
-            DSDEditor.init(DSDEditorContainerID, null, function () {
+            DSDEditor.init(h.DSDEditorContainer, null, function () {
                 if (me.resource && me.resource.metadata.dsd) {
                     DSDEditor.set(me.resource.metadata.dsd);
                     if (me.resource.data && me.resource.data.length > 0)
@@ -60,8 +55,8 @@ define([
 
 
 
-
-            /* var test = {
+            /*
+             var test = {
                  "columns": [
                      {
                          "dataType": "code",
@@ -90,14 +85,14 @@ define([
                      }
                  ]
              };
-             DSDEditor.set(test);*/
+             DSDEditor.set(test);
+             */
 
             this.bindEventListeners();
 
             $(h.btnColsEditDone).removeAttr('disabled');
             this._doML();
         },
-
         isDSDEditable: function (editable) {
             DSDEditor.editable(editable);
             var $btn = $(h.btnColsEditDone);
@@ -111,7 +106,6 @@ define([
                 $(h.btnUploadGroup).hide();
             }
         },
-
         bindEventListeners: function () {
             var me = this;
             var $btnColsEditDone = $(h.btnColsEditDone);
@@ -159,12 +153,15 @@ define([
             amplify.subscribe('fx.DSDEditor.toColumnEditor', this._toColumnEditor);
             amplify.subscribe('fx.DSDEditor.toColumnSummary', this._toColumnSummary);
         },
-
         _toColumnEditor: function () {
             $(h.btnColsEditDone).attr('disabled', 'disabled');
+            $(h.btnDSDDownload).hide();
+            $(h.btnUploadGroup).hide();
         },
         _toColumnSummary: function () {
             $(h.btnColsEditDone).removeAttr('disabled');
+            $(h.btnDSDDownload).show();
+            $(h.btnUploadGroup).show();
         },
         _DSDLoaded: function (data) {
             var existingDSD = DSDEditor.get();
@@ -186,7 +183,6 @@ define([
             DSDEditor.validate();
             this.fUpload.reset();
         },
-
         unbindEventListeners: function () {
             $(h.btnColsEditDone).off('click');
             $(h.btnDSDDownload).off('click');
@@ -194,17 +190,13 @@ define([
             amplify.unsubscribe('fx.DSDEditor.toColumnSummary', this._toColumnSummary);
             amplify.unsubscribe('textFileUploaded.FileUploadHelper.fenix', this._DSDLoaded);
         },
-
         dispose: function () {
             DSDEditor.destroy();
             this.unbindEventListeners();
             View.prototype.dispose.call(this, arguments);
         },
-
         _doML: function () {
-            $(h.btnColsEditDone).html(MLRes.save);
-            $(h.btnDSDDownload).html(MLRes.download);
-            $(h.btnDSDDownload).html(MLRes.download);
+            $(h.btnDSDDownload).html(MLRes.downloadDSD);
             $(h.lblUpload).html(MLRes.upload);
         }
     });

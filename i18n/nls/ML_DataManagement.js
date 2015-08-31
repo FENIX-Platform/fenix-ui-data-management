@@ -9,9 +9,8 @@
         "overwriteExistingDSD": "This operation will overwrite the DSD you're working on, continue?",
         "unsavedWarning": "Some changes are not saved, do you want to continue without saving?",
 
-        "save": "save",
-        "download": "download",
-        "upload": "upload"
+        "downloadDSD": "Download DSD",
+        "upload": "Upload"
     },
     "fr": true
 });

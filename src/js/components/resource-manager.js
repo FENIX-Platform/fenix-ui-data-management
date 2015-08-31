@@ -148,24 +148,42 @@ define([
         var f = [];
         for (var i = 0; i < uids.length; i++) {
             calls[i] = getDataAndMetaURL(cfg, cfgDef, uids[i].uid, uids[i].version);
+            //f[i] = $.ajax(calls[i]).done(function () { console.log('done'); }).fail(function () { console.log('fail'); });
             f[i] = $.ajax(calls[i]);
         }
-        //Handle errors!
         $.when.apply($, f).done(function () {
             var results = {};
             var id;
+            var downloadErr = false;
+            var downloadErrUIDs = [];
             for (var j = 0; j < f.length; j++) {
                 if (f.length == 1) {
-                    id = getUIDVer(arguments[j])
-                    results[id] = arguments[j];
+                    if (!arguments[j]) {
+                        downloadErrUIDs.push("UID: " + uids[j].uid + " ver:" + uids[j].version);
+                        downloadErr = true;
+                    }
+                    else {
+                        id = getUIDVer(arguments[j])
+                        results[id] = arguments[j];
+                    }
                 }
                 else {
-                    id = getUIDVer(arguments[j][0])
-                    results[id] = arguments[j][0];
+                    if (!arguments[j][0]) {
+                        downloadErrUIDs.push("UID: " + uids[j].uid + " ver:" + uids[j].version);
+                        downloadErr = true;
+                    }
+                    else {
+                        id = getUIDVer(arguments[j][0])
+                        results[id] = arguments[j][0];
+                    }
                 }
             }
-            if (success)
-                success(results);
+            if (downloadErr) {
+                if (err) err(downloadErrUIDs);
+            }
+            else {
+                if (success) success(results);
+            }
         }).fail(function () { if (err) err(); });
     }
 
