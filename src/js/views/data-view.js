@@ -33,51 +33,11 @@ define([
             View.prototype.attach.call(this, arguments);
 
             var $dataEditorContainer = $(h.dataEditorContainer);
-            var columns = [
-                     {
-                         "dataType": "code",
-                         "key": true,
-                         "id": "CODE",
-                         "title": {
-                             "EN": "Item"
-                         },
-                         "domain": {
-                             "codes": [
-                                 {
-                                     "idCodeList": "FAOSTAT_CommodityList"
-                                 }
-                             ]
-                         },
-                         "subject": "item"
-                     },
-                     {
-                         "dataType": "number",
-                         "key": false,
-                         "id": "NUMBER",
-                         "title": {
-                             "EN": "Val"
-                         },
-                         "subject": "value"
-                     }
-            ];
-
-            var data = [["0015", 1], ["0019", 2], ["0023", 3], ['0031', 4]];
-            var cLists;
-            ResourceManager.getCodelists([{ uid: 'FAOSTAT_CommodityList' }], function (cl) {
-                DataEditor.init(h.dataEditorContainer, {}, function () {
-                    DataEditor.setColumns(columns, cl, function () {
-                        DataEditor.setData(data);
-                    });
-                });
-            }, function (uids) {
-                alert('ERROR retrieving the codelsits ' + uids.toString());
-            });
-
             //FUpload
             this.fUpload = new FUploadHelper({ accept: ['csv'] });
             this.fUpload.render('#dataFUpload');
 
-            /*var columns, data, cLists;
+            var columns, data, cLists;
             this.resource = ResourceManager.getCurrentResource();
             if (!this.resource || !this.resource.metadata || !this.resource.metadata.dsd || !this.resource.metadata.dsd.columns)
                 return;
@@ -88,7 +48,7 @@ define([
             var dataEditorContainerID = "#DataEditorMainContainer";
             var $dataEditorContainer = $("#DataEditorMainContainer");
 
-            var me = this;
+            //var me = this;
             ResourceManager.getCodelistsFromCurrentResource(function (cl) {
                 cLists = cl;
                 DataEditor.init(dataEditorContainerID, {},
@@ -99,28 +59,29 @@ define([
             },
             function () {
                 Noti.showError('',MLRes.errorLoadinResource + " [codelists]");
-            });*/
+            });
 
             this.bindEventListeners();
         },
 
         bindEventListeners: function () {
             var me = this;
-            $('#dataEditEnd').on('click', me.saveData);
+            $('#dataEditEnd').on('click', function () { me.saveData(); });
 
             //FUpload
             amplify.subscribe('textFileUploaded.FileUploadHelper.fenix', this, this._CSVLoaded);
         },
 
         saveData: function () {
-            var $btnSave = $('#dataEditEnd');
+            var me = this;
 
+            var $btnSave = $('#dataEditEnd');
             $btnSave.attr('disabled', 'disabled');
             var data = DataEditor.getData();
             //returns false if not valid
             if (data) {
-                me.resource.metadata.dsd.columns = DataEditor.getColumnsWithDistincts();
-                me.resource.data = data;
+                this.resource.metadata.dsd.columns = DataEditor.getColumnsWithDistincts();
+                this.resource.data = data;
 
                 //Noti.showError(MLRes.error, MLRes.errorLoadinResource);
                 //Ajax error callbacks
@@ -133,6 +94,7 @@ define([
                     $btnSave.removeAttr('disabled');
                     Chaplin.utils.redirectTo('data#show');
                 };
+                
                 //if updateDSD is ok, reload the saved resource
                 var updateDSDSucc = function () {
                     ResourceManager.loadResource(me.resource, loadSucc, loadErr);
@@ -142,7 +104,7 @@ define([
                     ResourceManager.updateDSD(me.resource, updateDSDSucc, putDSDErr);
                 };
                 //Start the save process: putData->UpdateDSD->Reload
-                ResourceManager.putData(me.resource, putDataSucc, putDSDErr);
+                ResourceManager.putData(this.resource, putDataSucc, putDSDErr);
             }
                 //data is not valid
             else {
@@ -159,6 +121,9 @@ define([
             var csvData = conv.getData();
 
             var valRes = CSV_Val.validate(DataEditor.getColumns(), csvCols, csvData);
+
+            console.log(valRes);
+
             if (valRes && valRes.length > 0) {
                 Noti.showError('', '__NOTIFY val res!');
                 return;

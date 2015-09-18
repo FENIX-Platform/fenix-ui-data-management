@@ -50,44 +50,6 @@ define([
             this.fUpload = new FUploadHelper({ accept: ['json'] });
             this.fUpload.render('#dsdFUpload');
 
-
-
-
-
-
-            /*
-             var test = {
-                 "columns": [
-                     {
-                         "dataType": "code",
-                         "key": true,
-                         "id": "CODE",
-                         "title": {
-                             "EN": "Item"
-                         },
-                         "domain": {
-                             "codes": [
-                                 {
-                                     "idCodeList": "FAOSTAT_CommodityList"
-                                 }
-                             ]
-                         },
-                         "subject": "item"
-                     },
-                     {
-                         "dataType": "number",
-                         "key": false,
-                         "id": "NUMBER",
-                         "title": {
-                             "EN": "Val"
-                         },
-                         "subject": "value"
-                     }
-                 ]
-             };
-             DSDEditor.set(test);
-             */
-
             this.bindEventListeners();
 
             $(h.btnColsEditDone).removeAttr('disabled');
