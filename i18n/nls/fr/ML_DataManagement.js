@@ -10,5 +10,12 @@
     "unsavedWarning": "Some changes are not saved, do you want to continue without saving?FR",
 
     "downloadDSD": "Download DSD",
-    "upload": "Upload"
+    "upload": "Upload",
+
+    //Data Editor
+    "invalidData": "Data is not valid",
+    "nullDSDCols": "DSD has no colums",
+    "nullCsvCols": "CSV has no columns",
+    "wrongColumnCount": "The columns' count in the CSV must match the one in the DSD",
+    "wrongColumnId": "The columns' names in the CSV must match the IDs in the DSD"
 });

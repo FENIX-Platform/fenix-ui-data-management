@@ -58,7 +58,7 @@ define([
                     });
             },
             function () {
-                Noti.showError('',MLRes.errorLoadinResource + " [codelists]");
+                Noti.showError('', MLRes.errorLoadinResource + " [codelists]");
             });
 
             this.bindEventListeners();
@@ -86,15 +86,15 @@ define([
                 //Noti.showError(MLRes.error, MLRes.errorLoadinResource);
                 //Ajax error callbacks
                 //Add "Error" as popup title
-                var loadErr = function () { Noti.showError('', MLRes.errorLoadinResource); };
-                var putDataErr = function () { Noti.showError('', MLRes.errorSavingResource + " (data)"); };
-                var putDSDErr = function () { Noti.showError('', MLRes.errorSavingResource + " (DSD)"); };
+                var loadErr = function () { Noti.showError(MLRes.error, MLRes.errorLoadinResource); };
+                var putDataErr = function () { Noti.showError(MLRes.error, MLRes.errorSavingResource + " (data)"); };
+                var putDSDErr = function () { Noti.showError(MLRes.error, MLRes.errorSavingResource + " (DSD)"); };
                 //Ajax success callbacks
                 var loadSucc = function () {
                     $btnSave.removeAttr('disabled');
                     Chaplin.utils.redirectTo('data#show');
                 };
-                
+
                 //if updateDSD is ok, reload the saved resource
                 var updateDSDSucc = function () {
                     ResourceManager.loadResource(me.resource, loadSucc, loadErr);
@@ -108,7 +108,9 @@ define([
             }
                 //data is not valid
             else {
-                Noti.showError('', '__Data is not valid');
+
+                Noti.showError(MLRes.error, MLRes.errorParsingJson);
+                Noti.showError(MLRes.error, MLRes.invalidData);
             }
         },
 
@@ -122,10 +124,9 @@ define([
 
             var valRes = CSV_Val.validate(DataEditor.getColumns(), csvCols, csvData);
 
-            console.log(valRes);
-
             if (valRes && valRes.length > 0) {
-                Noti.showError('', '__NOTIFY val res!');
+                for (var n = 0; n < valRes.length; n++)
+                    Noti.showError(MLRes.error, MLRes[valRes[n].type]);
                 return;
             }
             DataEditor.appendData(csvData);
