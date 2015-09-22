@@ -67,6 +67,7 @@ define([
         bindEventListeners: function () {
             var me = this;
             $('#dataEditEnd').on('click', function () { me.saveData(); });
+            $('#btnGetCSVTemplate').on('click', function () { me._getCSVTemplate(); });
 
             //FUpload
             amplify.subscribe('textFileUploaded.FileUploadHelper.fenix', this, this._CSVLoaded);
@@ -112,6 +113,25 @@ define([
                 Noti.showError(MLRes.error, MLRes.errorParsingJson);
                 Noti.showError(MLRes.error, MLRes.invalidData);
             }
+        },
+
+        _getCSVTemplate: function () {
+            var cols = this.resource.metadata.dsd.columns;
+            var toRet = "";
+            for (var i = 0; i < cols.length; i++) {
+                toRet += cols[i].id;
+                if (i != cols.length - 1)
+                    toRet += ",";
+            }
+            var dLink = document.createElement('a');
+            dLink.download = 'dataTemplate.csv';
+            dLink.innerHTML = "Download file";
+            var textFileAsBlob = new Blob([toRet], { type: 'text/plain' });
+            dLink.href = window.URL.createObjectURL(textFileAsBlob);
+            dLink.onclick = function (evt) { document.body.removeChild(dLink); };
+            dLink.style.display = 'none';
+            document.body.appendChild(dLink);
+            dLink.click();
         },
 
         _CSVLoaded: function (data) {
