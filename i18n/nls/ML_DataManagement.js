@@ -1,5 +1,8 @@
 ﻿define({
     "root": {
+        //Generic
+        "confirmDataRemove": "Do you want to remove all your data?",
+        //
         "error": "Error",
         "errorParsingJson": "Error parsing Json file, check the structure and try again",
 
@@ -17,7 +20,8 @@
         "nullDSDCols": "DSD has no colums",
         "nullCsvCols": "CSV has no columns",
         "wrongColumnCount": "The columns' count in the CSV must match the one in the DSD",
-        "wrongColumnId": "The columns' names in the CSV must match the IDs in the DSD"
+        "wrongColumnId": "The columns' names in the CSV must match the IDs in the DSD",
+        "unknownCodes": "Some codes could not be found in a codelist"
 
     },
     "fr": true

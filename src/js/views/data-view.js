@@ -14,7 +14,14 @@ define([
 ], function (View, template, DataEditor, Noti, FUploadHelper, CSVToDs, CSV_Val, CSV_Val_Err, ResourceManager, MLRes, Chaplin) {
     'use strict';
     var h = {
-        dataEditorContainer: "#DataEditorMainContainer"
+        dataEditorContainer: "#DataEditorMainContainer",
+        btnDelAllData: "#btnDelAllData",
+
+        btnSaveData: "#dataEditEnd",
+        btnGetCSVTemplate: "#btnGetCSVTemplate"
+    };
+    var _html = {
+        spinner: '<i class="fa fa-spinner fa-spin"></i><i class="fa fa-circle-o-notch fa-spin"></i><i class="fa fa-refresh fa-spin"></i>'
     };
 
     var DataView = View.extend({
@@ -64,20 +71,13 @@ define([
             this.bindEventListeners();
         },
 
-        bindEventListeners: function () {
-            var me = this;
-            $('#dataEditEnd').on('click', function () { me.saveData(); });
-            $('#btnGetCSVTemplate').on('click', function () { me._getCSVTemplate(); });
-
-            //FUpload
-            amplify.subscribe('textFileUploaded.FileUploadHelper.fenix', this, this._CSVLoaded);
-        },
-
         saveData: function () {
             var me = this;
 
             var $btnSave = $('#dataEditEnd');
             $btnSave.attr('disabled', 'disabled');
+            var h = $btnSave.html();
+            $btnSave.html(_html.spinner);
             var data = DataEditor.getData();
             //returns false if not valid
             if (data) {
@@ -93,6 +93,7 @@ define([
                 //Ajax success callbacks
                 var loadSucc = function () {
                     $btnSave.removeAttr('disabled');
+                    $btnSave.html(h);
                     Chaplin.utils.redirectTo('data#show');
                 };
 
@@ -142,17 +143,41 @@ define([
             var csvCols = conv.getColumns();
             var csvData = conv.getData();
 
-            var valRes = CSV_Val.validate(DataEditor.getColumns(), csvCols, csvData);
+            var valRes = CSV_Val.validate(DataEditor.getColumns(), DataEditor.getCodelists(), csvCols, csvData);
 
             if (valRes && valRes.length > 0) {
-                for (var n = 0; n < valRes.length; n++)
-                    Noti.showError(MLRes.error, MLRes[valRes[n].type]);
+                for (var n = 0; n < valRes.length; n++) {
+                    if (valRes[n].type == 'unknownCodes') {
+                        Noti.showError(MLRes.error, MLRes[valRes[n].type] + ". - codelist: " + valRes[n].codelistId + " - codes: " + valRes[n].codes.join(','));
+                    }
+                    else {
+                        Noti.showError(MLRes.error, MLRes[valRes[n].type]);
+                    }
+                }
                 return;
             }
             DataEditor.appendData(csvData);
         },
+
+        bindEventListeners: function () {
+            var me = this;
+            $(h.btnSaveData).on('click', function () { me.saveData(); });
+            $(h.btnGetCSVTemplate).on('click', function () { me._getCSVTemplate(); });
+
+            $(h.btnDelAllData).on('click', function () {
+                var res = confirm(MLRes.confirmDataRemove);
+                if (!res)
+                    return;
+                DataEditor.removeAllData();
+            });
+
+            //FUpload
+            amplify.subscribe('textFileUploaded.FileUploadHelper.fenix', this, this._CSVLoaded);
+        },
         unbindEventListeners: function () {
-            $('#dataEditEnd').off();
+            $(h.btnSaveData).off('click');
+            $(h.btnGetCSVTemplate).off('click');
+            $(h.btnDelAllData).off('click');
             amplify.unsubscribe('textFileUploaded.FileUploadHelper.fenix', this._CSVLoaded);
         },
 

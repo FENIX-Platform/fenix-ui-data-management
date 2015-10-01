@@ -124,6 +124,9 @@ define([
         if (resource.metadata.version)
             toPut.metadata.version = resource.metadata.version;
         toPut.data = resource.data;
+
+        
+        //console.log(JSON.stringify(toPut));
         _ajaxPUT(addr, toPut, success, null, err);
     };
 

@@ -20,8 +20,17 @@
         <div class="col-xs-12">
             <div id="btnUploadGroup" class="form-group pull-right">
                 <table>
-                    <thead><tr><td>CSV Template</td><td><label id="lblUpload" for="dataFUpload">Upload</label></td></tr></thead>
+                    <thead>
+                        <tr>
+                            <td width="100px">Delete all</td>
+                            <td width="120px">CSV Template</td>
+                            <td width="100px"><label id="lblUpload" for="dataFUpload">Upload</label></td>
+                        </tr>
+                    </thead>
                     <tr>
+                        <td>
+                            <button type="button" id="btnDelAllData" class="glyphicon glyphicon-remove-circle"></button>
+                        </td>
                         <td>
                             <button type="button" id="btnGetCSVTemplate">Get CSV template</button>
                         </td>
