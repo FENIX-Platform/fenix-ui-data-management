@@ -78,6 +78,12 @@ define([
                 $btnColsEditDone.attr('disabled', 'disabled');
 
                 me.resource.metadata.dsd = DSDEditor.get();
+                //Force contextSys and datasource
+                var contextSys = C.DSD_EDITOR_CONTEXT_SYSTEM || DC.DSD_EDITOR_CONTEXT_SYSTEM;
+                var datasources = C.DSD_EDITOR_DATASOURCES || DC.DSD_EDITOR_DATASOURCES;
+                me.resource.metadata.dsd.contextSystem = contextSys;
+                me.resource.metadata.dsd.datasources = datasources;
+
                 //ajax callbacks
                 var succ = function () {
                     Chaplin.utils.redirectTo('resume#show');

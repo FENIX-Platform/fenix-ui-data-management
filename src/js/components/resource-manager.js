@@ -33,6 +33,8 @@ define([
         _ajaxGET(addr, params, succ, err, complete);
     };
 
+
+
     /*ResourceManager.prototype.findResource = function (toPost, callBSuccess, callBComplete, callB_Err) {
         var addr = getResourcesFindAddress(cfg, cfgDef);
         ajaxPOST(addr, toPost, callBSuccess, callBComplete);
@@ -55,6 +57,10 @@ define([
         _ajaxDELETE(addr, succ, err);
     };
 
+    //ResourceManager.prototype.resourceExists=function(uid, version){
+    //http://fenix.fao.org/d3s_dev/msd/resources/uid/dan400
+    //}
+
 
     ResourceManager.prototype.setCurrentResource = function (resource) {
         this.resource = resource;
@@ -64,6 +70,38 @@ define([
     ResourceManager.prototype.getCurrentResource = function () {
         return this.resource;
     };
+
+    //Meta
+    ResourceManager.prototype.saveMeta = function (meta, succ, err, complete) {
+        var addr = getSaveMetadataURL(cfg, cfgDef);
+        var success = function (response) {
+            if (succ) succ(response);
+        };
+        /*var error = function () {
+            if (err) err();
+        };*/
+
+        _ajaxPOST(addr, meta, success, complete, err);
+    };
+    ResourceManager.prototype.updateMeta = function (meta, succ, err, complete) {
+        var addr = getSaveMetadataURL(cfg, cfgDef);
+        //it is an update, avoid rewriting and deleting fields in dsd by sending only the rid without the other fields or the DSD might be damaged
+        if (meta.dsd && meta.dsd.rid) {
+            meta.dsd = { rid: meta.dsd.rid };
+        }
+        var success = function (response) {
+            if (succ) succ(response);
+        };
+        /*var error = function () {
+            if (err) err();
+        };*/
+
+        _ajaxPUT(addr, meta, success, complete, err)
+    };
+
+    //END Meta
+
+    //DSD
     ResourceManager.prototype.loadDSD = function (resource, success, err, complete) {
         var self = this;
         var addr = getDataAndMetaURL(cfg, cfgDef, resource.metadata.uid, resource.metadata.version);
@@ -117,7 +155,10 @@ define([
             _ajaxPATCH(addr, toPatch, success, complete, err);
         }
     };
+    //End DSD
 
+
+    //Data
     ResourceManager.prototype.putData = function (resource, success, err) {
         var addr = getSaveDataURL(cfg, cfgDef);
         var toPut = { metadata: { uid: resource.metadata.uid } };
@@ -125,10 +166,11 @@ define([
             toPut.metadata.version = resource.metadata.version;
         toPut.data = resource.data;
 
-        
+
         //console.log(JSON.stringify(toPut));
         _ajaxPUT(addr, toPut, success, null, err);
     };
+    //END data
 
     //Load codelists
     ResourceManager.prototype.getCodelistsFromCurrentResource = function (success, err) {
@@ -316,23 +358,28 @@ define([
             return addr + "/" + uid + "/" + version;
         return addr + "/uid/" + uid;
     }
+    //data and meta load
     function getDataAndMetaURL(cfg, cfgDef, uid, version) {
         var srvc = cfg.SERVICE_GET_DATA_METADATA || cfgDef.SERVICE_GET_DATA_METADATA;
         var addr = pathConcatenation(getBase(cfg, cfgDef), srvc.service);
         return appendUID_Version(addr, uid, version);
     }
+    //save metadata
     function getSaveMetadataURL(cfg, cfgDef) {
         var srvc = cfg.SERVICE_SAVE_METADATA || cfgDef.SERVICE_SAVE_METADATA;
         return pathConcatenation(getBase(cfg, cfgDef), srvc.service);
     }
+    //save dsd
     function getSaveDSDURL(cfg, cfgDef) {
         var srvc = cfg.SERVICE_SAVE_DSD || cfgDef.SERVICE_SAVE_DSD;
         return pathConcatenation(getBase(cfg, cfgDef), srvc.service);
     }
+    //save data
     function getSaveDataURL(cfg, cfgDef) {
         var srvc = cfg.SERVICE_SAVE_DATA || cfgDef.SERVICE_SAVE_DATA;
         return pathConcatenation(getBase(cfg, cfgDef), srvc.service);
     }
+    //resources find
     function getResourcesFindAddress(cfg, cfgDef) {
         var srvc = cfg.SERVICE_RESOURCES_FIND || cfgDef.SERVICE_RESOURCES_FIND;
         return pathConcatenation(getBase(cfg, cfgDef), srvc.service)

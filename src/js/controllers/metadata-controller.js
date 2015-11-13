@@ -31,8 +31,6 @@ define([
         denyAccessControl: function () { },
 
         show: function (params, route, options) {
-            console.log('h1');
-            console.log(this.authorized);
             if (this.authorized === false) {
                 Chaplin.mediator.publish(Events.NOT_LOGGED);
                 return;
