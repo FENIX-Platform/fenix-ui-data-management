@@ -13,7 +13,6 @@
                     <h2 class="dm-section-title pull-left">Data Structure Definition Editor</h2>
 
                     <div class="btn-toolbar pull-right">
-                        <!--<button id="btnColsEditDone" type="button" class="btn btn-default pull-right">Save</button>-->
                         <button id="btnColsEditDone" type="button" class="btn btn-default pull-right">
                             <!--<span class="glyphicon glyphicon-floppy-disk"></span>-->
                             Save
@@ -23,10 +22,21 @@
             </div>
             <div id="DSDEditorMainContainer" class="row"></div>
             <div class="row">
-                <button id="btnDSDDownload" type="button" class="btn btn-default pull-right">Download</button>
                 <div id="btnUploadGroup" class="form-group">
-                    <label id="lblUpload" for="dsdFUpload">Upload</label>
-                    <input type="file" name="filename" id="dsdFUpload" />
+                    <table class="table">
+                        <tr>
+                            <td>
+                                <label id="lblDownload" for="btnDSDDownload">Download</label><br />
+                                <button id="btnDSDDownload" type="button" class="btn btn-default">Download</button>
+                            </td>
+                            <td>
+                                <label id="lblUpload" for="dsdFUpload">Upload</label><br />
+                                <input type="file" name="filename" id="dsdFUpload" />
+                            </td>
+                        </tr>
+                    </table>
+
+
                 </div>
             </div>
         </div>
