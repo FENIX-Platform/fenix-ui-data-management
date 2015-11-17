@@ -71,17 +71,29 @@ define([
                     Noti.showError("ERROR", 'Please fill the minimum set of metadata in the "Identification" and "Contacts" sections');
                     return;
                 }
-
-                toSave.uid = "dan401b";
-                var succ = function (retVal) {
+                //toSave.uid = "dan401b";
+                var succNew = function (retVal) {
                     var resToLoad = { metadata: { uid: retVal.uid } };
                     if (retVal.version)
                         resToLoad.version = retVal.version;
                     ResourceManager.loadResource(resToLoad,
                         function (d) {
+                            me.resource = ResourceManager.getCurrentResource();
                             MetadataEditor.set(d.metadata);
                         });
                 };
+                var succUpd = function () {
+                    var resToLoad = { metadata: { uid: me.resource.metadata.uid } };
+                    if (me.resource.metadata.version)
+                        resToLoad.version = me.resource.metadata.version;
+
+                    ResourceManager.loadResource(resToLoad,
+                        function (d) {
+                            me.resource = ResourceManager.getCurrentResource();
+                            MetadataEditor.set(d.metadata);
+                        });
+                }
+
                 var err = function () {
                     Noti.showError("ERROR", 'Error saving resource, please try again.')
                 };
@@ -92,14 +104,14 @@ define([
                 //Add the context system if a new resource is created
                 if (me.newResource) {
                     toSave.dsd = { contextSystem: contextSys };
-                    ResourceManager.saveMeta(toSave, succ, err, complete);
+                    ResourceManager.saveMeta(toSave, succNew, err, complete);
                 }
                 else {
+
                     if (me.resource && me.resource.metadata && me.resource.metadata.dsd) {
                         toSave.dsd = { rid: me.resource.metadata.dsd.rid };
                     }
-                    //toSave.dsd
-                    ResourceManager.updateMeta(toSave, succ, err, complete);
+                    ResourceManager.updateMeta(toSave, succUpd, err, complete);
                 }
 
                 /* console.log("cfg.DSD_EDITOR_CONTEXT_SYSTEM");
