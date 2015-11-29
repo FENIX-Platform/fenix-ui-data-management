@@ -113,27 +113,6 @@ define([
                     }
                     ResourceManager.updateMeta(toSave, succUpd, err, complete);
                 }
-
-                /* console.log("cfg.DSD_EDITOR_CONTEXT_SYSTEM");
-                 console.log(cfg.DSD_EDITOR_CONTEXT_SYSTEM);
-                 console.log("cfg.DSD_EDITOR_DATASOURCES");
-                 console.log(cfg.DSD_EDITOR_DATASOURCES);*/
-
-
-                /*cfg.DSD_EDITOR_CONTEXT_SYSTEM = "cstat_zmb";
-                cfg.DSD_EDITOR_DATASOURCES = ["D3S"];*/
-                //toSave.dsd = { datasources: ["D3S"], contextSystem: "demo1" };
-
-                /*
-                toSave.dsd = { contextSystem: "demo1" };
-                toSave.dsd.rid = "63_195";
-
-                console.log(JSON.stringify(toSave));*/
-
-                //ResourceManager.saveMeta(toSave, succ, err, complete);
-                //ResourceManager.updateMeta(toSave, succ, err, complete);
-
-
             });
         },
         unbindEventListeners: function () {
