@@ -44,6 +44,9 @@ define([
             this.fUpload = new FUploadHelper({ accept: ['csv'] });
             this.fUpload.render('#dataFUpload');
 
+            //btns
+            this.$btnSave = $('#dataEditEnd');
+
             var columns, data, cLists;
             this.resource = ResourceManager.getCurrentResource();
             if (!this.resource || !this.resource.metadata || !this.resource.metadata.dsd || !this.resource.metadata.dsd.columns)
@@ -55,17 +58,22 @@ define([
             var dataEditorContainerID = "#DataEditorMainContainer";
             var $dataEditorContainer = $("#DataEditorMainContainer");
 
-            //var me = this;
+            var me = this;
             ResourceManager.getCodelistsFromCurrentResource(function (cl) {
+                me.$btnSave.attr('disabled', 'disabled');
+                me.fUpload.enabled(false);
                 cLists = cl;
                 DataEditor.init(dataEditorContainerID, {},
                     function () {
                         DataEditor.setColumns(columns, cl);
                         DataEditor.setData(data);
+                        me.$btnSave.removeAttr('disabled');
+                        me.fUpload.enabled(true);
                     });
             },
             function () {
                 Noti.showError('', MLRes.errorLoadinResource + " [codelists]");
+                me.$btnSave.removeAttr('disabled');
             });
 
             this.bindEventListeners();
@@ -74,10 +82,10 @@ define([
         saveData: function () {
             var me = this;
 
-            var $btnSave = $('#dataEditEnd');
-            $btnSave.attr('disabled', 'disabled');
-            var h = $btnSave.html();
-            $btnSave.html(_html.spinner);
+            //var $btnSave = $('#dataEditEnd');
+            this.$btnSave.attr('disabled', 'disabled');
+            var h = this.$btnSave.html();
+            this.$btnSave.html(_html.spinner);
             var data = DataEditor.getData();
             //returns false if not valid
             if (data) {
@@ -92,8 +100,8 @@ define([
                 var putDSDErr = function () { Noti.showError(MLRes.error, MLRes.errorSavingResource + " (DSD)"); };
                 //Ajax success callbacks
                 var loadSucc = function () {
-                    $btnSave.removeAttr('disabled');
-                    $btnSave.html(h);
+                    this.$btnSave.removeAttr('disabled');
+                    this.$btnSave.html(h);
                     Chaplin.utils.redirectTo('data#show');
                 };
 
