@@ -5,8 +5,10 @@ define([
     'fx-d-m/views/base/view',
     'text!fx-d-m/templates/dsd.hbs',
     'fx-DSDEditor/start',
-    'fx-DSDEditor/js/dataManagementCommons/FileUploadHelper',
-    'fx-DSDEditor/js/dataManagementCommons/Notifications',
+    //'fx-DSDEditor/js/dataManagementCommons/FileUploadHelper',
+    //'fx-DSDEditor/js/dataManagementCommons/Notifications',
+    'fx-DataMngCommons/js/FileUploadHelper',
+    'fx-DataMngCommons/js/Notifications',
     'fx-d-m/components/resource-manager',
     'i18n!fx-d-m/i18n/nls/ML_DataManagement'
 ], function (Chaplin, C, DC, View, template, DSDEditor, FUploadHelper, Notif, ResourceManager, MLRes) {

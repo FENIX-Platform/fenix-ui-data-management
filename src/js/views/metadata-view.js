@@ -5,7 +5,7 @@ define([
     'fx-d-m/views/base/view',
     'text!fx-d-m/templates/metadata.hbs',
     'fx-MetaEditor2/start',
-    'fx-MetaEditor2/js/dataManagementCommons/Notifications',
+    'fx-DataMngCommons/js/Notifications',
     'fx-d-m/components/resource-manager',
     'i18n!fx-d-m/i18n/nls/ML_DataManagement',
 ], function (Chaplin, C, DC, View, template, MetadataEditor, Noti, ResourceManager, MLRes) {

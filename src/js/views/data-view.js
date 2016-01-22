@@ -2,8 +2,8 @@ define([
     'fx-d-m/views/base/view',
     'text!fx-d-m/templates/data.hbs',
     'fx-DataEditor/start',
-    'fx-DSDEditor/js/dataManagementCommons/Notifications',
-    'fx-DSDEditor/js/dataManagementCommons/FileUploadHelper',
+    'fx-DataMngCommons/js/Notifications',
+    'fx-DataMngCommons/js/FileUploadHelper',
     'fx-DataEditor/js/DataEditor/helpers/CSV_To_Dataset',
     'fx-DataEditor/js/DataEditor/helpers/Validator_CSV',
     'fx-DataEditor/js/DataEditor/helpers/Validator_CSV_Errors',
@@ -100,8 +100,8 @@ define([
                 var putDSDErr = function () { Noti.showError(MLRes.error, MLRes.errorSavingResource + " (DSD)"); };
                 //Ajax success callbacks
                 var loadSucc = function () {
-                    this.$btnSave.removeAttr('disabled');
-                    this.$btnSave.html(h);
+                    me.$btnSave.removeAttr('disabled');
+                    me.$btnSave.html(h);
                     Chaplin.utils.redirectTo('data#show');
                 };
 
