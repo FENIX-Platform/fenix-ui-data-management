@@ -1,17 +1,49 @@
-<div id="DataEditorContainer" >
-  <div class="row">
-    <div class="col-xs-12">
-      <div class="col-xs-12 dm-header">
-        <h2 class="dm-section-title pull-left">Data Editor</h2>
-        <div class="btn-toolbar pull-right">
-          <button id="dataEditEnd" type="button" class="btn btn-default pull-right">Save</button>
+<div id="DataEditorContainer">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="col-xs-12 dm-header">
+                <h2 class="dm-section-title pull-left">Data Editor</h2>
+                <div class="btn-toolbar pull-right">
+                    <button id="dataEditEnd" type="button" class="btn btn-default pull-right">
+                        <!--<span class="glyphicon glyphicon-floppy-disk"></span>-->
+                        Save
+                    </button>
+                </div>
+            </div>
         </div>
-      </div>
     </div>
-  </div>
-  <div class="row">
-    <div class="col-xs-12">
-      <div id="DataEditorMainContainer">LOADING...</div>
+    <div class="row">
+        <div class="col-xs-12">
+            <div id="DataEditorMainContainer">LOADING...</div>
+        </div>
     </div>
-  </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <div id="btnUploadGroup" class="form-group pull-right">
+                <table>
+                    <thead>
+                        <tr>
+                            <td width="100px">Delete all</td>
+                            <td width="120px">CSV Template</td>
+                            <td width="100px"><label id="lblUpload" for="dataFUpload">Upload</label></td>
+                        </tr>
+                    </thead>
+                    <tr>
+                        <td>
+                            <button type="button" id="btnDelAllData" class="glyphicon glyphicon-remove-circle"></button>
+                        </td>
+                        <td>
+                            <button type="button" id="btnGetCSVTemplate">Get CSV template</button>
+                        </td>
+                        <td>
+
+                            <input type="file" name="filename" id="dataFUpload" />
+                        </td>
+                    </tr>
+                </table>
+
+
+            </div>
+        </div>
+    </div>
 </div>

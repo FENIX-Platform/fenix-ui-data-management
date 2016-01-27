@@ -19,58 +19,21 @@ define([
         Chaplin.mediator.subscribe(Events.RESOURCE_SELECT, this.loadResource, this);
     };
 
-    //When redesigning the new dataManagement use this instead of the old one,
-    //the self.setCurrentResource must be called separately
-    ResourceManager.prototype.loadResourceNew = function (resource, success, err, noData) {
-        var addr = getDataAndMetaURL(cfg, cfgDef, resource.metadata.uid, resource.metadata.version);
-        var srvc = cfg.SERVICE_GET_DATA_METADATA || cfgDef.SERVICE_GET_DATA_METADATA;
-        var params = srvc.queryParams;
-
-        var succ = function (data) {
-            if (data) {
-                if (success)
-                    success(data);
-            }
-            else {
-                if (noData) noData();
-            }
-        }
-        _ajaxGET(addr, params, succ, err);
-    };
-
-    ResourceManager.prototype.loadResource = function (resource, success, err, noData) {
-        var me = this;
-        var succ = function (data) {
-            me.setCurrentResource(data);
-            if (success)
-                success();
-        }
-
-        this.loadResourceNew(resource, succ, err, noData);
-    };
-    /*ResourceManager.prototype.loadResource = function (resource, success, err, noData) {
+    ResourceManager.prototype.loadResource = function (resource, success, err, complete) {
         var self = this;
         var addr = getDataAndMetaURL(cfg, cfgDef, resource.metadata.uid, resource.metadata.version);
         var srvc = cfg.SERVICE_GET_DATA_METADATA || cfgDef.SERVICE_GET_DATA_METADATA;
         var params = srvc.queryParams;
 
         var succ = function (data) {
-
-            if (data) {
-                self.setCurrentResource(data);
-            }
-            else {
-                if (noData) noData();
-            }
-
+            self.setCurrentResource(data);
             if (success)
                 success(data);
-            //self.setCurrentResource(data);
-            //if (success)
-            //    success(data);
         };
-        _ajaxGET(addr, params, succ, err);
-    };*/
+        _ajaxGET(addr, params, succ, err, complete);
+    };
+
+
 
     /*ResourceManager.prototype.findResource = function (toPost, callBSuccess, callBComplete, callB_Err) {
         var addr = getResourcesFindAddress(cfg, cfgDef);
@@ -94,6 +57,10 @@ define([
         _ajaxDELETE(addr, succ, err);
     };
 
+    //ResourceManager.prototype.resourceExists=function(uid, version){
+    //http://fenix.fao.org/d3s_dev/msd/resources/uid/dan400
+    //}
+
 
     ResourceManager.prototype.setCurrentResource = function (resource) {
         this.resource = resource;
@@ -105,65 +72,37 @@ define([
     };
 
     //Meta
-    ResourceManager.prototype.createMeta = function (resource, success, complete, err) {
+    ResourceManager.prototype.saveMeta = function (meta, succ, err, complete) {
         var addr = getSaveMetadataURL(cfg, cfgDef);
-        if (!resource)
-            throw new Error("Nothing to save, resource cannot be null");
-        if (!resource.metadata)
-            throw new Error("Nothing to save, resource must contain a metdata section");
-        if (!resource.metadata.uid)
-            throw new Error("Nothing to save, the metadata section must contain a UID");
-        if (!resource.metadata.meContent.resourceRepresentationType)
-            throw new Error("Nothing to save, the metadata section must contain a meContent.resourceRepresentationType");
+        var success = function (response) {
+            if (succ) succ(response);
+        };
+        /*var error = function () {
+            if (err) err();
+        };*/
 
-        _ajaxPOST(addr, resource.metadata, success, complete, err);
-
-        /*
-       "create": {
-           "url" : "http://fenix.fao.org/d3s_dev/msd/resources/metadata",
-           "type": "post",
-           "content": "json",
-           "response": {
-               "keyFields": [{"meIdentification" : ["uid", "rid", "version"]}]
-           }
-        },
-        "overwrite": {
-            "url" : "http://fenix.fao.org/d3s_dev/msd/resources/metadata",
-            "type" : "put",
-            "content": "json",
-            "response": {
-                "keyFields": [{"meIdentification" : ["uid", "rid", "version"]}]
-            }
-        }
-}
-*/
+        _ajaxPOST(addr, meta, success, complete, err);
     };
-    ResourceManager.prototype.updateMeta = function (resource, success, complete, err) {
+    ResourceManager.prototype.updateMeta = function (meta, succ, err, complete) {
         var addr = getSaveMetadataURL(cfg, cfgDef);
-        if (!resource)
-            throw new Error("Nothing to save, resource cannot be null");
-        if (!resource.metadata)
-            throw new Error("Nothing to save, resource must contain a metdata section");
-        if (!resource.metadata.uid)
-            throw new Error("Nothing to save, the metadata section must contain a UID");
-        if (!resource.metadata.meContent.resourceRepresentationType)
-            throw new Error("Nothing to save, the metadata section must contain a meContent.resourceRepresentationType");
+        //it is an update, avoid rewriting and deleting fields in dsd by sending only the rid without the other fields or the DSD might be damaged
+        if (meta.dsd && meta.dsd.rid) {
+            meta.dsd = { rid: meta.dsd.rid };
+        }
+        var success = function (response) {
+            if (succ) succ(response);
+        };
+        /*var error = function () {
+            if (err) err();
+        };*/
 
-        var toSend = null;
-        if (resource.metadata.dsd.rid) {
-            toSend = $.extend(true, {}, resource.metadata);
-            toSend.dsd = {};
-            toSend.dsd.rid = resource.metadata.dsd.rid;
-        }
-        else {
-            toSend = resource.metadata;
-        }
-        _ajaxPUT(addr, toSend, success, complete, err);
+        _ajaxPUT(addr, meta, success, complete, err)
     };
 
     //END Meta
+
     //DSD
-    ResourceManager.prototype.loadDSD = function (resource, success, err) {
+    ResourceManager.prototype.loadDSD = function (resource, success, err, complete) {
         var self = this;
         var addr = getDataAndMetaURL(cfg, cfgDef, resource.metadata.uid, resource.metadata.version);
         var srvc = cfg.SERVICE_GET_DATA_METADATA || cfgDef.SERVICE_GET_DATA_METADATA;
@@ -176,7 +115,7 @@ define([
             if (success)
                 success(dsd);
         };
-        _ajaxGET(addr, params, succ, err);
+        _ajaxGET(addr, params, succ, err, complete);
     };
 
     ResourceManager.prototype.loadDSDColumns = function (resource, success, err) {
@@ -191,7 +130,7 @@ define([
         this.loadDSD(resource, succ, err);
     };
 
-    ResourceManager.prototype.updateDSD = function (resource, success, err) {
+    ResourceManager.prototype.updateDSD = function (resource, success, err, complete) {
         var meta = this.resource.metadata;
         if (!meta.dsd)
             throw new Error("DSD to update cannot be null");
@@ -204,7 +143,7 @@ define([
 
         if (meta.dsd && meta.dsd.rid) {
             var addr = getSaveDSDURL(cfg, cfgDef);
-            _ajaxPUT(addr, meta.dsd, success, null, err);
+            _ajaxPUT(addr, meta.dsd, success, complete, err);
         }
         else {
             var toPatch = { uid: meta.uid };
@@ -213,20 +152,25 @@ define([
             toPatch.dsd = meta.dsd;
 
             var addr = getSaveMetadataURL(cfg, cfgDef);
-            _ajaxPATCH(addr, toPatch, success, null, err);
+            _ajaxPATCH(addr, toPatch, success, complete, err);
         }
     };
+    //End DSD
 
-    //DSD End
 
+    //Data
     ResourceManager.prototype.putData = function (resource, success, err) {
         var addr = getSaveDataURL(cfg, cfgDef);
         var toPut = { metadata: { uid: resource.metadata.uid } };
         if (resource.metadata.version)
             toPut.metadata.version = resource.metadata.version;
         toPut.data = resource.data;
+
+
+        //console.log(JSON.stringify(toPut));
         _ajaxPUT(addr, toPut, success, null, err);
     };
+    //END data
 
     //Load codelists
     ResourceManager.prototype.getCodelistsFromCurrentResource = function (success, err) {
@@ -249,24 +193,42 @@ define([
         var f = [];
         for (var i = 0; i < uids.length; i++) {
             calls[i] = getDataAndMetaURL(cfg, cfgDef, uids[i].uid, uids[i].version);
+            //f[i] = $.ajax(calls[i]).done(function () { console.log('done'); }).fail(function () { console.log('fail'); });
             f[i] = $.ajax(calls[i]);
         }
-        //Handle errors!
         $.when.apply($, f).done(function () {
             var results = {};
             var id;
+            var downloadErr = false;
+            var downloadErrUIDs = [];
             for (var j = 0; j < f.length; j++) {
                 if (f.length == 1) {
-                    id = getUIDVer(arguments[j])
-                    results[id] = arguments[j];
+                    if (!arguments[j]) {
+                        downloadErrUIDs.push("UID: " + uids[j].uid + " ver:" + uids[j].version);
+                        downloadErr = true;
+                    }
+                    else {
+                        id = getUIDVer(arguments[j])
+                        results[id] = arguments[j];
+                    }
                 }
                 else {
-                    id = getUIDVer(arguments[j][0])
-                    results[id] = arguments[j][0];
+                    if (!arguments[j][0]) {
+                        downloadErrUIDs.push("UID: " + uids[j].uid + " ver:" + uids[j].version);
+                        downloadErr = true;
+                    }
+                    else {
+                        id = getUIDVer(arguments[j][0])
+                        results[id] = arguments[j][0];
+                    }
                 }
             }
-            if (success)
-                success(results);
+            if (downloadErr) {
+                if (err) err(downloadErrUIDs);
+            }
+            else {
+                if (success) success(results);
+            }
         }).fail(function () { if (err) err(); });
     }
 
@@ -308,7 +270,7 @@ define([
 
 
     //AJAX
-    function _ajaxGET(url, queryParam, success, err) {
+    function _ajaxGET(url, queryParam, success, err, complete) {
         $.ajax({
             url: url,
             crossDomain: true,
@@ -323,11 +285,14 @@ define([
                     err();
                 else
                     console.log('Error on ajax GET');
+            },
+            complete: function () {
+                if (complete) complete();
             }
         });
     }
 
-    function _ajaxDELETE(url, success, err) {
+    function _ajaxDELETE(url, success, err, complete) {
         $.ajax({
             url: url,
             type: 'DELETE',
@@ -341,6 +306,9 @@ define([
                     err('Error on ajax DELETE');
                 else
                     console.log('Error on ajax DELETE')
+            },
+            complete: function () {
+                if (complete) complete();
             }
         });
     }
@@ -390,23 +358,28 @@ define([
             return addr + "/" + uid + "/" + version;
         return addr + "/uid/" + uid;
     }
+    //data and meta load
     function getDataAndMetaURL(cfg, cfgDef, uid, version) {
         var srvc = cfg.SERVICE_GET_DATA_METADATA || cfgDef.SERVICE_GET_DATA_METADATA;
         var addr = pathConcatenation(getBase(cfg, cfgDef), srvc.service);
         return appendUID_Version(addr, uid, version);
     }
+    //save metadata
     function getSaveMetadataURL(cfg, cfgDef) {
         var srvc = cfg.SERVICE_SAVE_METADATA || cfgDef.SERVICE_SAVE_METADATA;
         return pathConcatenation(getBase(cfg, cfgDef), srvc.service);
     }
+    //save dsd
     function getSaveDSDURL(cfg, cfgDef) {
         var srvc = cfg.SERVICE_SAVE_DSD || cfgDef.SERVICE_SAVE_DSD;
         return pathConcatenation(getBase(cfg, cfgDef), srvc.service);
     }
+    //save data
     function getSaveDataURL(cfg, cfgDef) {
         var srvc = cfg.SERVICE_SAVE_DATA || cfgDef.SERVICE_SAVE_DATA;
         return pathConcatenation(getBase(cfg, cfgDef), srvc.service);
     }
+    //resources find
     function getResourcesFindAddress(cfg, cfgDef) {
         var srvc = cfg.SERVICE_RESOURCES_FIND || cfgDef.SERVICE_RESOURCES_FIND;
         return pathConcatenation(getBase(cfg, cfgDef), srvc.service)

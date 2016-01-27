@@ -1,10 +1,10 @@
 <!-- FENIX DSD Container-->
 <div id="DSDEditorContainer">
     <!--  <p>
-        Welcome to the Fenix Platform DSD Editor. Please start by adding the metadata. Later, you can use the Column
-        editor on the left (1) to add and modify columns. These are displayed in the right side (2), where you can
-        check your personalized columns.
-      </p>-->
+          Welcome to the Fenix Platform DSD Editor. Please start by adding the metadata. Later, you can use the Column
+          editor on the left (1) to add and modify columns. These are displayed in the right side (2), where you can
+          check your personalized columns.
+        </p>-->
 
     <div class="row">
         <div class="col-sm-12">
@@ -13,44 +13,30 @@
                     <h2 class="dm-section-title pull-left">Data Structure Definition Editor</h2>
 
                     <div class="btn-toolbar pull-right">
-                        <button id="btnColsLoad" type="button" class="btn btn-default">__Copy Columns</button>
-                        <button id="btnColsEditDone" type="button" class="btn btn-default pull-right">Save</button>
+                        <button id="btnColsEditDone" type="button" class="btn btn-default pull-right">
+                            <!--<span class="glyphicon glyphicon-floppy-disk"></span>-->
+                            Save
+                        </button>
                     </div>
                 </div>
             </div>
             <div id="DSDEditorMainContainer" class="row"></div>
-            <div id="divCSV" class="row">
-                Upload a CSV
-                <div id="divUplaodCSV"></div>
-            </div>
-            <!-- <hr/>
-             <a href="sampledata/management/fenix_data_upload_sample.csv">Download Sample CSV</a>
-             <hr/>-->
-        </div>
-    </div>
-
-    <div id="uidVerPopup" class="modal" data-backdrop="static">
-        <div class="modal-dialog modal-sm">
-            <div class="modal-content">
-                <div class="modal-body">
-                    <table>
+            <div class="row">
+                <div id="btnUploadGroup" class="form-group">
+                    <table class="table">
                         <tr>
-                            <td>UID</td>
                             <td>
-                                <input id="txtUID" type="text"/>
+                                <label id="lblDownload" for="btnDSDDownload">Download</label><br />
+                                <button id="btnDSDDownload" type="button" class="btn btn-default">Download</button>
                             </td>
-                        </tr>
-                        <tr>
-                            <td>Version</td>
                             <td>
-                                <input id="txtVersion" type="text"/>
+                                <label id="lblUpload" for="dsdFUpload">Upload</label><br />
+                                <input type="file" name="filename" id="dsdFUpload" />
                             </td>
                         </tr>
                     </table>
-                </div>
-                <div class="modal-footer">
-                    <button id="btnUidVerCanc" type="button" class="btn btn-default">__Cancel</button>
-                    <button id="btnUidVerOk" type="button" class="btn btn-primary">__OK</button>
+
+
                 </div>
             </div>
         </div>

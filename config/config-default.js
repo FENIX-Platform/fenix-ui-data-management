@@ -29,7 +29,7 @@ define(function () {
         METADATA_EDITOR_VALIDATION: "./submodules/fenix-ui-metadata-editor/conf/json/fx-editor-validation-config.json",
         METADATA_EDITOR_JSON_MAPPING: "./submodules/fenix-ui-metadata-editor/conf/json/fx-editor-mapping-config.json",
         //AJAX_EVENT_CALL: "./submodules/fenix-ui-metadata-editor/conf/json/fx-editor-ajax-config_fenix.json",
-        METADATA_EDITOR_AJAX_EVENT_CALL: "./submodules/fenix-ui-metadata-editor/conf/json/fx-editor-ajax-config_DEV.json",
+        //METADATA_EDITOR_AJAX_EVENT_CALL: "./submodules/fenix-ui-metadata-editor/conf/json/fx-editor-ajax-config_DEV.json",
         METADATA_EDITOR_DATES: "./submodules/fenix-ui-metadata-editor/conf/json/fx-editor-dates-config.json",
 
         SERVICE_BASE_ADDRESS: "http://fenix.fao.org/d3s_fenix/msd",

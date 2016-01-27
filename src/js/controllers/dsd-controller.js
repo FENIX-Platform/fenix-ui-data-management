@@ -22,7 +22,10 @@ define([
 
         performAccessControlChecks: function () {
             var me = this;
+
             return new RSVP.Promise(function (fulfilled, rejected) {
+                /*fulfilled();
+                return;*/
                 if (!AccessManager.isLogged()) {
                     me.authorized = false;
                     rejected();
@@ -33,7 +36,7 @@ define([
                     rejected();
                     return;
                 }
-                
+
                 //Fulfilled, the DSD interface will disable the edit features
                 if (ResourceManager.hasData())
                     fulfilled();
