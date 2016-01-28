@@ -5,20 +5,27 @@ define([
     'fx-DataMngCommons/js/Notifications',
     'fx-DataMngCommons/js/FileUploadHelper',
     'fx-DataEditor/js/DataEditor/helpers/CSV_To_Dataset',
+    'fx-DataEditor/js/DataEditor/helpers/Data_Validator',
     'fx-DataEditor/js/DataEditor/helpers/Validator_CSV',
     'fx-DataEditor/js/DataEditor/helpers/Validator_CSV_Errors',
     'fx-d-m/components/resource-manager',
     'i18n!fx-d-m/i18n/nls/ML_DataManagement',
     'chaplin',
     'amplify'
-], function (View, template, DataEditor, Noti, FUploadHelper, CSVToDs, CSV_Val, CSV_Val_Err, ResourceManager, MLRes, Chaplin) {
+], function (View, template, DataEditor, Noti, FUploadHelper, CSVToDs, DataValidator, CSV_Val, CSV_Val_Err, ResourceManager, MLRes, Chaplin) {
     'use strict';
     var h = {
-        dataEditorContainer: "#DataEditorMainContainer",
+        dataEditorMainContainer: "#DataEditorMainContainer",
+        dataEditorContainer: "#DataEditorContainer",
+        dataUploadContainer: "#DataUploadContainer",
         btnDelAllData: "#btnDelAllData",
 
         btnSaveData: "#dataEditEnd",
-        btnGetCSVTemplate: "#btnGetCSVTemplate"
+        btnGetCSVTemplate: "#btnGetCSVTemplate",
+
+        btnDataMergeKeepNew: "#btnDataMergeKeepNew",
+        btnDataMergeKeepOld: "#btnDataMergeKeepOld",
+        btnDataMergeCancel: "#btnDataMergeCancel"
     };
     var _html = {
         spinner: '<i class="fa fa-spinner fa-spin"></i><i class="fa fa-circle-o-notch fa-spin"></i><i class="fa fa-refresh fa-spin"></i>'
@@ -39,13 +46,19 @@ define([
         attach: function () {
             View.prototype.attach.call(this, arguments);
 
-            var $dataEditorContainer = $(h.dataEditorContainer);
+            this.$dataEditorContainer = $(h.dataEditorContainer);
+            this.$dataUploadContainer = $(h.dataUploadContainer);
+            this.$dataEditorContainer.show();
+            this.$dataUploadContainer.hide();
             //FUpload
             this.fUpload = new FUploadHelper({ accept: ['csv'] });
             this.fUpload.render('#dataFUpload');
 
             //btns
             this.$btnSave = $('#dataEditEnd');
+
+            //helpers
+            this.tmpCsvData;
 
             var columns, data, cLists;
             this.resource = ResourceManager.getCurrentResource();
@@ -55,15 +68,15 @@ define([
             data = this.resource.data;
 
             //Data Editor container
-            var dataEditorContainerID = "#DataEditorMainContainer";
-            var $dataEditorContainer = $("#DataEditorMainContainer");
+            var dataEditorMainContainerID = "#DataEditorMainContainer";
+            var $dataEditorMainContainer = $("#DataEditorMainContainer");
 
             var me = this;
             ResourceManager.getCodelistsFromCurrentResource(function (cl) {
                 me.$btnSave.attr('disabled', 'disabled');
                 me.fUpload.enabled(false);
                 cLists = cl;
-                DataEditor.init(dataEditorContainerID, {},
+                DataEditor.init(dataEditorMainContainerID, {},
                     function () {
                         DataEditor.setColumns(columns, cl);
                         DataEditor.setData(data);
@@ -164,7 +177,45 @@ define([
                 }
                 return;
             }
-            DataEditor.appendData(csvData);
+
+            var data = DataEditor.getData();
+            var dv = new DataValidator();
+
+            var keyDuplicates = dv.dataAppendCheck(DataEditor.getColumns(), data, csvData);
+            if (keyDuplicates && keyDuplicates.length > 0) {
+                this.tmpCsvData = csvData;
+                this._CSVLoadedShowMergeMode();
+            }
+
+            /*
+            //keepOld or keepNew
+            //dv.dataMerge(DataEditor.getColumns(), data, csvData, 'keepOld');
+            dv.dataMerge(DataEditor.getColumns(), data, csvData, 'keepNew');
+            DataEditor.setData(data);
+
+            var me = this;
+            setTimeout(function () {
+                me.$dataEditorContainer.show();
+                me.$dataUploadContainer.hide();
+            },
+            5000);
+            */
+
+            //DataEditor.appendData(csvData);
+        },
+        _CSVLoadedShowMergeMode: function () {
+            this.$dataEditorContainer.hide();
+            this.$dataUploadContainer.show();
+        },
+
+        _CSVLoadedMergeData: function (keepOldOrNew) {
+            var dv = new DataValidator();
+            var data = DataEditor.getData();
+            dv.dataMerge(DataEditor.getColumns(), data, this.tmpCsvData, keepOldOrNew);
+            DataEditor.setData(data);
+            this.tmpCsvData = null;
+            this.$dataEditorContainer.show();
+            this.$dataUploadContainer.hide();
         },
 
         bindEventListeners: function () {
@@ -179,6 +230,18 @@ define([
                 DataEditor.removeAllData();
             });
 
+            $(h.btnDataMergeKeepNew).on('click', function () {
+                me._CSVLoadedMergeData('keepNew');
+            });
+            $(h.btnDataMergeKeepOld).on('click', function () {
+                me._CSVLoadedMergeData('keepOld');
+            });
+            $(h.btnDataMergeCancel).on('click', function () {
+                me.tmpCsvData = null;
+                me.$dataEditorContainer.show();
+                me.$dataUploadContainer.hide();
+            });
+
             //FUpload
             amplify.subscribe('textFileUploaded.FileUploadHelper.fenix', this, this._CSVLoaded);
         },
@@ -186,6 +249,9 @@ define([
             $(h.btnSaveData).off('click');
             $(h.btnGetCSVTemplate).off('click');
             $(h.btnDelAllData).off('click');
+            $(h.btnDataMergeKeepNew).off('click');
+            $(h.btnDataMergeKeepOld).off('click');
+            $(h.btnDataMergeCancel).off('click');
             amplify.unsubscribe('textFileUploaded.FileUploadHelper.fenix', this._CSVLoaded);
         },
 
