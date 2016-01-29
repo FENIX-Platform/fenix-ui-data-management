@@ -178,7 +178,7 @@ define([
                 return;
             }
 
-            var data = DataEditor.getData();
+            var data = DataEditor.getDataWithoutValidation();
             var dv = new DataValidator();
 
             var keyDuplicates = dv.dataAppendCheck(DataEditor.getColumns(), data, csvData);
@@ -186,22 +186,6 @@ define([
                 this.tmpCsvData = csvData;
                 this._CSVLoadedShowMergeMode();
             }
-
-            /*
-            //keepOld or keepNew
-            //dv.dataMerge(DataEditor.getColumns(), data, csvData, 'keepOld');
-            dv.dataMerge(DataEditor.getColumns(), data, csvData, 'keepNew');
-            DataEditor.setData(data);
-
-            var me = this;
-            setTimeout(function () {
-                me.$dataEditorContainer.show();
-                me.$dataUploadContainer.hide();
-            },
-            5000);
-            */
-
-            //DataEditor.appendData(csvData);
         },
         _CSVLoadedShowMergeMode: function () {
             this.$dataEditorContainer.hide();
@@ -210,7 +194,7 @@ define([
 
         _CSVLoadedMergeData: function (keepOldOrNew) {
             var dv = new DataValidator();
-            var data = DataEditor.getData();
+            var data = DataEditor.getDataWithoutValidation();
             dv.dataMerge(DataEditor.getColumns(), data, this.tmpCsvData, keepOldOrNew);
             DataEditor.setData(data);
             this.tmpCsvData = null;
