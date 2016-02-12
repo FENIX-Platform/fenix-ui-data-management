@@ -109,11 +109,11 @@ define([
         saveData: function () {
             var me = this;
 
-            //var $btnSave = $('#dataEditEnd');
             this.$btnSave.attr('disabled', 'disabled');
             var h = this.$btnSave.html();
             this.$btnSave.html(_html.spinner);
             var data = DataEditor.getData();
+
             //returns false if not valid
             if (data) {
                 this.resource.metadata.dsd.columns = DataEditor.getColumnsWithDistincts();
@@ -122,9 +122,21 @@ define([
                 //Noti.showError(MLRes.error, MLRes.errorLoadinResource);
                 //Ajax error callbacks
                 //Add "Error" as popup title
-                var loadErr = function () { Noti.showError(MLRes.error, MLRes.errorLoadinResource); };
-                var putDataErr = function () { Noti.showError(MLRes.error, MLRes.errorSavingResource + " (data)"); };
-                var putDSDErr = function () { Noti.showError(MLRes.error, MLRes.errorSavingResource + " (DSD)"); };
+                var loadErr = function () {
+                    Noti.showError(MLRes.error, MLRes.errorLoadinResource);
+                    me.$btnSave.removeAttr('disabled');
+                    me.$btnSave.html(h);
+                };
+                var putDataErr = function () {
+                    Noti.showError(MLRes.error, MLRes.errorSavingResource + " (data)");
+                    me.$btnSave.removeAttr('disabled');
+                    me.$btnSave.html(h);
+                };
+                var putDSDErr = function () {
+                    Noti.showError(MLRes.error, MLRes.errorSavingResource + " (DSD)");
+                    me.$btnSave.removeAttr('disabled');
+                    me.$btnSave.html(h);
+                };
                 //Ajax success callbacks
                 var loadSucc = function () {
                     me.$btnSave.removeAttr('disabled');
@@ -145,9 +157,10 @@ define([
             }
                 //data is not valid
             else {
-
                 Noti.showError(MLRes.error, MLRes.errorParsingJson);
                 Noti.showError(MLRes.error, MLRes.invalidData);
+                me.$btnSave.removeAttr('disabled');
+                me.$btnSave.html(h);
             }
         },
 
@@ -182,33 +195,13 @@ define([
 
             if (valRes && valRes.length > 0) {
                 for (var n = 0; n < valRes.length; n++) {
-                    //if (valRes[n].type == 'unknownCodes') {
-                    //    Noti.showError(MLRes.error, MLRes[valRes[n].type] + ". - codelist: " + valRes[n].codelistId + " - codes: " + valRes[n].codes.join(','));
-                    //}
-                    //else {
                     Noti.showError(MLRes.error, MLRes[valRes[n].type]);
-                    //}
                 }
                 return;
             }
 
             this._showCSvColumnMatcher();
             this.columnsMatch.setData(this.resource.metadata.dsd, this.tmpCsvCols, this.tmpCsvData);
-            //return;
-
-
-            /*
-            var data = DataEditor.getDataWithoutValidation();
-            var dv = new DataValidator();
-
-            var keyDuplicates = dv.dataAppendCheck(DataEditor.getColumns(), data, csvData);
-            this.tmpCsvData = csvData;
-            if (keyDuplicates && keyDuplicates.length > 0) {
-                this._CSVLoadedShowMergeMode();
-            }
-            else {
-                this._CSVLoadedMergeData('keepNew');
-            }*/
         },
         _showCSvColumnMatcher: function () {
             this._switchPanelVisibility(this.$dataUploadColsMatch);
@@ -234,28 +227,21 @@ define([
         _CSVLoadedMergeData: function (keepOldOrNew) {
             var dv = new DataValidator();
             var data = DataEditor.getDataWithoutValidation();
+
+            var valRes = CSV_Val.validateCodes(DataEditor.getColumns(), DataEditor.getCodelists(), this.tmpCsvCols, this.tmpCsvData);
+            if (valRes && valRes.length > 0) {
+                //CSV_Val.removeUnknownCodes(DataEditor.getColumns(), DataEditor.getCodelists(), this.tmpCsvCols, this.tmpCsvData);
+                for (var n = 0; n < valRes.length; n++) {
+                    Noti.showError(MLRes.error, MLRes[valRes[n].type] + ". - codelist: " + valRes[n].codelistId + " - codes: " + valRes[n].codes.join(','));
+                }
+            }
+
             dv.dataMerge(DataEditor.getColumns(), data, this.tmpCsvData, keepOldOrNew);
             DataEditor.setData(data);
             this._switchPanelVisibility(this.$dataEditorContainer);
 
-            var valRes = CSV_Val.validateCodes(DataEditor.getColumns(), DataEditor.getCodelists(), this.tmpCsvCols, this.tmpCsvData);
-
-            if (valRes && valRes.length > 0) {
-                for (var n = 0; n < valRes.length; n++) {
-                    if (valRes[n].type == 'unknownCodes') {
-                        Noti.showError(MLRes.error, MLRes[valRes[n].type] + ". - codelist: " + valRes[n].codelistId + " - codes: " + valRes[n].codes.join(','));
-                    }
-                    else {
-                        Noti.showError(MLRes.error, MLRes[valRes[n].type]);
-                    }
-                }
-            }
-
             this.tmpCsvCols = null;
             this.tmpCsvData = null;
-
-
-
         },
 
         _switchPanelVisibility: function (toShow) {
@@ -305,16 +291,6 @@ define([
                 me.tmpCsvData = me.columnsMatch.getCsvData();
 
                 me._CSVLoadedCheckDuplicates();
-
-
-
-
-
-
-                /*console.log("me.columnsMatch.getCsvCols()");
-                console.log(me.columnsMatch.getCsvCols());
-                console.log("me.columnsMatch.getCsvData()");
-                console.log(me.columnsMatch.getCsvData());*/
             });
             $(h.btnCsvMatcherCancel).on('click', function () {
                 me.tmpCsvData = null;
