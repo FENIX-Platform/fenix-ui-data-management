@@ -3,14 +3,8 @@ define(function () {
     'use strict';
     return {
 
-        TOP_MENU: {
-            url: 'config/submodules/fx-menu/fenix-ui-topmenu_config.json',
-            template: 'fx-menu/templates/blank-fluid.html',
-            active: "createdataset"
-        },
-
         SECONDARY_MENU: {
-            url: './submodules/fenix-ui-data-management/config/secondary_menu.json',
+            url: 'fx-d-m/config/secondary_menu.json',
             disable: ['delete', 'close', 'data', 'dsd']
         },
 
@@ -24,13 +18,6 @@ define(function () {
         FAKE_AUTHENTICATION: true,
 
         CATALOG_BLANK_FILTER: 'config/submodules/catalog/uae-catalog-blank-filter.json',
-
-        METADATA_EDITOR_GUI: "./submodules/fenix-ui-metadata-editor/conf/json/fx-editor-gui-config.json",
-        METADATA_EDITOR_VALIDATION: "./submodules/fenix-ui-metadata-editor/conf/json/fx-editor-validation-config.json",
-        METADATA_EDITOR_JSON_MAPPING: "./submodules/fenix-ui-metadata-editor/conf/json/fx-editor-mapping-config.json",
-        //AJAX_EVENT_CALL: "./submodules/fenix-ui-metadata-editor/conf/json/fx-editor-ajax-config_fenix.json",
-        //METADATA_EDITOR_AJAX_EVENT_CALL: "./submodules/fenix-ui-metadata-editor/conf/json/fx-editor-ajax-config_DEV.json",
-        METADATA_EDITOR_DATES: "./submodules/fenix-ui-metadata-editor/conf/json/fx-editor-dates-config.json",
 
         SERVICE_BASE_ADDRESS: "http://fenix.fao.org/d3s_fenix/msd",
         SERVICE_GET_DATA_METADATA: {service: "resources", queryParams: {full: true, dsd: true}},
