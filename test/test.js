@@ -105,15 +105,6 @@ require([
 
                     loglevel: '{FENIX_CDN}/js/loglevel/1.4.0/loglevel',
 
-                    //'fx-d-m/templates/site' : pathProjectRoot + "/src/js/templates/site.hbs",
-                    //'fx-d-m/config/config' : pathProjectRoot + "/config/submodules/fx-data-mng/Config",
-                    //'fx-d-m/i18n/nls/site' : pathProjectRoot + "/i18n/site",
-                    //'fx-cat-br/config/config': pathProjectRoot + '/config/submodules/fx-catalog/config',
-
-                    //'fx-menu/config/config': './config/submodules/fx-catalog/config',
-
-                    //'fx-submodules/config/baseConfig': pathProjectRoot + '/config/submodules/config_base'
-
                 },
 
                 // Underscore and Backbone are not AMD-capable per default,
