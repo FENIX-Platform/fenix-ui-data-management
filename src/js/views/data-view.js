@@ -5,6 +5,7 @@ define([
     'fx-DataMngCommons/js/Notifications',
     'fx-DataMngCommons/js/FileUploadHelper',
     'fx-DataEditor/js/DataEditor/helpers/CSV_To_Dataset',
+    'fx-DataEditor/js/DataEditor/ColumnsMatch/ColumnsMatch',
     'fx-DataEditor/js/DataEditor/helpers/Data_Validator',
     'fx-DataEditor/js/DataEditor/helpers/Validator_CSV',
     'fx-DataEditor/js/DataEditor/helpers/Validator_CSV_Errors',
@@ -12,12 +13,13 @@ define([
     'i18n!fx-d-m/i18n/nls/ML_DataManagement',
     'chaplin',
     'amplify'
-], function (View, template, DataEditor, Noti, FUploadHelper, CSVToDs, DataValidator, CSV_Val, CSV_Val_Err, ResourceManager, MLRes, Chaplin) {
+], function (View, template, DataEditor, Noti, FUploadHelper, CSVToDs, ColumnsMatch, DataValidator, CSV_Val, CSV_Val_Err, ResourceManager, MLRes, Chaplin) {
     'use strict';
     var h = {
         dataEditorMainContainer: "#DataEditorMainContainer",
         dataEditorContainer: "#DataEditorContainer",
         dataUploadContainer: "#DataUploadContainer",
+        dataUploadColsMatch: "#DataUploadColsMatch",
         btnDelAllData: "#btnDelAllData",
 
         btnSaveData: "#dataEditEnd",
@@ -25,7 +27,15 @@ define([
 
         btnDataMergeKeepNew: "#btnDataMergeKeepNew",
         btnDataMergeKeepOld: "#btnDataMergeKeepOld",
-        btnDataMergeCancel: "#btnDataMergeCancel"
+        btnDataMergeCancel: "#btnDataMergeCancel",
+
+        btnCsvMatcherOk: "#btnCsvMatcherOk",
+        btnCsvMatcherCancel: "#btnCsvMatcherCancel",
+
+        dataFileUpload: "#dataFUpload",
+
+        divCsvMatcher: "#divCsvMatcher"
+
     };
     var _html = {
         spinner: '<i class="fa fa-spinner fa-spin"></i><i class="fa fa-circle-o-notch fa-spin"></i><i class="fa fa-refresh fa-spin"></i>'
@@ -48,16 +58,20 @@ define([
 
             this.$dataEditorContainer = $(h.dataEditorContainer);
             this.$dataUploadContainer = $(h.dataUploadContainer);
-            this.$dataEditorContainer.show();
-            this.$dataUploadContainer.hide();
+            this.$dataUploadColsMatch = $(h.dataUploadColsMatch);
+            this._switchPanelVisibility(this.$dataEditorContainer);
             //FUpload
             this.fUpload = new FUploadHelper({ accept: ['csv'] });
-            this.fUpload.render('#dataFUpload');
+            this.fUpload.render(h.dataFileUpload);
+            //Columns match
+            this.columnsMatch = new ColumnsMatch();
+            this.columnsMatch.render($(h.divCsvMatcher));
 
             //btns
             this.$btnSave = $('#dataEditEnd');
 
             //helpers
+            this.tmpCsvCols;
             this.tmpCsvData;
 
             var columns, data, cLists;
@@ -95,11 +109,11 @@ define([
         saveData: function () {
             var me = this;
 
-            //var $btnSave = $('#dataEditEnd');
             this.$btnSave.attr('disabled', 'disabled');
             var h = this.$btnSave.html();
             this.$btnSave.html(_html.spinner);
             var data = DataEditor.getData();
+
             //returns false if not valid
             if (data) {
                 this.resource.metadata.dsd.columns = DataEditor.getColumnsWithDistincts();
@@ -108,9 +122,21 @@ define([
                 //Noti.showError(MLRes.error, MLRes.errorLoadinResource);
                 //Ajax error callbacks
                 //Add "Error" as popup title
-                var loadErr = function () { Noti.showError(MLRes.error, MLRes.errorLoadinResource); };
-                var putDataErr = function () { Noti.showError(MLRes.error, MLRes.errorSavingResource + " (data)"); };
-                var putDSDErr = function () { Noti.showError(MLRes.error, MLRes.errorSavingResource + " (DSD)"); };
+                var loadErr = function () {
+                    Noti.showError(MLRes.error, MLRes.errorLoadinResource);
+                    me.$btnSave.removeAttr('disabled');
+                    me.$btnSave.html(h);
+                };
+                var putDataErr = function () {
+                    Noti.showError(MLRes.error, MLRes.errorSavingResource + " (data)");
+                    me.$btnSave.removeAttr('disabled');
+                    me.$btnSave.html(h);
+                };
+                var putDSDErr = function () {
+                    Noti.showError(MLRes.error, MLRes.errorSavingResource + " (DSD)");
+                    me.$btnSave.removeAttr('disabled');
+                    me.$btnSave.html(h);
+                };
                 //Ajax success callbacks
                 var loadSucc = function () {
                     me.$btnSave.removeAttr('disabled');
@@ -131,9 +157,10 @@ define([
             }
                 //data is not valid
             else {
-
                 Noti.showError(MLRes.error, MLRes.errorParsingJson);
                 Noti.showError(MLRes.error, MLRes.invalidData);
+                me.$btnSave.removeAttr('disabled');
+                me.$btnSave.html(h);
             }
         },
 
@@ -161,45 +188,76 @@ define([
             var conv = new CSVToDs();
             conv.convert(data);
 
-            var csvCols = conv.getColumns();
-            var csvData = conv.getData();
+            this.tmpCsvCols = conv.getColumns();
+            this.tmpCsvData = conv.getData();
 
-            var valRes = CSV_Val.validate(DataEditor.getColumns(), DataEditor.getCodelists(), csvCols, csvData);
+            var valRes = CSV_Val.validate(DataEditor.getColumns(), DataEditor.getCodelists(), this.tmpCsvCols, this.tmpCsvData);
 
             if (valRes && valRes.length > 0) {
                 for (var n = 0; n < valRes.length; n++) {
-                    if (valRes[n].type == 'unknownCodes') {
-                        Noti.showError(MLRes.error, MLRes[valRes[n].type] + ". - codelist: " + valRes[n].codelistId + " - codes: " + valRes[n].codes.join(','));
-                    }
-                    else {
-                        Noti.showError(MLRes.error, MLRes[valRes[n].type]);
-                    }
+                    Noti.showError(MLRes.error, MLRes[valRes[n].type]);
                 }
                 return;
             }
 
+            this._showCSvColumnMatcher();
+            this.columnsMatch.setData(this.resource.metadata.dsd, this.tmpCsvCols, this.tmpCsvData);
+        },
+        _showCSvColumnMatcher: function () {
+            this._switchPanelVisibility(this.$dataUploadColsMatch);
+        },
+        _CSVLoadedCheckDuplicates: function () {
             var data = DataEditor.getDataWithoutValidation();
             var dv = new DataValidator();
 
-            var keyDuplicates = dv.dataAppendCheck(DataEditor.getColumns(), data, csvData);
+            var keyDuplicates = dv.dataAppendCheck(DataEditor.getColumns(), data, this.tmpCsvData);
+
+            //this.tmpCsvData = csvData;
             if (keyDuplicates && keyDuplicates.length > 0) {
-                this.tmpCsvData = csvData;
                 this._CSVLoadedShowMergeMode();
+            }
+            else {
+                this._CSVLoadedMergeData('keepNew');
             }
         },
         _CSVLoadedShowMergeMode: function () {
-            this.$dataEditorContainer.hide();
-            this.$dataUploadContainer.show();
+            this._switchPanelVisibility(this.$dataUploadContainer);
         },
 
         _CSVLoadedMergeData: function (keepOldOrNew) {
             var dv = new DataValidator();
             var data = DataEditor.getDataWithoutValidation();
+
+            var valRes = CSV_Val.validateCodes(DataEditor.getColumns(), DataEditor.getCodelists(), this.tmpCsvCols, this.tmpCsvData);
+            if (valRes && valRes.length > 0) {
+                //CSV_Val.removeUnknownCodes(DataEditor.getColumns(), DataEditor.getCodelists(), this.tmpCsvCols, this.tmpCsvData);
+                for (var n = 0; n < valRes.length; n++) {
+                    Noti.showError(MLRes.error, MLRes[valRes[n].type] + ". - codelist: " + valRes[n].codelistId + " - codes: " + valRes[n].codes.join(','));
+                }
+            }
+
             dv.dataMerge(DataEditor.getColumns(), data, this.tmpCsvData, keepOldOrNew);
             DataEditor.setData(data);
+            this._switchPanelVisibility(this.$dataEditorContainer);
+
+            this.tmpCsvCols = null;
             this.tmpCsvData = null;
-            this.$dataEditorContainer.show();
-            this.$dataUploadContainer.hide();
+        },
+
+        _switchPanelVisibility: function (toShow) {
+            var id = toShow.attr("id");
+            if (id == this.$dataEditorContainer[0].id)
+                this.$dataEditorContainer.show();
+            else
+                this.$dataEditorContainer.hide();
+            if (id == this.$dataUploadContainer[0].id)
+                this.$dataUploadContainer.show();
+            else
+                this.$dataUploadContainer.hide();
+            if (id == this.$dataUploadColsMatch[0].id)
+                this.$dataUploadColsMatch.show();
+            else
+                this.$dataUploadColsMatch.hide();
         },
 
         bindEventListeners: function () {
@@ -214,6 +272,7 @@ define([
                 DataEditor.removeAllData();
             });
 
+            //Data Merge
             $(h.btnDataMergeKeepNew).on('click', function () {
                 me._CSVLoadedMergeData('keepNew');
             });
@@ -222,10 +281,22 @@ define([
             });
             $(h.btnDataMergeCancel).on('click', function () {
                 me.tmpCsvData = null;
-                me.$dataEditorContainer.show();
-                me.$dataUploadContainer.hide();
+                me.tmpCsvCols = null;
+                me._switchPanelVisibility(me.$dataEditorContainer);
             });
 
+            //CSV matcher
+            $(h.btnCsvMatcherOk).on('click', function () {
+                me.tmpCsvCols = me.columnsMatch.getCsvCols();
+                me.tmpCsvData = me.columnsMatch.getCsvData();
+
+                me._CSVLoadedCheckDuplicates();
+            });
+            $(h.btnCsvMatcherCancel).on('click', function () {
+                me.tmpCsvData = null;
+                me.tmpCsvCols = null;
+                me._switchPanelVisibility(me.$dataEditorContainer);
+            });
             //FUpload
             amplify.subscribe('textFileUploaded.FileUploadHelper.fenix', this, this._CSVLoaded);
         },
@@ -236,6 +307,10 @@ define([
             $(h.btnDataMergeKeepNew).off('click');
             $(h.btnDataMergeKeepOld).off('click');
             $(h.btnDataMergeCancel).off('click');
+
+            $(h.btnCsvMatcherOk).off('click');
+            $(h.btnCsvMatcherCancel).off('click');
+
             amplify.unsubscribe('textFileUploaded.FileUploadHelper.fenix', this._CSVLoaded);
         },
 
