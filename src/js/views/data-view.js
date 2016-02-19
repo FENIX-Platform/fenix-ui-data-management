@@ -23,7 +23,8 @@ define([
         btnDelAllData: "#btnDelAllData",
 
         btnSaveData: "#dataEditEnd",
-        btnGetCSVTemplate: "#btnGetCSVTemplate",
+        //This was used before the CSV and the DSD matching was not handled in the UI, remove it if not needed anymore
+        //btnGetCSVTemplate: "#btnGetCSVTemplate",
 
         btnDataMergeKeepNew: "#btnDataMergeKeepNew",
         btnDataMergeKeepOld: "#btnDataMergeKeepOld",
@@ -164,7 +165,8 @@ define([
             }
         },
 
-        _getCSVTemplate: function () {
+        ////This was used before the CSV and the DSD matching was not handled in the UI, remove it if not needed anymore
+        /*_getCSVTemplate: function () {
             var cols = this.resource.metadata.dsd.columns;
             var toRet = "";
             for (var i = 0; i < cols.length; i++) {
@@ -181,7 +183,7 @@ define([
             dLink.style.display = 'none';
             document.body.appendChild(dLink);
             dLink.click();
-        },
+        },*/
 
         _CSVLoaded: function (data) {
             this.fUpload.reset();
@@ -263,7 +265,8 @@ define([
         bindEventListeners: function () {
             var me = this;
             $(h.btnSaveData).on('click', function () { me.saveData(); });
-            $(h.btnGetCSVTemplate).on('click', function () { me._getCSVTemplate(); });
+            //This was used before the CSV and the DSD matching was not handled in the UI, remove it if not needed anymore
+            //$(h.btnGetCSVTemplate).on('click', function () { me._getCSVTemplate(); });
 
             $(h.btnDelAllData).on('click', function () {
                 var res = confirm(MLRes.confirmDataRemove);
@@ -302,7 +305,8 @@ define([
         },
         unbindEventListeners: function () {
             $(h.btnSaveData).off('click');
-            $(h.btnGetCSVTemplate).off('click');
+            //This was used before the CSV and the DSD matching was not handled in the UI, remove it if not needed anymore
+            //$(h.btnGetCSVTemplate).off('click');
             $(h.btnDelAllData).off('click');
             $(h.btnDataMergeKeepNew).off('click');
             $(h.btnDataMergeKeepOld).off('click');
