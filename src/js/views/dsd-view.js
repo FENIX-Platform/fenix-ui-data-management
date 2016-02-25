@@ -59,14 +59,14 @@ define([
         },
         isDSDEditable: function (editable) {
             DSDEditor.editable(editable);
-            var $btn = $(h.btnColsEditDone);
+            //var $btn = $(h.btnColsEditDone);
             if (editable) {
-                $btn.show();
+                //$btn.show();
                 $(h.btnUploadGroup).show();
-                $btn.removeAttr('disabled');
+                //$btn.removeAttr('disabled');
             }
             else {
-                $btn.hide();
+                //$btn.hide();
                 $(h.btnUploadGroup).hide();
             }
         },
