@@ -21,8 +21,15 @@
         "nullCsvCols": "CSV has no columns",
         "wrongColumnCount": "The columns' count in the CSV must match the one in the DSD",
         "wrongColumnId": "The columns' names in the CSV must match the IDs in the DSD",
-        "unknownCodes": "Some codes could not be found in a codelist"
+        "unknownCodes": "Some codes could not be found in a codelist",
 
+        //DataValidator
+        "unknownCode": "Unknown code",
+        "invalidYear": "Invalid year",
+        "invalidMonth": "Invalid month",
+        "invalidDate": "Invalid date",
+        "invalidNumber": "Invalid number",
+        "invalidBool": "Invalid boolean"
     },
     "fr": true
 });

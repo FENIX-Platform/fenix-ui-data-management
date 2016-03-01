@@ -71,11 +71,13 @@ define([
             //btns
             this.$btnSave = $('#dataEditEnd');
 
+            this.cLists;
+
             //helpers
             this.tmpCsvCols;
             this.tmpCsvData;
 
-            var columns, data, cLists;
+            var columns, data;
             this.resource = ResourceManager.getCurrentResource();
             if (!this.resource || !this.resource.metadata || !this.resource.metadata.dsd || !this.resource.metadata.dsd.columns)
                 return;
@@ -90,7 +92,7 @@ define([
             ResourceManager.getCodelistsFromCurrentResource(function (cl) {
                 me.$btnSave.attr('disabled', 'disabled');
                 me.fUpload.enabled(false);
-                cLists = cl;
+                me.cLists = cl;
                 DataEditor.init(dataEditorMainContainerID, {},
                     function () {
                         DataEditor.setColumns(columns, cl);
@@ -193,6 +195,7 @@ define([
             this.tmpCsvCols = conv.getColumns();
             this.tmpCsvData = conv.getData();
 
+            //Validates the CSV structure (null columns, less columns than the DSD...)
             var valRes = CSV_Val.validate(DataEditor.getColumns(), DataEditor.getCodelists(), this.tmpCsvCols, this.tmpCsvData);
 
             if (valRes && valRes.length > 0) {
@@ -204,6 +207,19 @@ define([
 
             this._showCSvColumnMatcher();
             this.columnsMatch.setData(this.resource.metadata.dsd, this.tmpCsvCols, this.tmpCsvData);
+            /*
+            //Validates the CSV contents
+            var dv = new DataValidator();
+            var wrongDatatypes = dv.checkWrongDataTypes(DataEditor.getColumns(), this.cLists, this.tmpCsvData);
+
+            if (wrongDatatypes && wrongDatatypes.length > 0) {
+                for (n = 0; n < wrongDatatypes.length; n++) {
+                    Noti.showError(MLRes.error, MLRes[wrongDatatypes[n].error] + " - Row: " + wrongDatatypes[n].dataIndex);
+                }
+                return;
+            }
+
+            */
         },
         _showCSvColumnMatcher: function () {
             this._switchPanelVisibility(this.$dataUploadColsMatch);
@@ -236,6 +252,19 @@ define([
                 for (var n = 0; n < valRes.length; n++) {
                     Noti.showError(MLRes.error, MLRes[valRes[n].type] + ". - codelist: " + valRes[n].codelistId + " - codes: " + valRes[n].codes.join(','));
                 }
+            }
+            //Validates the CSV contents
+            var wrongDatatypes = dv.checkWrongDataTypes(DataEditor.getColumns(), this.cLists, this.tmpCsvData);
+
+            if (wrongDatatypes && wrongDatatypes.length > 0) {
+                for (n = 0; n < wrongDatatypes.length; n++) {
+                    Noti.showError(MLRes.error, MLRes[wrongDatatypes[n].error] + " - CSV Row: " + wrongDatatypes[n].dataIndex);
+                }
+                //Don't merge, return.
+                this._switchPanelVisibility(this.$dataEditorContainer);
+                this.tmpCsvCols = null;
+                this.tmpCsvData = null;
+                return;
             }
 
             dv.dataMerge(DataEditor.getColumns(), data, this.tmpCsvData, keepOldOrNew);
