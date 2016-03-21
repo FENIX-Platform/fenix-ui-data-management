@@ -53,18 +53,6 @@ define([
         bindEventListeners: function () {
             var me = this;
 
-            /*$('#btnLoadMeta').on('click', function () {
-                ResourceManager.loadResource({ metadata: { uid: "dan401" } },
-                function (d) {
-                    //console.log("LOAD"); console.log(d);
-                    MetadataEditor.set(d.metadata);
-                    me.newResource = false;
-                }, function () {
-                    console.log("err");
-                });
-            });*/
-
-
             $(h.btnSaveMeta).on('click', function () {
                 var toSave = MetadataEditor.get();
                 if (!toSave) {

@@ -65,13 +65,12 @@ define([
         },
 
         selectResource: function (resource) {
-            //DAN_O:wrap the resource in the "standard" resource format
             var succ = null;
             var err = function () {
                 new PNotify({ title: '', text: MLRes.errorLoadinResource, type: 'error' });
             }
 
-            Chaplin.mediator.publish(Events.RESOURCE_SELECT, { metadata: resource }, succ, err);
+            Chaplin.mediator.publish(Events.RESOURCE_SELECT, { metadata: resource }, succ, err, null, 1);
         },
 
         dispose: function () {

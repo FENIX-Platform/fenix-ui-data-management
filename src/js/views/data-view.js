@@ -55,6 +55,7 @@ define([
         template: template,
 
         attach: function () {
+            var me = this;
             View.prototype.attach.call(this, arguments);
 
             this.$dataEditorContainer = $(h.dataEditorContainer);
@@ -81,30 +82,42 @@ define([
             this.resource = ResourceManager.getCurrentResource();
             if (!this.resource || !this.resource.metadata || !this.resource.metadata.dsd || !this.resource.metadata.dsd.columns)
                 return;
+
             columns = this.resource.metadata.dsd.columns;
-            data = this.resource.data;
+
+
 
             //Data Editor container
             var dataEditorMainContainerID = "#DataEditorMainContainer";
             var $dataEditorMainContainer = $("#DataEditorMainContainer");
 
-            var me = this;
-            ResourceManager.getCodelistsFromCurrentResource(function (cl) {
-                me.$btnSave.attr('disabled', 'disabled');
-                me.fUpload.enabled(false);
-                me.cLists = cl;
-                DataEditor.init(dataEditorMainContainerID, {},
-                    function () {
-                        DataEditor.setColumns(columns, cl);
-                        DataEditor.setData(data);
-                        me.$btnSave.removeAttr('disabled');
-                        me.fUpload.enabled(true);
-                    });
-            },
-            function () {
-                Noti.showError('', MLRes.errorLoadinResource + " [codelists]");
+            var loadDataSuccess = function () {
+                //data = me.resource.data;
+                data = ResourceManager.getCurrentResource().data;
+
+                ResourceManager.getCodelistsFromCurrentResource(function (cl) {
+                    me.$btnSave.attr('disabled', 'disabled');
+                    me.fUpload.enabled(false);
+                    me.cLists = cl;
+                    DataEditor.init(dataEditorMainContainerID, {},
+                        function () {
+                            DataEditor.setColumns(columns, cl);
+                            DataEditor.setData(data);
+                            me.$btnSave.removeAttr('disabled');
+                            me.fUpload.enabled(true);
+                        });
+                },
+                function () {
+                    Noti.showError('', MLRes.errorLoadinResource + " [codelists]");
+                    me.$btnSave.removeAttr('disabled');
+                });
+            };
+            var loadDataError = function () {
+                Noti.showError(MLRes.error, MLRes.errorLoadinResource);
                 me.$btnSave.removeAttr('disabled');
-            });
+                me.$btnSave.html(h);
+            };
+            ResourceManager.loadResource(me.resource, loadDataSuccess, loadDataError);
 
             this.bindEventListeners();
         },
