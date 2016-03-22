@@ -167,6 +167,7 @@ define([
                 //If putData is ok update the DSD (values' distinct).
                 var putDataSucc = function () {
                     ResourceManager.updateDSD(me.resource, updateDSDSucc, putDSDErr);
+                    Noti.showSuccess(MLRes.success, MLRes.resourceSaved)
                 };
                 //Start the save process: putData->UpdateDSD->Reload
                 ResourceManager.putData(this.resource, putDataSucc, putDSDErr);

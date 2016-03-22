@@ -88,6 +88,7 @@ define([
 
                 //ajax callbacks
                 var succ = function () {
+                    Notif.showSuccess(MLRes.success, MLRes.resourceSaved)
                     Chaplin.utils.redirectTo('resume#show');
                 };
                 var loadErr = function () {

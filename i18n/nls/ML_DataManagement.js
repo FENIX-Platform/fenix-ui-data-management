@@ -2,6 +2,8 @@
     "root": {
         //Generic
         "confirmDataRemove": "Do you want to remove all your data?",
+        "success": "Success",
+        "resourceSaved":"Resource saved",
         //
         "error": "Error",
         "errorParsingJson": "Error parsing Json file, check the structure and try again",
