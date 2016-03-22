@@ -68,6 +68,7 @@ define([
                         function (d) {
                             me.resource = ResourceManager.getCurrentResource();
                             MetadataEditor.set(d.metadata);
+                            Chaplin.utils.redirectTo({ url: 'resume' });
                         });
                 };
                 var succUpd = function () {
@@ -79,6 +80,7 @@ define([
                         function (d) {
                             me.resource = ResourceManager.getCurrentResource();
                             MetadataEditor.set(d.metadata);
+                            Chaplin.utils.redirectTo({ url: 'resume' });
                         });
                 }
 

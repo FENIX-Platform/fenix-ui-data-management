@@ -31,9 +31,10 @@ define([
             var err = function () {
                 new PNotify({ title: '', text: MLRes.errorLoadinResource, type: 'error' });
             };
-            
-            ResourceManager.deleteCurrentResource(null, err);
-            
+            var succ = function () {
+                Chaplin.utils.redirectTo({ url: 'search' });
+            };
+            ResourceManager.deleteCurrentResource(succ, err);
         },
 
         onUndo: function () {

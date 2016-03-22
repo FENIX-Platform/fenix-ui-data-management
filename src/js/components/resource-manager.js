@@ -100,10 +100,11 @@ define([
         var me = this;
         var succ = function () {
             me.resource = null;
-            Chaplin.mediator.publish(Events.RESOURCE_DELETED);
+            //Chaplin.mediator.publish(Events.RESOURCE_DELETED);
             if (success)
                 success();
         };
+
         _ajaxDELETE(addr, succ, err);
     };
 
@@ -342,13 +343,16 @@ define([
             url: url,
             type: 'DELETE',
             crossDomain: true,
-            success: function (data) {
+            //Datatype changed to text as the server returns an empty response, setting it to json would trigger an error on success
+            dataType: 'text',
+            success: function () {
                 if (success)
                     success();
             },
-            error: function () {
+            
+            error: function (xhr) {
                 if (err)
-                    err('Error on ajax DELETE');
+                    err();
                 else
                     console.log('Error on ajax DELETE')
             },
