@@ -93,6 +93,7 @@ define([
 
             var loadDataSuccess = function () {
                 //data = me.resource.data;
+                me.resource = ResourceManager.getCurrentResource();
                 data = ResourceManager.getCurrentResource().data;
                 columns = ResourceManager.getCurrentResource().metadata.dsd.columns;
 
@@ -118,7 +119,8 @@ define([
                 me.$btnSave.removeAttr('disabled');
                 me.$btnSave.html(h);
             };
-            ResourceManager.loadResource(me.resource, loadDataSuccess, loadDataError);
+            ResourceManager.loadResource(this.resource, loadDataSuccess, loadDataError);
+
 
             this.bindEventListeners();
         },
