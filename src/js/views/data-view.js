@@ -83,7 +83,7 @@ define([
             if (!this.resource || !this.resource.metadata || !this.resource.metadata.dsd || !this.resource.metadata.dsd.columns)
                 return;
 
-            columns = this.resource.metadata.dsd.columns;
+            //columns = this.resource.metadata.dsd.columns;
 
 
 
@@ -94,6 +94,7 @@ define([
             var loadDataSuccess = function () {
                 //data = me.resource.data;
                 data = ResourceManager.getCurrentResource().data;
+                columns = ResourceManager.getCurrentResource().metadata.dsd.columns;
 
                 ResourceManager.getCodelistsFromCurrentResource(function (cl) {
                     me.$btnSave.attr('disabled', 'disabled');
