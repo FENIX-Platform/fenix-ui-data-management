@@ -6,7 +6,8 @@ define([
     'use strict';
 
     var s = {
-        BTN_ADD: '#btnAdd'
+        BTN_ADD: '#btnAdd',
+        BTN_SEARCH: '#btnSearch'
     }
 
     var LandingView = View.extend({
@@ -30,9 +31,15 @@ define([
 
         bindEventListener: function () {
             var btnAdd = this.$el.find(s.BTN_ADD);
-            
+            var btnSearch = this.$el.find(s.BTN_SEARCH);
+
             btnAdd.on('click', function (e) {
+                window.location.hash = 'add';
                 ResourceManager.closeCurrentResource();
+            })
+
+            btnSearch.on('click', function (e) {
+                window.location.hash = 'search';
             })
         },
 

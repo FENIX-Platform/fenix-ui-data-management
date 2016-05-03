@@ -54,11 +54,13 @@ define([
             var me = this;
 
             $(h.btnSaveMeta).on('click', function () {
+
                 var toSave = MetadataEditor.get();
                 if (!toSave) {
                     Noti.showError("ERROR", 'Please fill the minimum set of metadata in the "Identification" and "Contacts" sections');
                     return;
                 }
+                //console.log("toSave",toSave);
                 //toSave.uid = "dan401b";
                 var succNew = function (retVal) {
                     var resToLoad = { metadata: { uid: retVal.uid } };
