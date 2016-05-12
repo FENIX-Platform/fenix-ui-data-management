@@ -13,7 +13,7 @@ define([
 
     // The application object
     // Choose a meaningful name for your application
-    var Application = Chaplin.Application.extend({
+    var DataManagement = Chaplin.Application.extend({
 
         initialize: function () {
             var args = [].slice.call(arguments);
@@ -97,5 +97,5 @@ define([
 
     });
 
-    return Application;
+    return DataManagement;
 });

@@ -34,6 +34,7 @@ define([
         btnCsvMatcherCancel: "#btnCsvMatcherCancel",
 
         dataFileUpload: "#dataFUpload",
+        csvSeparator: "input[name=csvSeparator]:checked",
 
         divCsvMatcher: "#divCsvMatcher"
 
@@ -65,6 +66,7 @@ define([
             //FUpload
             this.fUpload = new FUploadHelper({ accept: ['csv'] });
             this.fUpload.render(h.dataFileUpload);
+            // $(h.csvSeparator).val()
             //Columns match
             this.columnsMatch = new ColumnsMatch();
             this.columnsMatch.render($(h.divCsvMatcher));
@@ -206,8 +208,10 @@ define([
 
         _CSVLoaded: function (data) {
             this.fUpload.reset();
-            var conv = new CSVToDs();
+            var conf = {};
+            var conv = new CSVToDs(conf,$(h.csvSeparator).val());
             conv.convert(data);
+
 
             this.tmpCsvCols = conv.getColumns();
             this.tmpCsvData = conv.getData();

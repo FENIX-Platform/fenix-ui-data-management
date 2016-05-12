@@ -57,6 +57,7 @@
                             <!--This was used before the CSV and the DSD matching was not handled in the UI, remove it if not needed anymore-->
                             <!--<td width="120px">CSV Template</td>-->
                             <td width="100px"><label id="lblUpload" for="dataFUpload">Upload</label></td>
+                            <td width="100px"><label id="lblSeparator" for="csvSeparator">CSV Separator</label></td>
                         </tr>
                     </thead>
                     <tr>
@@ -69,6 +70,11 @@
                         </td>-->
                         <td>
                             <input type="file" name="filename" id="dataFUpload" />
+                        </td>
+                        <td>
+                            <input type="radio" id="csvSeparatorComma" name="csvSeparator" value="," checked><label class="filter-enabled-label" for="csvSeparatorComma">Comma</label>
+                            <br>
+                            <input type="radio" id="csvSeparatorSemi" name="csvSeparator" value=";"><label class="filter-enabled-label" for="csvSeparatorSemi">Semicolon</label>
                         </td>
                     </tr>
                 </table>
