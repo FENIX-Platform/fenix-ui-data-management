@@ -20,7 +20,7 @@ define(function () {
             rsvp: '{FENIX_CDN}/js/rsvp/3.0.17/rsvp',
             pnotify: '{FENIX_CDN}/js/pnotify/2.0.1/pnotify.custom.min',
 
-            'fx-d-m/start': './application',
+            'fx-d-m/start': './datamanagement',
             'fx-d-m/routes': './routes/routes',
             'fx-d-m/components': './components',
             'fx-d-m/config': '../../config',
