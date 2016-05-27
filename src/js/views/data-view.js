@@ -162,7 +162,8 @@ define([
                 var loadSucc = function () {
                     me.$btnSave.removeAttr('disabled');
                     me.$btnSave.html(h);
-                    Chaplin.utils.redirectTo('data#show');
+                    // data#show
+                    Chaplin.utils.redirectTo('landing#show');
                 };
 
                 //if updateDSD is ok, reload the saved resource

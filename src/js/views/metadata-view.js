@@ -8,7 +8,7 @@ define([
     'fx-DataMngCommons/js/Notifications',
     'fx-d-m/components/resource-manager',
     'i18n!fx-d-m/i18n/nls/ML_DataManagement',
-], function (Chaplin, C, DC, View, template, MetadataEditor, Noti, ResourceManager, MLRes) {
+], function (Chaplin, C, DC, View, template, MetadataEditor, Notif, ResourceManager, MLRes) {
     'use strict';
     var h = {
         MetaEditorContainer: '#metadataEditorContainer',
@@ -57,7 +57,7 @@ define([
 
                 var toSave = MetadataEditor.get();
                 if (!toSave) {
-                    Noti.showError("ERROR", 'Please fill the minimum set of metadata in the "Identification" and "Contacts" sections');
+                    Notif.showError("ERROR", 'Please fill the minimum set of metadata in the "Identification" and "Contacts" sections');
                     return;
                 }
                 //console.log("toSave",toSave);
@@ -70,6 +70,7 @@ define([
                         function (d) {
                             me.resource = ResourceManager.getCurrentResource();
                             MetadataEditor.set(d.metadata);
+                            Notif.showSuccess(MLRes.success, MLRes.resourceSaved);
                             Chaplin.utils.redirectTo({ url: 'resume' });
                         });
                 };
@@ -82,12 +83,14 @@ define([
                         function (d) {
                             me.resource = ResourceManager.getCurrentResource();
                             MetadataEditor.set(d.metadata);
+                            Notif.showSuccess(MLRes.success, MLRes.resourceSaved);
+
                             Chaplin.utils.redirectTo({ url: 'resume' });
                         });
                 }
 
                 var err = function () {
-                    Noti.showError("ERROR", 'Error saving resource, please try again.')
+                    Notif.showError("ERROR", 'Error saving resource, please try again.')
                 };
                 var complete = function () { };
 

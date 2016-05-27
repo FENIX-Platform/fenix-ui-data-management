@@ -29,9 +29,22 @@ define([
 
             //Delete current resource
             var err = function () {
-                new PNotify({ title: '', text: MLRes.errorLoadinResource, type: 'error' });
+                var notice = new PNotify({
+                    title: 'Resource Deleted',
+                    text: 'Current resource correctly deleted.',
+                    type: 'success',
+                    buttons: {
+                        closer: false,
+                        sticker: false
+                    }
+
+                });
+                notice.get().click(function() {
+                    notice.remove();
+                });
             };
             var succ = function () {
+                new PNotify({ title: '', text: MLRes.errorLoadinResource, type: 'error' });
                 Chaplin.utils.redirectTo({ url: 'search' });
             };
             ResourceManager.deleteCurrentResource(succ, err);

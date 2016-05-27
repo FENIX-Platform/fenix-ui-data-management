@@ -43,10 +43,18 @@ define([
 
             Chaplin.mediator.subscribe(Events.RESOURCE_STORED, function () {
 
-                new PNotify({
+                var notice = new PNotify({
                     title: 'Resource Stored',
                     text: 'Current resource correctly stored.',
-                    type: 'success'
+                    type: 'success',
+                    buttons: {
+                        closer: false,
+                        sticker: false
+                    }
+
+                });
+                notice.get().click(function() {
+                    notice.remove();
                 });
 
                 Chaplin.utils.redirectTo({ url: 'resume' });
@@ -54,18 +62,37 @@ define([
 
 
             Chaplin.mediator.subscribe(Events.RESOURCE_ABSENT, function () {
-                new PNotify({
+                var notice = new PNotify({
                     title: 'Resource Absent',
-                    text: 'Please select a resource.'
+                    text: 'Please select a resource.',
+                    buttons: {
+                        closer: false,
+                        sticker: false
+                    }
                 });
+
+                notice.get().click(function() {
+                    notice.remove();
+                });
+
                 Chaplin.utils.redirectTo({ url: 'landing' });
             });
 
             Chaplin.mediator.subscribe(Events.NOT_LOGGED, function () {
-                new PNotify({
+                var notice = new PNotify({
                     title: 'Not logged in',
-                    text: 'Please log in.'
+                    text: 'Please log in.',
+                    buttons: {
+                        closer: false,
+                        sticker: false
+                    }
                 });
+
+                notice.get().click(function() {
+                    notice.remove();
+                });
+
+
                 //Chaplin.utils.redirectTo({ changeURL: 'login' });
                 window.location.href = C.DATA_MANAGEMENT_NOT_LOGGEDIN_URL || DC.DATA_MANAGEMENT_NOT_LOGGEDIN_URL;
             });
@@ -75,21 +102,41 @@ define([
             });*/
 
             Chaplin.mediator.subscribe(Events.DSD_ABSENT, function () {
-                new PNotify({
+                var notice = new PNotify({
                     title: 'DSD Absent',
-                    text: 'Please add a DSD.'
+                    text: 'Please add a DSD.',
+                    buttons: {
+                        closer: false,
+                        sticker: false
+                    }
                 });
+
+                notice.get().click(function() {
+                    notice.remove();
+                });
+
+
                 Chaplin.utils.redirectTo({ url: 'resume' });
             });
 
 
             Chaplin.mediator.subscribe(Events.RESOURCE_DELETED, function () {
 
-                new PNotify({
+                var notice = new PNotify({
                     title: 'Resource Deleted',
                     text: 'Resource deleted successfully',
-                    type: 'success'
+                    type: 'success',
+                    buttons: {
+                        closer: false,
+                        sticker: false
+                    }
                 });
+
+                notice.get().click(function() {
+                    notice.remove();
+                });
+
+
 
                 Chaplin.utils.redirectTo({ url: 'landing' });
             });
