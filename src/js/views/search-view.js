@@ -5,7 +5,7 @@ define([
     'fx-d-m/config/config-default',
     'fx-d-m/views/base/view',
     'text!fx-d-m/templates/search.hbs',
-    'fx-cat-br/start',
+    'fx-catalog/start',
     'fx-d-m/config/events',
     'i18n!fx-d-m/i18n/nls/ML_DataManagement',
     'amplify',
@@ -35,49 +35,57 @@ define([
 
             View.prototype.attach.call(this, arguments);
 
-            this.bindEventListeners();
-
             this.catalog = new Catalog({
-                catalog: {
-                    BLANK_FILTER: DC.CATALOG_BLANK_FILTER || C.CATALOG_BLANK_FILTER
-                },
-                results: {
-                    actions: {
-                        SELECT_RESOURCE: {
-                            event: 'select',
-                            labels: {
-                                EN: 'Select Resource'
-                            }
+                $el: document.querySelector('#catalog-container'),
+                defaultSelectors: ['resourceType', 'contextSystem'],
+                environment: "distribution",
+                selectorsRegistry : {
+                    contextSystem : {
+                        selector : {
+                            id : "dropdown",
+                            source : [
+                                {value : C.DSD_EDITOR_CONTEXT_SYSTEM, label : C.DSD_EDITOR_LABEL}
+                            ],
+                            default : [C.DSD_EDITOR_CONTEXT_SYSTEM],
+                            hideSummary : true
+                        },
+
+                        template : {
+                            hideRemoveButton : false
+                        },
+
+                        format : {
+                            output : "enumeration",
+                            metadataAttribute: "dsd.contextSystem"
                         }
                     }
+
                 }
-            });
 
-            this.catalog.init({
-                container: document.querySelector('#catalog-container')
             });
-
+            this.bindEventListeners();
         },
 
         bindEventListeners: function () {
-
-            amplify.subscribe('fx.widget.catalog.select', this, this.selectResource);
+            amplify.subscribe(this.catalog._getEventName("select"), this, this.selectResource);
+            //amplify.subscribe('fx.widget.catalog.select', this, this.selectResource);
         },
 
         selectResource: function (resource) {
+            //console.log(resource)
             var succ = null;
             var err = function () {
                 new PNotify({ title: '', text: MLRes.errorLoadinResource, type: 'error' });
             }
 
-            Chaplin.mediator.publish(Events.RESOURCE_SELECT, { metadata: resource }, succ, err, null, 1);
+            Chaplin.mediator.publish(Events.RESOURCE_SELECT, { metadata: resource.model }, succ, err, null, 1);
         },
 
         dispose: function () {
 
-            amplify.unsubscribe('fx.widget.catalog.select', this.selectResource);
+            amplify.unsubscribe(this.catalog._getEventName("select"), this.selectResource);
 
-            this.catalog.destroy();
+            this.catalog.dispose();
 
             View.prototype.dispose.call(this, arguments);
         }
