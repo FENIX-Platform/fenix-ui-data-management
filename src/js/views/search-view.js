@@ -47,7 +47,11 @@ define([
                                 {value : C.DSD_EDITOR_CONTEXT_SYSTEM, label : C.DSD_EDITOR_LABEL}
                             ],
                             default : [C.DSD_EDITOR_CONTEXT_SYSTEM],
-                            hideSummary : true
+                            hideSummary : true,
+                            config : {
+                                plugins: ['remove_button'],
+                                mode: 'multi'
+                            }
                         },
 
                         template : {
