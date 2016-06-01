@@ -38,7 +38,7 @@ define([
             this.catalog = new Catalog({
                 $el: document.querySelector('#catalog-container'),
                 defaultSelectors: ['resourceType', 'contextSystem'],
-                environment: C.DATAMANAGEMENT_ENVIRONMENT,
+                environment: C.ENVIRONMENT,
                 selectorsRegistry : {
                     contextSystem : {
                         selector : {
