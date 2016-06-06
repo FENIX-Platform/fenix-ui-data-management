@@ -36,7 +36,7 @@ define([
             View.prototype.attach.call(this, arguments);
 
             this.catalog = new Catalog({
-                $el: document.querySelector('#catalog-container'),
+                el: document.querySelector('#catalog-container'),
                 defaultSelectors: ['contextSystem', "dataDomain","resourceType" ],
                 environment: C.ENVIRONMENT,
                 selectorsRegistry : {
