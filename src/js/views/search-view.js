@@ -37,7 +37,8 @@ define([
 
             this.catalog = new Catalog({
                 el: document.querySelector('#catalog-container'),
-                defaultSelectors: ['resourceType', 'contextSystem', 'dataDomain'],
+                defaultSelectors: ["referenceArea", "dataDomain"],
+                menuExcludedItems : ["accessibility"],
                 environment: C.environment,
                 hideCloseButton : true,
                 selectorsRegistry : {
@@ -63,8 +64,21 @@ define([
                             output : "enumeration",
                             metadataAttribute: "dsd.contextSystem"
                         }
+                    },
+                    dataDomain: {
+                        cl : {
+                            uid: "CountrySTAT_Indicators",
+                            level : 1,
+                            levels : 1
+                        }
                     }
+
+                },
+                baseFilter: {
+                    "dsd.contextSystem": {"enumeration": ["cstat_mdg"]},
+                    "meContent.resourceRepresentationType": {"enumeration": ["dataset"]}
                 }
+
 
 
             });

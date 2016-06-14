@@ -12,7 +12,7 @@ define(function () {
         DSD_EDITOR_DATASOURCES: ['D3S'],
         DSD_EDITOR_SUBJECTS: "submodules/fenix-ui-DSDEditor/config/DSDEditor/Subjects.json",
         DSD_EDITOR_DATATYPES: "submodules/fenix-ui-DSDEditor/config/DSDEditor/Datatypes.json",
-        DSD_EDITOR_CODELISTS: "config/submodules/DSDEditor/CodelistsUAE.json",
+        DSD_EDITOR_CODELISTS: "config/submodules/DSDEditor/cstat_core_codelists.json",
 
         DATA_MANAGEMENT_NOT_LOGGEDIN_URL: "./index.html",
         FAKE_AUTHENTICATION: true,
