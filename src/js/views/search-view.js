@@ -37,8 +37,9 @@ define([
 
             this.catalog = new Catalog({
                 el: document.querySelector('#catalog-container'),
-                defaultSelectors: ['contextSystem', "dataDomain","resourceType" ],
-                environment: C.ENVIRONMENT,
+                defaultSelectors: ['resourceType', 'contextSystem', 'dataDomain'],
+                environment: C.environment,
+                hideCloseButton : true,
                 selectorsRegistry : {
                     contextSystem : {
                         selector : {
@@ -63,8 +64,8 @@ define([
                             metadataAttribute: "dsd.contextSystem"
                         }
                     }
-
                 }
+
 
             });
             this.bindEventListeners();
