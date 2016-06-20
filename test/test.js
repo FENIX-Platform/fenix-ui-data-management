@@ -36,6 +36,7 @@ require.config({
 require([
     "compilerPaths",
     "commonPaths",
+    "filterPaths",
     "dataEditorPaths",
     "dsdEditorPaths",
     "metadataEditorPaths",
@@ -43,7 +44,7 @@ require([
     "menuPaths",
     "dataManagementPaths",
     "dataManagementCommonsPaths",
-], function (Compiler, Commons, DataEditor, DSDEditor, MetadataEditor, Catalog, Menu, DataMng, DataMngCommons) {
+], function (Compiler, Commons, Filter, DataEditor, DSDEditor, MetadataEditor, Catalog, Menu, DataMng, DataMngCommons) {
 
     'use strict';
 
@@ -51,6 +52,9 @@ require([
 
     var commonsConfig = Commons;
     commonsConfig.baseUrl = submodules_path + 'fenix-ui-common/js';
+
+    var filterConfig = Filter;
+    filterConfig.baseUrl = submodules_path + 'fenix-ui-filter/src/js';
 
     var dataEditorConfig = DataEditor;
     dataEditorConfig.baseUrl =  submodules_path +'fenix-ui-DataEditor/js';
@@ -73,7 +77,7 @@ require([
     var dataMngCommonsConfig = DataMngCommons;
     dataMngCommonsConfig.baseUrl =  submodules_path +'fenix-ui-datamanagement-commons/js';
 
-    Compiler.resolve([commonsConfig, dataEditorConfig, dsdEditorConfig, metadataEditorConfig, catalogConfig, menuConfig, dataMngConfig, dataMngCommonsConfig],
+    Compiler.resolve([commonsConfig, filterConfig, dataEditorConfig, dsdEditorConfig, metadataEditorConfig, catalogConfig, menuConfig, dataMngConfig, dataMngCommonsConfig],
         {
             placeholders: {"FENIX_CDN": "http://fenixrepo.fao.org/cdn"},
 

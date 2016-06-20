@@ -1,0 +1,39 @@
+/* Uneca Theme */
+$fx-ui-common: '../../../submodules/fenix-ui-common/css/';
+
+/* Fenix Utils*/
+//@import '../../../../submodules/fenix-ui-common/css/fenix-style-no-variables';
+
+/* Fenix Common CSS */
+@import '../../../../submodules/fenix-ui-common/css/themes/fx-variables';
+
+/* Boostrap Queries */
+@import '../../../../submodules/fenix-ui-common/css/themes/fx-bootstrap-queries';
+
+$fx-ui-common: '../../../../submodules/fenix-ui-common/';
+
+@import '../../../../submodules/fenix-ui-common/css/components/fx-icons';
+
+@import '../../../../submodules/fenix-ui-common/css/utils/fx-mixins';
+@import '../../../../submodules/fenix-ui-common/css/components/fx-dropdown';
+@import '../../../../submodules/fenix-ui-common/css/components/fx-preload';
+
+
+@import '../../../../submodules/fenix-ui-common/css/base/fx-typography';
+@import '../../../../submodules/fenix-ui-common/css/base/fx-fonts-import';
+
+@import '../../../../submodules/fenix-ui-common/css/components/fx-tabs';
+@import '../../../../submodules/fenix-ui-common/css/components/fx-buttons';
+@import '../../../../submodules/fenix-ui-common/css/components/fx-fixed-height';
+@import '../../../../submodules/fenix-ui-common/css/components/fx-material-theme-light';
+@import '../../../../submodules/fenix-ui-common/css/components/fx-metadata-viewer';
+@import '../../../../submodules/fenix-ui-common/css/vendor/fx-jstree';
+@import '../../../../submodules/fenix-ui-common/css/components/fx-radio-checkbox';
+
+@import '../../../../submodules/fenix-ui-catalog/src/css/catalog';
+@import '../../../../submodules/fenix-ui-filter/src/css/filter';
+
+
+@import '../../../../submodules/fenix-ui-data-management/src/css/fx-data-management';
+
+

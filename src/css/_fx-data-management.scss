@@ -1,5 +1,6 @@
-/* Fenix - Data Management */
+/* FENIX Data Management */
 
+@import '../../../fenix-ui-DSDEditor/css/fx-dsd-editor';
 
 #main-container {
   .container{
@@ -7,6 +8,18 @@
     width: 100%;
 
   }
+}
+
+.catalog-dm{
+  position: static;
+  display: block;
+  opacity: 1;
+  overflow: visible;
+
+  .modal-dialog{
+    @include fx-transfor-me(none !important);
+  }
+
 }
 
 .datamng-welcome{
@@ -29,13 +42,12 @@
     display: inline-block;
     width: 75px;
     height: 75px;
-    background-color: $fenix-light-gray;
+    background-color: $fenix-superlight-gray;
     border: 2px solid transparent;
     cursor: pointer;
     @include fx-border-radius(3px);
     @include animate;
     margin: 5px;
-
 
     &:hover{
       border-color:$fx-cool-blue;
@@ -96,6 +108,11 @@
 
 }
 
+#site-container{
+
+
+
+}
 
 .fx-datamng-holder{
   min-height: 400px;
@@ -112,4 +129,8 @@
     }
   }
 
+}
+
+.datamng-container{
+  padding: 0;
 }
