@@ -15,7 +15,7 @@ require.config({
     paths: {
         compilerPaths: pathProjectRoot + 'submodules/fenix-ui-common/js/Compiler',
         commonPaths: pathProjectRoot + 'submodules/fenix-ui-common/js/paths',
-        menuPaths: pathProjectRoot + 'submodules/fenix-ui-menu/js/paths',
+        menuPaths: pathProjectRoot + 'submodules/fenix-ui-menu/src/js/paths',
         dashboardPaths: pathProjectRoot + 'submodules/fenix-ui-dashboard/src/js/paths',
         chartPaths: pathProjectRoot + 'submodules/fenix-ui-chart-creator/src/js/paths',
         mapPaths: pathProjectRoot + 'submodules/fenix-ui-map-creator/src/js/paths',
@@ -27,7 +27,7 @@ require.config({
         dataEditorPaths : pathProjectRoot + 'submodules/fenix-ui-DataEditor/js/paths',
         dsdEditorPaths : pathProjectRoot + 'submodules/fenix-ui-DSDEditor/js/paths',
         metadataEditorPaths : pathProjectRoot + 'submodules/fenix-ui-metadata-editor/js/paths',
-        catalogPaths : pathProjectRoot + 'submodules/fenix-ui-catalog/js/paths',
+        catalogPaths : pathProjectRoot + 'submodules/fenix-ui-catalog/src/js/paths',
         dataManagementPaths : pathProjectRoot + 'submodules/fenix-ui-data-management/src/js/paths',
         dataManagementCommonsPaths : pathProjectRoot + 'submodules/fenix-ui-datamanagement-commons/js/paths',
     }
@@ -62,10 +62,10 @@ require([
     metadataEditorConfig.baseUrl =  submodules_path + 'fenix-ui-metadata-editor/js/';
 
     var catalogConfig = Catalog;
-    catalogConfig.baseUrl =  submodules_path +'fenix-ui-catalog/js/';
+    catalogConfig.baseUrl =  submodules_path +'fenix-ui-catalog/src/js/';
 
     var menuConfig = Menu;
-    menuConfig.baseUrl =  submodules_path +'fenix-ui-menu/js';
+    menuConfig.baseUrl =  submodules_path +'fenix-ui-menu/src/js';
 
     var dataMngConfig = DataMng;
     dataMngConfig.baseUrl =  submodules_path +'fenix-ui-data-management/src/js';
@@ -129,7 +129,7 @@ require([
         //trace, debug, info, warn, error
         log.setLevel('trace');
 
-        log.warn("~~~~~ FENIX Visualization Box: test");
+        log.warn("~~~~~ FENIX Data Management: test");
         log.info("===== Start testing:...");
 
         Test.start();

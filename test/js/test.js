@@ -23,10 +23,11 @@ define([
         var app = new Application({
             routes: routes,
             controllerSuffix: '-controller',
-            controllerPath: '../../../submodules/fenix-ui-data-management/src/js/controllers/',
+            controllerPath: '../../submodules/fenix-ui-data-management/src/js/controllers/',
             root: '/test/',
             pushState: false
         });
+
 
     };
 

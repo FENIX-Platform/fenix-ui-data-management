@@ -14,7 +14,7 @@ define(function () {
         paths: {
             underscore: "{FENIX_CDN}/js/underscore/1.7.0/underscore.min",
             backbone: "{FENIX_CDN}/js/backbone/1.1.2/backbone.min",
-            handlebars: "{FENIX_CDN}/js/handlebars/2.0.0/handlebars",
+            handlebars: "{FENIX_CDN}/js/handlebars/4.0.5/handlebars",
             chaplin: "{FENIX_CDN}/js/chaplin/1.0.1/chaplin.min",
             amplify: '{FENIX_CDN}/js/amplify/1.1.2/amplify.min',
             rsvp: '{FENIX_CDN}/js/rsvp/3.0.17/rsvp',
