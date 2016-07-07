@@ -1,5 +1,6 @@
 /*global define, amplify*/
 define([
+    'jquery',
     'chaplin',
     'fx-d-m/config/config',
     'fx-d-m/config/config-default',
@@ -10,9 +11,13 @@ define([
     'i18n!fx-d-m/i18n/nls/ML_DataManagement',
     'amplify',
     'pnotify'
-], function (Chaplin, C, DC, View, template, Catalog, Events, MLRes) {
+], function ($, Chaplin, C, DC, View, template, Catalog, Events, MLRes) {
 
     'use strict';
+
+    var s = {
+        CATALOG_EL : '#catalog-container'
+    };
 
     var SearchView = View.extend({
 
@@ -21,73 +26,26 @@ define([
             View.prototype.initialize.call(this, arguments);
         },
 
-        // Automatically render after initialize
         autoRender: true,
 
         className: 'search-view',
 
-        // Save the template string in a prototype property.
-        // This is overwritten with the compiled template function.
-        // In the end you might want to used precompiled templates.
         template: template,
 
         attach: function () {
 
             View.prototype.attach.call(this, arguments);
 
-            this.catalog = new Catalog({
-                el: document.querySelector('#catalog-container'),
-                defaultSelectors: ["referenceArea", "dataDomain"],
-                menuExcludedItems : ["accessibility"],
+            this.catalog = new Catalog($.extend(true, {}, C.catalog, DC.catalog, {
+                el: this.$el.find(s.CATALOG_EL),
                 environment: C.environment,
-                hideCloseButton : true,
-                selectorsRegistry : {
-                    contextSystem : {
-                        selector : {
-                            id : "dropdown",
-                            source : [
-                                {value : C.DSD_EDITOR_CONTEXT_SYSTEM, label : C.DSD_EDITOR_LABEL}
-                            ],
-                            default : [C.DSD_EDITOR_CONTEXT_SYSTEM],
-                            hideSummary : true,
-                            config : {
-                                plugins: ['remove_button'],
-                                mode: 'multi'
-                            }
-                        },
+            }));
 
-                        template : {
-                            hideRemoveButton : false
-                        },
-
-                        format : {
-                            output : "enumeration",
-                            metadataAttribute: "dsd.contextSystem"
-                        }
-                    },
-                    dataDomain: {
-                        cl : {
-                            uid: "CountrySTAT_Indicators",
-                            level : 1,
-                            levels : 1
-                        }
-                    }
-
-                },
-                baseFilter: {
-                    "dsd.contextSystem": {"enumeration": ["cstat_mdg"]},
-                    "meContent.resourceRepresentationType": {"enumeration": ["dataset"]}
-                }
-
-
-
-            });
             this.bindEventListeners();
         },
 
         bindEventListeners: function () {
             amplify.subscribe(this.catalog._getEventName("select"), this, this.selectResource);
-            //amplify.subscribe('fx.widget.catalog.select', this, this.selectResource);
         },
 
         selectResource: function (resource) {
@@ -95,7 +53,7 @@ define([
             var succ = null;
             var err = function () {
                 new PNotify({ title: '', text: MLRes.errorLoadinResource, type: 'error' });
-            }
+            };
 
             Chaplin.mediator.publish(Events.RESOURCE_SELECT, { metadata: resource.model }, succ, err, null, 1);
         },
