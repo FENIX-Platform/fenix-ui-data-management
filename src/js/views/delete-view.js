@@ -44,7 +44,7 @@ define([
                 });
             };
             var succ = function () {
-                new PNotify({ title: '', text: MLRes.success, type: 'success' });
+                new PNotify({ title: MLRes.resourceDeleted, text: MLRes.resourceDeleted, type: 'success' });
                 Chaplin.utils.redirectTo({ url: 'search' });
             };
             ResourceManager.deleteCurrentResource(succ, err);
