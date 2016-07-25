@@ -17,7 +17,6 @@ define([
     var MetadataView = View.extend({
         // Automatically render after initialize
         autoRender: true,
-
         className: 'metadata-view',
 
         // Save the template string in a prototype property.
@@ -52,9 +51,7 @@ define([
 
         bindEventListeners: function () {
             var me = this;
-
             $(h.btnSaveMeta).on('click', function () {
-
                 var toSave = MetadataEditor.get();
                 if (!toSave) {
                     Notif.showError("ERROR", 'Please fill the minimum set of metadata in the "Identification" and "Contacts" sections');
