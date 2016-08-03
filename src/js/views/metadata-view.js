@@ -12,7 +12,11 @@ define([
     'use strict';
     var h = {
         MetaEditorContainer: '#metadataEditorContainer',
-        btnSaveMeta: '#btnSaveMeta'
+        btnShowCopy: '.dropdown-menu input, .dropdown-menu label',
+        btnSaveMeta: '#btnSaveMeta',
+        btnCopyMeta: '#metaeditor-loadMeta-btn',
+        uidCopyMeta: '#resourceUid',
+        verCopyMeta: '#resourceVersion'
     };
     var MetadataView = View.extend({
         // Automatically render after initialize
@@ -35,6 +39,7 @@ define([
             var MetaInitCallB = function () {
                 if (me.resource && me.resource.metadata) {
                     MetadataEditor.set(me.resource.metadata);
+                    console.log("me",me);
                     me.newResource = false;
                 }
                 else {
@@ -49,8 +54,32 @@ define([
             this._doML();
         },
 
+
         bindEventListeners: function () {
             var me = this;
+
+            $(h.btnShowCopy).on('click',function(e){
+                e.stopPropagation();
+            });
+
+            $(h.btnCopyMeta).on('click', function() {
+                    var resToLoad = { metadata: { uid: $(h.uidCopyMeta).val()} };
+                    if ($(h.verCopyMeta).val().length > 0 ) resToLoad.version = $(h.verCopyMeta).val();
+                    if ($(h.uidCopyMeta).val().length > 0)  ResourceManager.copyMetaData(resToLoad,
+                        function (d) {
+                            me.newResource = true;
+                            me.resource = ResourceManager.getCurrentResource();
+                            MetadataEditor.set(d);
+                            Notif.showSuccess(MLRes.success, MLRes.resourceLoaded);
+                        },
+                        function (e){
+                             console.log(e);
+                             Notif.showError(MLRes.error, MLRes.errorLoadinResource);
+                        });
+
+            });
+
+
             $(h.btnSaveMeta).on('click', function () {
                 var toSave = MetadataEditor.get();
                 if (!toSave) {
@@ -63,6 +92,7 @@ define([
                     var resToLoad = { metadata: { uid: retVal.uid } };
                     if (retVal.version)
                         resToLoad.version = retVal.version;
+                    console.log()
                     ResourceManager.loadResource(resToLoad,
                         function (d) {
                             me.resource = ResourceManager.getCurrentResource();
@@ -83,7 +113,7 @@ define([
                             Notif.showSuccess(MLRes.success, MLRes.resourceSaved);
 
                             Chaplin.utils.redirectTo({ url: 'resume' });
-                        });
+                        },function(){},function(){console.log("errore")});
                 }
 
                 var err = function () {
@@ -109,6 +139,8 @@ define([
         },
         unbindEventListeners: function () {
             $(h.btnSaveMeta).off('click');
+            $(h.btnCopyMeta).off('click');
+            $(h.btnShowCopy).off('click');
         },
         dispose: function () {
             MetadataEditor.destroy();

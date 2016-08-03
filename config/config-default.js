@@ -21,6 +21,8 @@ define(function () {
 
         SERVICE_BASE_ADDRESS: "http://fenix.fao.org/d3s_fenix/msd",
         SERVICE_GET_DATA_METADATA: {service: "resources", queryParams: {full: true, dsd: true}},
+        SERVICE_GET_METADATA: {service: "resources/metadata", queryParams: {full: true, dsd: true}},
+        SERVICE_COPY_METADATA: {service: "resources/metadata", queryParams: {full: true, dsd: true, export:true}},
         SERVICE_SAVE_METADATA: {service: "resources/metadata"},
         SERVICE_SAVE_DSD: {service: "resources/dsd"},
         SERVICE_SAVE_DATA: {service: "resources"},

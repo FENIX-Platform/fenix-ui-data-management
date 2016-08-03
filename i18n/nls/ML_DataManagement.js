@@ -5,6 +5,8 @@
         "success": "Success",
         "resourceSaved":"Resource saved",
         "resourceDeleted": "Resource deleted",
+        "resourceLoaded": "Resource loaded",
+        "resourceCopied": "Resource copied",
         //
         "error": "Error",
         "errorParsingJson": "Error parsing Json file, check the structure and try again",

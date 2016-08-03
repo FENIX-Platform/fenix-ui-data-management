@@ -81,8 +81,25 @@ define([
         _ajaxGET(addr, params, succ, err, complete);
     };
 
+    ResourceManager.prototype.copyMetaData = function (resource, success, err, complete) {
+        var self = this;
+        var addr = getMetadataURL(cfg, cfgDef, resource.metadata.uid, resource.metadata.version);
+        var srvc = cfg.SERVICE_COPY_METADATA || cfgDef.SERVICE_COPY_METADATA;
+        var params = srvc.queryParams;
 
+        var succ = function (data) {
+            if (data === undefined) {
+                console.log("no",data);
+                err();
+            } else {
+                console.log("si")
+                self.resource = data;
+                if (success) success(data);
+            }
+        };
 
+        _ajaxGET(addr, params, succ, err, complete);
+    };
 
 
     /*ResourceManager.prototype.findResource = function (toPost, callBSuccess, callBComplete, callB_Err) {
