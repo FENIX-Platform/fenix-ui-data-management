@@ -89,10 +89,8 @@ define([
 
         var succ = function (data) {
             if (data === undefined) {
-                console.log("no",data);
                 err();
             } else {
-                console.log("si")
                 self.resource = data;
                 if (success) success(data);
             }
@@ -311,6 +309,13 @@ define([
             return false;
         return true;
     }
+
+    ResourceManager.prototype.getTitle = function () {
+        var lang = cfg.LANG || cfgDef.LANG;
+        if (!this.resource.metadata.title[lang]) return "Missing Title in "+lang;
+        return this.resource.metadata.title[lang];
+    }
+
 
     ResourceManager.prototype.hasData = function () {
         if (!this.isResourceAvailable())

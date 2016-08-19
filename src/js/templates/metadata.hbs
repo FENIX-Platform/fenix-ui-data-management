@@ -1,15 +1,15 @@
 <!-- Control toolbar -->
 <div class="container">
     <div class="col-xs-12 dm-header" id="fx-editor-navbar">
-        <h2 class="dm-section-title pull-left">Metadata Editor</h2>
+        <h2 id="MetaHeader" class="dm-section-title pull-left">Metadata Editor</h2>
 
         <div class="dropdown btn-toolbar pull-right">
-            <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" >
+            <button id="btnCopyMetadata" type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" >
                 Copy Metadata <span class="caret"></span>
             </button>
             <div class="dropdown-menu" style="padding:10px">
                 <div>
-                    <div> Copy metadata from resource </div>
+                    <div id="MetaCopyHeader">Copy metadata from resource</div>
                     <div>
                         <input type="text" placeholder="Resource Identification Code" class="form-control input-sm" id="resourceUid"/>
                     </div>

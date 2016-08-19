@@ -36,7 +36,17 @@ define([
         dataFileUpload: "#dataFUpload",
         csvSeparator: "input[name=csvSeparator]:checked",
 
-        divCsvMatcher: "#divCsvMatcher"
+        divCsvMatcher: "#divCsvMatcher",
+
+        "DataMatchColumn": "#DataMatchColumn",
+        "DataDuplicateFound" : "#DataDuplicateFound",
+        "DataEditorMainContainer" : "#DataEditorMainContainer",
+        "DataDeleteAll":"#DataDeleteAll",
+        "DatalblUpload":"#lblUpload",
+        "DatalblSeparator":"#lblSeparator",
+        "DatalblcsvSeparatorSemi" : "#DatalblcsvSeparatorSemi",
+        "DatalblcsvSeparatorComma" : "#DatalblcsvSeparatorComma",
+        "DataHeader" : "#DataHeader",
 
     };
     var _html = {
@@ -125,6 +135,7 @@ define([
 
 
             this.bindEventListeners();
+            this._doML();
         },
 
         saveData: function () {
@@ -295,6 +306,24 @@ define([
 
             this.tmpCsvCols = null;
             this.tmpCsvData = null;
+        },
+
+
+        _doML: function() {
+            console.log("DOML");
+            $(h.DataMatchColumn).html(MLRes.DataMatchColumn);
+            $(h.DataDuplicateFound).html(MLRes.DataDuplicateFound);
+            $(h.btnDataMergeKeepNew).html(MLRes.btnDataMergeKeepNew);
+            $(h.btnDataMergeKeepOld).html(MLRes.btnDataMergeKeepOld);
+            $(h.btnDataMergeCancel).html(MLRes.btnDataMergeCancel);
+            $(h.DataEditorMainContainer).html(MLRes.DataEditorMainContainer);
+            $(h.DataDeleteAll).html(MLRes.DataDeleteAll);
+            $(h.DatalblUpload).html(MLRes.DatalblUpload);
+            $(h.DatalblSeparator).html(MLRes.DatalblSeparator);
+            $(h.DatalblcsvSeparatorSemi).html(MLRes.DatalblcsvSeparatorSemi);
+            $(h.DatalblcsvSeparatorComma).html(MLRes.DatalblcsvSeparatorComma);
+            $(h.DataHeader).html(MLRes.DataHeader);
+            $(h.btnSaveData).html(MLRes.dataEditEnd);
         },
 
         _switchPanelVisibility: function (toShow) {

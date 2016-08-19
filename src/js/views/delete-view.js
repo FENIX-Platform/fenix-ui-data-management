@@ -8,7 +8,13 @@ define([
 ], function (Chaplin, View, ResourceManager, template, MLRes) {
     'use strict';
 
-    var DeleteView = View.extend({
+    var h = {
+            "btnDeleteUndo" : "#btnDeleteUndo",
+            "btnDeleteConfirm" : "#btnDeleteConfirm",
+            "DeleteHeader" : "#DeleteHeader"
+    },
+
+    DeleteView = View.extend({
 
         // Automatically render after initialize
         autoRender: true,
@@ -23,6 +29,11 @@ define([
         events: {
             'click #delete-confirm': 'onDelete',
             'click #delete-undo': 'onUndo'
+        },
+
+        attach: function() {
+            View.prototype.attach.call(this, arguments);
+            this._doML();
         },
 
         onDelete: function () {
@@ -52,6 +63,12 @@ define([
 
         onUndo: function () {
             Chaplin.utils.redirectTo({url: 'resume'});
+        },
+
+        _doML: function (){
+            $(h.btnDeleteUndo).html(MLRes.btnDeleteUndo);
+            $(h.btnDeleteConfirm).html(MLRes.btnDeleteConfirm);
+            $(h.DeleteHeader).html(MLRes.DeleteHeader);
         }
 
     });

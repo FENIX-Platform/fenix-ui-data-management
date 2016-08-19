@@ -3,6 +3,9 @@ define(function () {
     'use strict';
     return {
 
+        LANG : "EN",
+        LANGFALLBACKORDER : ["EN", "FR", "ES", "AR", "PR"],
+
         SECONDARY_MENU: {
             url: 'fx-d-m/config/secondary_menu.json',
             disable: ['delete', 'close', 'data', 'dsd']

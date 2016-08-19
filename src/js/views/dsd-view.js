@@ -18,7 +18,10 @@ define([
         btnDSDDownload: "#btnDSDDownload",
         btnUploadGroup: "#btnUploadGroup",
         lblUpload: "#lblUpload",
-        DSDEditorContainer: '#DSDEditorMainContainer'
+        lblDownload: "#lblDownload",
+        DSDEditorContainer: '#DSDEditorMainContainer',
+        DSDHeader: "#DSDHeader"
+
     };
     var DsdView = View.extend({
         // Automatically render after initialize
@@ -167,8 +170,12 @@ define([
             View.prototype.dispose.call(this, arguments);
         },
         _doML: function () {
+            $(h.btnColsEditDone).html(MLRes.btnSaveDSD)
             $(h.btnDSDDownload).html(MLRes.downloadDSD);
-            $(h.lblUpload).html(MLRes.upload);
+            $(h.lblUpload).html(MLRes.uploadDSD);
+            $(h.lblDownload).html(MLRes.downloadDSD);
+            $(h.DSDHeader).html(MLRes.DSDHeader);
+
         }
     });
 

@@ -16,7 +16,10 @@ define([
         btnSaveMeta: '#btnSaveMeta',
         btnCopyMeta: '#metaeditor-loadMeta-btn',
         uidCopyMeta: '#resourceUid',
-        verCopyMeta: '#resourceVersion'
+        verCopyMeta: '#resourceVersion',
+        MetaHeader: '#MetaHeader',
+        MetaCopyHeader: '#MetaCopyHeader',
+        MetaLoad: '#metaeditor-loadMeta-btn'
     };
     var MetadataView = View.extend({
         // Automatically render after initialize
@@ -83,7 +86,7 @@ define([
             $(h.btnSaveMeta).on('click', function () {
                 var toSave = MetadataEditor.get();
                 if (!toSave) {
-                    Notif.showError("ERROR", 'Please fill the minimum set of metadata in the "Identification" and "Contacts" sections');
+                    Notif.showError(MLRes.error, MLRes.errorMetaMinimum);
                     return;
                 }
                 //console.log("toSave",toSave);
@@ -148,8 +151,11 @@ define([
             View.prototype.dispose.call(this, arguments);
         },
         _doML: function () {
-            /*$(h.btnDSDDownload).html(MLRes.downloadDSD);
-            $(h.lblUpload).html(MLRes.upload);*/
+            $(h.MetaHeader).html(MLRes.MetaHeader);
+            $(h.MetaCopyHeader).html(MLRes.MetaCopyHeader);
+            $(h.MetaLoad).html(MLRes.btnLoadMeta);
+            $(h.uidCopyMeta).attr("placeholder", MLRes.CopyMetaRID);
+            $(h.verCopyMeta).attr("placeholder", MLRes.CopyMetaVer);
         }
     });
 

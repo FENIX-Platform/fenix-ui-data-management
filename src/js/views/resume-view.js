@@ -2,14 +2,19 @@ define([
     'chaplin',
     'fx-d-m/views/base/view',
     'text!fx-d-m/templates/resume.hbs',
-    'fx-d-m/components/resource-manager'
-], function (Chaplin, View, template, ResourceManager) {
+    'fx-d-m/components/resource-manager',
+    'i18n!fx-d-m/i18n/nls/ML_DataManagement'
+], function (Chaplin, View, template, ResourceManager, MLRes) {
     'use strict';
 
     var s = {
         BTN_META: '#btnMeta',
         BTN_DSD: '#btnDSD',
-        BTN_DATA: '#btnData'
+        BTN_DATA: '#btnData',
+        TXT_META: '#txtMeta',
+        TXT_DSD: '#txtDSD',
+        TXT_DATA: '#txtData',
+        TXT_DMANRESHEADER : '#DManResHeader'
     }
 
     var ResumeView = View.extend({
@@ -56,6 +61,10 @@ define([
             this.btnMeta = this.$el.find(s.BTN_META);
             this.btnDSD = this.$el.find(s.BTN_DSD);
             this.btnData = this.$el.find(s.BTN_DATA);
+            this.$el.find(s.TXT_META).html(MLRes.btnMetadata);
+            this.$el.find(s.TXT_DSD).html(MLRes.btnDSD);
+            this.$el.find(s.TXT_DATA).html(MLRes.btnData);
+            this.$el.find(s.TXT_DMANRESHEADER).html(MLRes.DManResHeader);
         }
 
     });
