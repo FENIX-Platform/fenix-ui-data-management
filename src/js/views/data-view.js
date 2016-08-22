@@ -21,6 +21,7 @@ define([
         dataUploadContainer: "#DataUploadContainer",
         dataUploadColsMatch: "#DataUploadColsMatch",
         btnDelAllData: "#btnDelAllData",
+        btnUploadGroup: "#btnUploadGroup",
 
         btnSaveData: "#dataEditEnd",
         //This was used before the CSV and the DSD matching was not handled in the UI, remove it if not needed anymore
@@ -38,15 +39,14 @@ define([
 
         divCsvMatcher: "#divCsvMatcher",
 
-        "DataMatchColumn": "#DataMatchColumn",
-        "DataDuplicateFound" : "#DataDuplicateFound",
-        "DataEditorMainContainer" : "#DataEditorMainContainer",
-        "DataDeleteAll":"#DataDeleteAll",
-        "DatalblUpload":"#lblUpload",
-        "DatalblSeparator":"#lblSeparator",
-        "DatalblcsvSeparatorSemi" : "#DatalblcsvSeparatorSemi",
-        "DatalblcsvSeparatorComma" : "#DatalblcsvSeparatorComma",
-        "DataHeader" : "#DataHeader",
+        DataMatchColumn: "#DataMatchColumn",
+        DataDuplicateFound : "#DataDuplicateFound",
+        DataDeleteAll:"#DataDeleteAll",
+        DatalblUpload:"#lblUpload",
+        DatalblSeparator:"#lblSeparator",
+        DatalblcsvSeparatorSemi : "#DatalblcsvSeparatorSemi",
+        DatalblcsvSeparatorComma : "#DatalblcsvSeparatorComma",
+        DataHeader : "#DataHeader",
 
     };
     var _html = {
@@ -69,13 +69,18 @@ define([
             var me = this;
             View.prototype.attach.call(this, arguments);
 
+
             this.$dataEditorContainer = $(h.dataEditorContainer);
             this.$dataUploadContainer = $(h.dataUploadContainer);
             this.$dataUploadColsMatch = $(h.dataUploadColsMatch);
             this._switchPanelVisibility(this.$dataEditorContainer);
+            //this._switchPanelVisibility();
+
             //FUpload
             this.fUpload = new FUploadHelper({ accept: ['csv'] });
             this.fUpload.render(h.dataFileUpload);
+            this.$btnUploadGroup = $(h.btnUploadGroup);
+            this.$btnUploadGroup.hide();
             // $(h.csvSeparator).val()
             //Columns match
             this.columnsMatch = new ColumnsMatch();
@@ -118,6 +123,7 @@ define([
                             DataEditor.setColumns(columns, cl);
                             DataEditor.setData(data);
                             me.$btnSave.removeAttr('disabled');
+                            me.$btnUploadGroup.show();
                             me.fUpload.enabled(true);
                         });
                 },
@@ -310,7 +316,6 @@ define([
 
 
         _doML: function() {
-            console.log("DOML");
             $(h.DataMatchColumn).html(MLRes.DataMatchColumn);
             $(h.DataDuplicateFound).html(MLRes.DataDuplicateFound);
             $(h.btnDataMergeKeepNew).html(MLRes.btnDataMergeKeepNew);
