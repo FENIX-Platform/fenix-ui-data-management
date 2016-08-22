@@ -114,7 +114,8 @@ define([
                 data = ResourceManager.getCurrentResource().data;
                 columns = ResourceManager.getCurrentResource().metadata.dsd.columns;
 
-                ResourceManager.getCodelistsFromCurrentResource(function (cl) {
+                ResourceManager.getCodelistsFromCurrentResource(
+                function (cl) {
                     me.$btnSave.attr('disabled', 'disabled');
                     me.fUpload.enabled(false);
                     me.cLists = cl;

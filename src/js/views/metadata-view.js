@@ -42,7 +42,6 @@ define([
             var MetaInitCallB = function () {
                 if (me.resource && me.resource.metadata) {
                     MetadataEditor.set(me.resource.metadata);
-                    console.log("me",me);
                     me.newResource = false;
                 }
                 else {

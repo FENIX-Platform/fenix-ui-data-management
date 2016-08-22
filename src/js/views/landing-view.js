@@ -1,9 +1,11 @@
 define([
     'fx-d-m/views/base/view',
+    'fx-d-m/config/config',
+    'fx-d-m/config/config-default',
     'text!fx-d-m/templates/landing',
     'fx-d-m/components/resource-manager',
     'i18n!fx-d-m/i18n/nls/ML_DataManagement'
-], function (View, template, ResourceManager, MLRes) {
+], function (View, C, DC, template, ResourceManager, MLRes) {
     'use strict';
 
     var s = {
@@ -27,6 +29,7 @@ define([
 
         attach: function () {
             View.prototype.attach.call(this, arguments);
+
             this.$el.find(s.TXT_INTRO).html(MLRes.DManIntro);
             this.$el.find(s.TXT_HEADER).html(MLRes.DManHeader);
             //this.initVariables();

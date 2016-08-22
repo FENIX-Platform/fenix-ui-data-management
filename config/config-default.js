@@ -4,6 +4,7 @@ define(function () {
     return {
 
         LANG : "EN",
+        LOCALE : "en_EN",
         LANGFALLBACKORDER : ["EN", "FR", "ES", "AR", "PR"],
 
         SECONDARY_MENU: {

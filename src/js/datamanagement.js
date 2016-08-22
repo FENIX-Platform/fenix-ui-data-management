@@ -17,6 +17,7 @@ define([
 
         initialize: function () {
             var args = [].slice.call(arguments);
+            var lang = C.LANG || DC.LANG;
 
             //the coordinates (x, y) you want to scroll to on view replacement. Set to false to deactivate it.
             this.initLayout({ scrollTo: false });
