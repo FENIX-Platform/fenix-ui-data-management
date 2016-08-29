@@ -7,8 +7,8 @@ define([
     'fx-DSDEditor/start',
     //'fx-DSDEditor/js/dataManagementCommons/FileUploadHelper',
     //'fx-DSDEditor/js/dataManagementCommons/Notifications',
-    'fx-DataMngCommons/js/FileUploadHelper',
-    'fx-DataMngCommons/js/Notifications',
+    'fx-d-m/lib/fileuploadhelper',
+    'fx-d-m/lib/notifications',
     'fx-d-m/components/resource-manager',
     'i18n!fx-d-m/i18n/nls/ML_DataManagement'
 ], function (Chaplin, C, DC, View, template, DSDEditor, FUploadHelper, Notif, ResourceManager, MLRes) {
@@ -18,7 +18,10 @@ define([
         btnDSDDownload: "#btnDSDDownload",
         btnUploadGroup: "#btnUploadGroup",
         lblUpload: "#lblUpload",
-        DSDEditorContainer: '#DSDEditorMainContainer'
+        lblDownload: "#lblDownload",
+        DSDEditorContainer: '#DSDEditorMainContainer',
+        DSDHeader: "#DSDHeader"
+
     };
     var DsdView = View.extend({
         // Automatically render after initialize
@@ -59,14 +62,14 @@ define([
         },
         isDSDEditable: function (editable) {
             DSDEditor.editable(editable);
-            var $btn = $(h.btnColsEditDone);
+            //var $btn = $(h.btnColsEditDone);
             if (editable) {
-                $btn.show();
+                //$btn.show();
                 $(h.btnUploadGroup).show();
-                $btn.removeAttr('disabled');
+                //$btn.removeAttr('disabled');
             }
             else {
-                $btn.hide();
+                //$btn.hide();
                 $(h.btnUploadGroup).hide();
             }
         },
@@ -88,10 +91,11 @@ define([
 
                 //ajax callbacks
                 var succ = function () {
+                    Notif.showSuccess(MLRes.success, MLRes.resourceSaved)
                     Chaplin.utils.redirectTo('resume#show');
                 };
-                var loadErr = function () {
-                    Notif.showError(MLRes.error, MLRes.errorLoadinResource);
+                var loadErr = function (textstatus) {
+                    Notif.showError(MLRes.error, MLRes.errorLoadinResource+" ["+textstatus+"]");
                 };
                 var updateDSDErr = function () {
                     Notif.showError(MLRes.error, MLRes.errorSavingResource);
@@ -109,7 +113,7 @@ define([
                 var toSave = JSON.stringify(DSDEditor.get());
                 var dLink = document.createElement('a');
                 dLink.download = 'DSD.json';
-                dLink.innerHTML = "Download file";
+                dLink.innerHTML = MLRes.downloadDSD;
                 var textFileAsBlob = new Blob([toSave], { type: 'text/plain' });
                 dLink.href = window.URL.createObjectURL(textFileAsBlob);
                 dLink.onclick = function (evt) { document.body.removeChild(dLink); };
@@ -166,8 +170,12 @@ define([
             View.prototype.dispose.call(this, arguments);
         },
         _doML: function () {
+            $(h.btnColsEditDone).html(MLRes.btnSaveDSD)
             $(h.btnDSDDownload).html(MLRes.downloadDSD);
-            $(h.lblUpload).html(MLRes.upload);
+            $(h.lblUpload).html(MLRes.uploadDSD);
+            $(h.lblDownload).html(MLRes.downloadDSD);
+            $(h.DSDHeader).html(MLRes.DSDHeader);
+
         }
     });
 

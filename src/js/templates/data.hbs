@@ -1,8 +1,38 @@
+<div id="DataUploadColsMatch" style="display:none">
+    <div class="row">
+        <div class="col-xs-12">
+            <p id="DataMatchColumn">
+                Match the DSD columns with the CSV ones
+            </p>
+            <div id="divCsvMatcher">
+                
+            </div>
+            <p>
+                <button id="btnCsvMatcherOk" type="button" class="btn">Ok</button>
+                <button id="btnCsvMatcherCancel" type="button" class="btn">Cancel</button>
+            </p>
+        </div>
+    </div>
+</div>
+<div id="DataUploadContainer" style="display:none">
+    <div class="row">
+        <div class="col-xs-12">
+            <p id="DataDuplicateFound" class="text-center">
+                Some duplicated values found, keep old data or replace with the new values just uploaded?
+            </p>
+            <p class="text-center">
+                <button id="btnDataMergeKeepNew" type="button" class="btn">Replace with new values</button>
+                <button id="btnDataMergeKeepOld" type="button" class="btn">Keep old values</button>
+                <button id="btnDataMergeCancel" type="button" class="btn">Cancel</button>
+            </p>
+        </div>
+    </div>
+</div>
 <div id="DataEditorContainer">
     <div class="row">
         <div class="col-xs-12">
             <div class="col-xs-12 dm-header">
-                <h2 class="dm-section-title pull-left">Data Editor</h2>
+                <h2 id="DataHeader" class="dm-section-title pull-left">Data Editor</h2>
                 <div class="btn-toolbar pull-right">
                     <button id="dataEditEnd" type="button" class="btn btn-default pull-right">
                         <!--<span class="glyphicon glyphicon-floppy-disk"></span>-->
@@ -23,26 +53,31 @@
                 <table>
                     <thead>
                         <tr>
-                            <td width="100px">Delete all</td>
-                            <td width="120px">CSV Template</td>
+                            <td id="DataDeleteAll" width="100px">Delete all</td>
+                            <!--This was used before the CSV and the DSD matching was not handled in the UI, remove it if not needed anymore-->
+                            <!--<td width="120px">CSV Template</td>-->
                             <td width="100px"><label id="lblUpload" for="dataFUpload">Upload</label></td>
+                            <td width="100px"><label id="lblSeparator" for="csvSeparator">CSV Separator</label></td>
                         </tr>
                     </thead>
                     <tr>
                         <td>
                             <button type="button" id="btnDelAllData" class="glyphicon glyphicon-remove-circle"></button>
                         </td>
-                        <td>
+                        <!--This was used before the CSV and the DSD matching was not handled in the UI, remove it if not needed anymore-->
+                        <!--<td>
                             <button type="button" id="btnGetCSVTemplate">Get CSV template</button>
+                        </td>-->
+                        <td>
+                            <input type="file" name="filename" id="dataFUpload" />
                         </td>
                         <td>
-
-                            <input type="file" name="filename" id="dataFUpload" />
+                            <input type="radio" id="csvSeparatorComma" name="csvSeparator" value="," checked><label id="DatalblcsvSeparatorComma" class="filter-enabled-label" for="csvSeparatorComma">Comma</label>
+                            <br>
+                            <input type="radio" id="csvSeparatorSemi" name="csvSeparator" value=";"><label id="DatalblcsvSeparatorSemi" class="filter-enabled-label" for="csvSeparatorSemi">Semicolon</label>
                         </td>
                     </tr>
                 </table>
-
-
             </div>
         </div>
     </div>

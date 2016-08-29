@@ -3,14 +3,12 @@ define(function () {
     'use strict';
     return {
 
-        TOP_MENU: {
-            url: 'config/submodules/fx-menu/fenix-ui-topmenu_config.json',
-            template: 'fx-menu/templates/blank-fluid.html',
-            active: "createdataset"
-        },
+        LANG : "EN",
+        LOCALE : "en_EN",
+        LANGFALLBACKORDER : ["EN", "FR", "ES", "AR", "PR"],
 
         SECONDARY_MENU: {
-            url: './submodules/fenix-ui-data-management/config/secondary_menu.json',
+            url: 'fx-d-m/config/secondary_menu.json',
             disable: ['delete', 'close', 'data', 'dsd']
         },
 
@@ -18,25 +16,86 @@ define(function () {
         DSD_EDITOR_DATASOURCES: ['D3S'],
         DSD_EDITOR_SUBJECTS: "submodules/fenix-ui-DSDEditor/config/DSDEditor/Subjects.json",
         DSD_EDITOR_DATATYPES: "submodules/fenix-ui-DSDEditor/config/DSDEditor/Datatypes.json",
-        DSD_EDITOR_CODELISTS: "config/submodules/DSDEditor/CodelistsUAE.json",
+        DSD_EDITOR_CODELISTS: "config/submodules/DSDEditor/cstat_core_codelists.json",
 
         DATA_MANAGEMENT_NOT_LOGGEDIN_URL: "./index.html",
         FAKE_AUTHENTICATION: true,
 
         CATALOG_BLANK_FILTER: 'config/submodules/catalog/uae-catalog-blank-filter.json',
 
-        METADATA_EDITOR_GUI: "./submodules/fenix-ui-metadata-editor/conf/json/fx-editor-gui-config.json",
-        METADATA_EDITOR_VALIDATION: "./submodules/fenix-ui-metadata-editor/conf/json/fx-editor-validation-config.json",
-        METADATA_EDITOR_JSON_MAPPING: "./submodules/fenix-ui-metadata-editor/conf/json/fx-editor-mapping-config.json",
-        //AJAX_EVENT_CALL: "./submodules/fenix-ui-metadata-editor/conf/json/fx-editor-ajax-config_fenix.json",
-        //METADATA_EDITOR_AJAX_EVENT_CALL: "./submodules/fenix-ui-metadata-editor/conf/json/fx-editor-ajax-config_DEV.json",
-        METADATA_EDITOR_DATES: "./submodules/fenix-ui-metadata-editor/conf/json/fx-editor-dates-config.json",
-
         SERVICE_BASE_ADDRESS: "http://fenix.fao.org/d3s_fenix/msd",
         SERVICE_GET_DATA_METADATA: {service: "resources", queryParams: {full: true, dsd: true}},
+        SERVICE_GET_METADATA: {service: "resources/metadata", queryParams: {full: true, dsd: true}},
+        SERVICE_COPY_METADATA: {service: "resources/metadata", queryParams: {full: true, dsd: true, export:true}},
         SERVICE_SAVE_METADATA: {service: "resources/metadata"},
         SERVICE_SAVE_DSD: {service: "resources/dsd"},
         SERVICE_SAVE_DATA: {service: "resources"},
-        SERVICE_RESOURCES_FIND: {service: "resources/find"}
+        SERVICE_RESOURCES_FIND: {service: "resources/find"},
+
+        METADATA_PATH: {
+            //schemaPath: '../config/schemas/',
+            schemaPath: 'fx-MetaEditor2/config/schemas/'
+        },
+
+        METADATA_SEC: [
+            {
+                id: "identification", text: "Identification", icon: "img/fenix-catalog-sprite-small.svg",
+                state: {
+                    selected: true
+                }
+            },
+            {id: "contacts", text: "Contacts"},
+            {
+                id: "content", text: "Content", children: [
+                {id: 'content_ReferencePopulation', text: "Reference Population"},
+                {id: 'content_Coverage', text: "Coverage"}
+            ]
+            },
+            {id: "institutionalMandate", text: "Institutional Mandate"},
+            {
+                id: "statisticalProcessing",
+                text: "Statistical Processing",
+                state: {disabled: true, opened: true},
+                children: [
+                    {id: 'statisticalProcessing_primaryDataCollection', text: "Primary Data Collection"},
+                    {id: 'statisticalProcessing_secondaryDataCollection', text: "Secondary Data Collection"},
+                    {id: 'statisticalProcessing_dataCompilation', text: "Data Compilation"},
+                    {id: 'statisticalProcessing_dataValidation', text: "Data Validation"}
+                ]
+            },
+            {
+                id: "dataQuality", text: "Data Quality", children: [
+                {id: "dataQuality_accuracy", text: "Accuracy"},
+                {id: "dataQuality_dataRevision", text: "Data Revision"},
+                {id: "dataQuality_relevance", text: "Relevance"},
+                {id: "dataQuality_compatibilityCoherence", text: "Compatibility Coherence"},
+                {id: "dataQuality_timelinessAndPunctuality", text: "Timeliness and Puctuality"}
+            ]
+            },
+            {
+                id: "accessibility", text: "Accessibility", state: {disabled: true, opened: true}, children: [
+                {
+                    id: "accessibility_dataDissemination",
+                    text: "Data Dissemination",
+                    state: {disabled: true, opened: true},
+                    children: [
+                        {id: "accessibility_dataDissemination_distribution", text: "Distribution"},
+                        {id: "accessibility_dataDissemination_releasePolicy", text: "Release Policy"}
+                    ],
+
+                },
+                {id: "accessibility_clarity", text: "Clarity"},
+                {id: "accessibility_confidentiality", text: "Confidentiality"}
+            ]
+            },
+            {
+                id: "maintenance", text: "Maintenance", children: [
+                {id: "maintenance_update", text: "Update"},
+                {id: "maintenance_metadataMaintenance", text: "Metadata Maintenance"}
+            ]
+            }
+            //,{ id: "documents", text: "Documents" }
+        ]
+
     };
 });

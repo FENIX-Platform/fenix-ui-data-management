@@ -8,7 +8,13 @@ define([
 ], function (Chaplin, View, ResourceManager, template, MLRes) {
     'use strict';
 
-    var DeleteView = View.extend({
+    var h = {
+            "btnDeleteUndo" : "#btnDeleteUndo",
+            "btnDeleteConfirm" : "#btnDeleteConfirm",
+            "DeleteHeader" : "#DeleteHeader"
+    },
+
+    DeleteView = View.extend({
 
         // Automatically render after initialize
         autoRender: true,
@@ -25,19 +31,44 @@ define([
             'click #delete-undo': 'onUndo'
         },
 
+        attach: function() {
+            View.prototype.attach.call(this, arguments);
+            this._doML();
+        },
+
         onDelete: function () {
 
             //Delete current resource
             var err = function () {
-                new PNotify({ title: '', text: MLRes.errorLoadinResource, type: 'error' });
+                var notice = new PNotify({
+                    title: 'Resource Deleted',
+                    text: 'Current resource correctly deleted.',
+                    type: 'success',
+                    buttons: {
+                        closer: false,
+                        sticker: false
+                    }
+
+                });
+                notice.get().click(function() {
+                    notice.remove();
+                });
             };
-            
-            ResourceManager.deleteCurrentResource(null, err);
-            
+            var succ = function () {
+                new PNotify({ title: MLRes.resourceDeleted, text: MLRes.resourceDeleted, type: 'success' });
+                Chaplin.utils.redirectTo({ url: 'search' });
+            };
+            ResourceManager.deleteCurrentResource(succ, err);
         },
 
         onUndo: function () {
             Chaplin.utils.redirectTo({url: 'resume'});
+        },
+
+        _doML: function (){
+            $(h.btnDeleteUndo).html(MLRes.btnDeleteUndo);
+            $(h.btnDeleteConfirm).html(MLRes.btnDeleteConfirm);
+            $(h.DeleteHeader).html(MLRes.DeleteHeader);
         }
 
     });

@@ -5,19 +5,25 @@ define([
     'fx-d-m/views/base/view',
     'text!fx-d-m/templates/metadata.hbs',
     'fx-MetaEditor2/start',
-    'fx-DataMngCommons/js/Notifications',
+    'fx-d-m/lib/notifications',
     'fx-d-m/components/resource-manager',
     'i18n!fx-d-m/i18n/nls/ML_DataManagement',
-], function (Chaplin, C, DC, View, template, MetadataEditor, Noti, ResourceManager, MLRes) {
+], function (Chaplin, C, DC, View, template, MetadataEditor, Notif, ResourceManager, MLRes) {
     'use strict';
     var h = {
         MetaEditorContainer: '#metadataEditorContainer',
-        btnSaveMeta: '#btnSaveMeta'
+        btnShowCopy: '.dropdown-menu input, .dropdown-menu label',
+        btnSaveMeta: '#btnSaveMeta',
+        btnCopyMeta: '#metaeditor-loadMeta-btn',
+        uidCopyMeta: '#resourceUid',
+        verCopyMeta: '#resourceVersion',
+        MetaHeader: '#MetaHeader',
+        MetaCopyHeader: '#MetaCopyHeader',
+        MetaLoad: '#metaeditor-loadMeta-btn'
     };
     var MetadataView = View.extend({
         // Automatically render after initialize
         autoRender: true,
-
         className: 'metadata-view',
 
         // Save the template string in a prototype property.
@@ -50,27 +56,39 @@ define([
             this._doML();
         },
 
+
         bindEventListeners: function () {
             var me = this;
 
-            /*$('#btnLoadMeta').on('click', function () {
-                ResourceManager.loadResource({ metadata: { uid: "dan401" } },
-                function (d) {
-                    //console.log("LOAD"); console.log(d);
-                    MetadataEditor.set(d.metadata);
-                    me.newResource = false;
-                }, function () {
-                    console.log("err");
-                });
-            });*/
+            $(h.btnShowCopy).on('click',function(e){
+                e.stopPropagation();
+            });
+
+            $(h.btnCopyMeta).on('click', function() {
+                    var resToLoad = { metadata: { uid: $(h.uidCopyMeta).val()} };
+                    if ($(h.verCopyMeta).val().length > 0 ) resToLoad.version = $(h.verCopyMeta).val();
+                    if ($(h.uidCopyMeta).val().length > 0)  ResourceManager.copyMetaData(resToLoad,
+                        function (d) {
+                            me.newResource = true;
+                            me.resource = ResourceManager.getCurrentResource();
+                            MetadataEditor.set(d);
+                            Notif.showSuccess(MLRes.success, MLRes.resourceLoaded);
+                        },
+                        function (e){
+                             console.log(e);
+                             Notif.showError(MLRes.error, MLRes.errorLoadinResource);
+                        });
+
+            });
 
 
             $(h.btnSaveMeta).on('click', function () {
                 var toSave = MetadataEditor.get();
                 if (!toSave) {
-                    Noti.showError("ERROR", 'Please fill the minimum set of metadata in the "Identification" and "Contacts" sections');
+                    Notif.showError(MLRes.error, MLRes.errorMetaMinimum);
                     return;
                 }
+                //console.log("toSave",toSave);
                 //toSave.uid = "dan401b";
                 var succNew = function (retVal) {
                     var resToLoad = { metadata: { uid: retVal.uid } };
@@ -80,6 +98,8 @@ define([
                         function (d) {
                             me.resource = ResourceManager.getCurrentResource();
                             MetadataEditor.set(d.metadata);
+                            Notif.showSuccess(MLRes.success, MLRes.resourceSaved);
+                            Chaplin.utils.redirectTo({ url: 'resume' });
                         });
                 };
                 var succUpd = function () {
@@ -91,11 +111,14 @@ define([
                         function (d) {
                             me.resource = ResourceManager.getCurrentResource();
                             MetadataEditor.set(d.metadata);
-                        });
+                            Notif.showSuccess(MLRes.success, MLRes.resourceSaved);
+
+                            Chaplin.utils.redirectTo({ url: 'resume' });
+                        },function(){},function(){console.log("errore")});
                 }
 
                 var err = function () {
-                    Noti.showError("ERROR", 'Error saving resource, please try again.')
+                    Notif.showError("ERROR", 'Error saving resource, please try again.')
                 };
                 var complete = function () { };
 
@@ -117,6 +140,8 @@ define([
         },
         unbindEventListeners: function () {
             $(h.btnSaveMeta).off('click');
+            $(h.btnCopyMeta).off('click');
+            $(h.btnShowCopy).off('click');
         },
         dispose: function () {
             MetadataEditor.destroy();
@@ -124,8 +149,11 @@ define([
             View.prototype.dispose.call(this, arguments);
         },
         _doML: function () {
-            /*$(h.btnDSDDownload).html(MLRes.downloadDSD);
-            $(h.lblUpload).html(MLRes.upload);*/
+            $(h.MetaHeader).html(MLRes.MetaHeader);
+            $(h.MetaCopyHeader).html(MLRes.MetaCopyHeader);
+            $(h.MetaLoad).html(MLRes.btnLoadMeta);
+            $(h.uidCopyMeta).attr("placeholder", MLRes.CopyMetaRID);
+            $(h.verCopyMeta).attr("placeholder", MLRes.CopyMetaVer);
         }
     });
 

@@ -19,7 +19,55 @@ define([
         Chaplin.mediator.subscribe(Events.RESOURCE_SELECT, this.loadResource, this);
     };
 
-    ResourceManager.prototype.loadResource = function (resource, success, err, complete) {
+    //Loads the metadata + dsd part, not used yet and not tested
+    ResourceManager.loadMetadata = function (resource, success, err, complete) {
+        var addr = getMetadataURL(cfg, cfgDef, resource.metadata.uid, resource.metadata.version);
+        var srvc = cfg.SERVICE_GET_METADATA || cfgDef.SERVICE_GET_METADATA;
+        var params = srvc.queryParams;
+        _ajaxGET(addr, params, success, err, complete);
+    };
+    //Loads the data part, not used yet and not tested
+    ResourceManager.loadData = function (resource, success, err, complete) {
+        var addr = getDataURL(cfg, cfgDef, resource.metadata.uid, resource.metadata.version);
+        var srvc = cfg.SERVICE_GET_DATA || cfgDef.SERVICE_GET_DATA;
+        var params = srvc.queryParams;
+        _ajaxGET(addr, params, success, err, complete);
+    };
+
+
+    //perPage=1;
+    ResourceManager.prototype.loadResource = function (resource, success, err, complete, limitData) {
+        var me = this;
+        var addr = getDataAndMetaURL(cfg, cfgDef, resource.metadata.uid, resource.metadata.version);
+        var srvc = cfg.SERVICE_GET_DATA_METADATA || cfgDef.SERVICE_GET_DATA_METADATA;
+        var params = srvc.queryParams;
+        //Temporary solution, when services to gather informations on the resource will be available the client can get only the needed pieces
+        //I need to download all just to disable the "DSD" and "Data" buttons (no data edit withoud DSD, no DSD edit with data).
+        //Fix when services will be available, at the moment to speed up apps that just require metadata call with limit set to 1
+        if (limitData) {
+            params.perPage = limitData;
+        }
+        else {
+            delete (params.perPage);
+        }
+
+        var succ = function (data) {
+            if (limitData) {
+                me.resource = data;
+                //Remove the event and make this library free from events
+                Chaplin.mediator.publish(Events.RESOURCE_STORED, data);
+            }
+            else {
+                me.resource = data;
+            }
+            //self.setCurrentResource(data);
+            if (success)
+                success(data);
+        };
+        _ajaxGET(addr, params, succ, err, complete);
+    };
+
+    ResourceManager.prototype.loadData = function (resource, success, err, complete) {
         var self = this;
         var addr = getDataAndMetaURL(cfg, cfgDef, resource.metadata.uid, resource.metadata.version);
         var srvc = cfg.SERVICE_GET_DATA_METADATA || cfgDef.SERVICE_GET_DATA_METADATA;
@@ -33,6 +81,23 @@ define([
         _ajaxGET(addr, params, succ, err, complete);
     };
 
+    ResourceManager.prototype.copyMetaData = function (resource, success, err, complete) {
+        var self = this;
+        var addr = getMetadataURL(cfg, cfgDef, resource.metadata.uid, resource.metadata.version);
+        var srvc = cfg.SERVICE_COPY_METADATA || cfgDef.SERVICE_COPY_METADATA;
+        var params = srvc.queryParams;
+
+        var succ = function (data) {
+            if (data === undefined) {
+                err();
+            } else {
+                self.resource = data;
+                if (success) success(data);
+            }
+        };
+
+        _ajaxGET(addr, params, succ, err, complete);
+    };
 
 
     /*ResourceManager.prototype.findResource = function (toPost, callBSuccess, callBComplete, callB_Err) {
@@ -50,22 +115,18 @@ define([
         var me = this;
         var succ = function () {
             me.resource = null;
-            Chaplin.mediator.publish(Events.RESOURCE_DELETED);
+            //Chaplin.mediator.publish(Events.RESOURCE_DELETED);
             if (success)
                 success();
         };
+
         _ajaxDELETE(addr, succ, err);
     };
 
-    //ResourceManager.prototype.resourceExists=function(uid, version){
-    //http://fenix.fao.org/d3s_dev/msd/resources/uid/dan400
-    //}
-
-
-    ResourceManager.prototype.setCurrentResource = function (resource) {
+    /*ResourceManager.prototype.setCurrentResource = function (resource) {
         this.resource = resource;
-        Chaplin.mediator.publish(Events.RESOURCE_STORED, resource)
-    };
+        Chaplin.mediator.publish(Events.RESOURCE_STORED, resource);
+    };*/
 
     ResourceManager.prototype.getCurrentResource = function () {
         return this.resource;
@@ -249,6 +310,13 @@ define([
         return true;
     }
 
+    ResourceManager.prototype.getTitle = function () {
+        var lang = cfg.LANG || cfgDef.LANG;
+        if (!this.resource.metadata.title[lang]) return "Missing Title in "+lang;
+        return this.resource.metadata.title[lang];
+    }
+
+
     ResourceManager.prototype.hasData = function () {
         if (!this.isResourceAvailable())
             return false;
@@ -280,11 +348,11 @@ define([
                 if (success)
                     success(data);
             },
-            error: function () {
+            error: function (xhr, textstatus) {
                 if (err)
-                    err();
+                    err(textstatus);
                 else
-                    console.log('Error on ajax GET');
+                    console.log('Error on ajax GET', xhr, textstatus);
             },
             complete: function () {
                 if (complete) complete();
@@ -297,15 +365,18 @@ define([
             url: url,
             type: 'DELETE',
             crossDomain: true,
-            success: function (data) {
+            //Datatype changed to text as the server returns an empty response, setting it to json would trigger an error on success
+            dataType: 'text',
+            success: function () {
                 if (success)
                     success();
             },
-            error: function () {
+            
+            error: function (xhr, textstatus) {
                 if (err)
-                    err('Error on ajax DELETE');
+                    err();
                 else
-                    console.log('Error on ajax DELETE')
+                    console.log('Error on ajax DELETE', xhr, textstatus)
             },
             complete: function () {
                 if (complete) complete();
@@ -339,8 +410,9 @@ define([
             complete: function () {
                 if (complete) complete();
             },
-            error: function () {
+            error: function (xhr, textstatus) {
                 if (err) err();
+                else console.log("Error on ajax PUT_PATCH", xhr, textstatus)
             }
         });
     }
@@ -361,6 +433,18 @@ define([
     //data and meta load
     function getDataAndMetaURL(cfg, cfgDef, uid, version) {
         var srvc = cfg.SERVICE_GET_DATA_METADATA || cfgDef.SERVICE_GET_DATA_METADATA;
+        var addr = pathConcatenation(getBase(cfg, cfgDef), srvc.service);
+        return appendUID_Version(addr, uid, version);
+    }
+    //only data
+    function getDataURL(cfg, cfgDef, uid, version) {
+        var srvc = cfg.SERVICE_GET_DATA || cfgDef.SERVICE_GET_DATA;
+        var addr = pathConcatenation(getBase(cfg, cfgDef), srvc.service);
+        return appendUID_Version(addr, uid, version);
+    }
+    //only metadata
+    function getMetadataURL(cfg, cfgDef, uid, version) {
+        var srvc = cfg.SERVICE_GET_METADATA || cfgDef.SERVICE_GET_METADATA;
         var addr = pathConcatenation(getBase(cfg, cfgDef), srvc.service);
         return appendUID_Version(addr, uid, version);
     }
