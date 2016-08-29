@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # fenix-ui-data-management
 Read me
 =======
@@ -63,4 +62,3 @@ grunt clean             Clean project structure
 grunt docs              Generate documentation by jsdocs
 
 ```
->>>>>>> master

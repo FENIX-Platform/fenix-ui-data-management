@@ -1,4 +1,7 @@
-﻿define({
+﻿if (typeof define !== 'function') {
+    var define = require('amdefine')(module);
+}
+define({
     //Generic
     "confirmDataRemove": "Voulez-vous supprimer toutes les données?",
     "success": "Réussite",
