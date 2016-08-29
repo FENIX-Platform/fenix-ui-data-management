@@ -161,13 +161,13 @@ define([
                 //Noti.showError(MLRes.error, MLRes.errorLoadinResource);
                 //Ajax error callbacks
                 //Add "Error" as popup title
-                var loadErr = function () {
-                    Noti.showError(MLRes.error, MLRes.errorLoadinResource);
+                var loadErr = function (textstatus) {
+                    Noti.showError(MLRes.error, MLRes.errorLoadinResource+" ["+textstatus+"]");
                     me.$btnSave.removeAttr('disabled');
                     me.$btnSave.html(h);
                 };
                 var putDataErr = function () {
-                    Noti.showError(MLRes.error, MLRes.errorSavingResource + " (data)");
+                    Noti.showError(MLRes.error, MLRes.errorSavingResource + " (Data)");
                     me.$btnSave.removeAttr('disabled');
                     me.$btnSave.html(h);
                 };

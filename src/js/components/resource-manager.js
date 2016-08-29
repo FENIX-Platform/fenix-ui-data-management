@@ -348,11 +348,11 @@ define([
                 if (success)
                     success(data);
             },
-            error: function () {
+            error: function (xhr, textstatus) {
                 if (err)
-                    err();
+                    err(textstatus);
                 else
-                    console.log('Error on ajax GET');
+                    console.log('Error on ajax GET', xhr, textstatus);
             },
             complete: function () {
                 if (complete) complete();
@@ -372,11 +372,11 @@ define([
                     success();
             },
             
-            error: function (xhr) {
+            error: function (xhr, textstatus) {
                 if (err)
                     err();
                 else
-                    console.log('Error on ajax DELETE')
+                    console.log('Error on ajax DELETE', xhr, textstatus)
             },
             complete: function () {
                 if (complete) complete();
@@ -410,8 +410,9 @@ define([
             complete: function () {
                 if (complete) complete();
             },
-            error: function () {
+            error: function (xhr, textstatus) {
                 if (err) err();
+                else console.log("Error on ajax PUT_PATCH", xhr, textstatus)
             }
         });
     }

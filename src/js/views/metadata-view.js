@@ -94,7 +94,6 @@ define([
                     var resToLoad = { metadata: { uid: retVal.uid } };
                     if (retVal.version)
                         resToLoad.version = retVal.version;
-                    console.log()
                     ResourceManager.loadResource(resToLoad,
                         function (d) {
                             me.resource = ResourceManager.getCurrentResource();

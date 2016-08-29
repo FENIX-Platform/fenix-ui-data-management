@@ -94,8 +94,8 @@ define([
                     Notif.showSuccess(MLRes.success, MLRes.resourceSaved)
                     Chaplin.utils.redirectTo('resume#show');
                 };
-                var loadErr = function () {
-                    Notif.showError(MLRes.error, MLRes.errorLoadinResource);
+                var loadErr = function (textstatus) {
+                    Notif.showError(MLRes.error, MLRes.errorLoadinResource+" ["+textstatus+"]");
                 };
                 var updateDSDErr = function () {
                     Notif.showError(MLRes.error, MLRes.errorSavingResource);
@@ -113,7 +113,7 @@ define([
                 var toSave = JSON.stringify(DSDEditor.get());
                 var dLink = document.createElement('a');
                 dLink.download = 'DSD.json';
-                dLink.innerHTML = "Download file";
+                dLink.innerHTML = MLRes.downloadDSD;
                 var textFileAsBlob = new Blob([toSave], { type: 'text/plain' });
                 dLink.href = window.URL.createObjectURL(textFileAsBlob);
                 dLink.onclick = function (evt) { document.body.removeChild(dLink); };
