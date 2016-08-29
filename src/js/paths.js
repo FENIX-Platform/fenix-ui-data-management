@@ -1,4 +1,7 @@
-/*global  define*/
+if (typeof define !== 'function') {
+    var define = require('amdefine')(module);
+}
+
 
 define(function () {
 
@@ -23,13 +26,13 @@ define(function () {
             'fx-d-m/start': './datamanagement',
             'fx-d-m/routes': './routes/routes',
             'fx-d-m/components': './components',
-            'fx-d-m/config': '../../config',
+            'fx-d-m/config': '../config',
             'fx-d-m/controllers': './controllers',
             'fx-d-m/lib': './lib',
             'fx-d-m/models': './models',
             'fx-d-m/templates': './templates',
             'fx-d-m/views': './views',
-            'fx-d-m/i18n': '../../i18n',
+            'fx-d-m/i18n': '../i18n',
 
             'fx-d-m/templates/site': './templates/site-topmenu.hbs',
 
