@@ -37,7 +37,7 @@ define(function () {
 
         METADATA_PATH: {
             //schemaPath: '../config/schemas/',
-            schemaPath: 'fx-MetaEditor2/config/schemas/'
+            schemaPath: 'fx-MetaEditor/config/schemas/'
         },
 
         METADATA_SEC: [

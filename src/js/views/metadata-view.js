@@ -4,7 +4,7 @@ define([
     'fx-d-m/config/config-default',
     'fx-d-m/views/base/view',
     'text!fx-d-m/templates/metadata.hbs',
-    'fx-MetaEditor2/start',
+    'fx-MetaEditor/start',
     'fx-d-m/lib/notifications',
     'fx-d-m/components/resource-manager',
     'i18n!fx-d-m/i18n/nls/ML_DataManagement',
