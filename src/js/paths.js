@@ -32,7 +32,7 @@ define(function () {
             'fx-d-m/models': './models',
             'fx-d-m/templates': './templates',
             'fx-d-m/views': './views',
-            'fx-d-m/i18n': '../i18n',
+            'fx-d-m/nls': '../nls',
 
             'fx-d-m/templates/site': './templates/site-topmenu.hbs',
 

@@ -4,7 +4,7 @@ define([
     'fx-d-m/config/config-default',
     'text!fx-d-m/templates/landing',
     'fx-d-m/components/resource-manager',
-    'i18n!fx-d-m/i18n/nls/ML_DataManagement'
+    'i18n!fx-d-m/nls/labels',
 ], function (View, C, DC, template, ResourceManager, MLRes) {
     'use strict';
 

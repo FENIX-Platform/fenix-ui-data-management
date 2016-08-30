@@ -3,7 +3,7 @@ define([
     'fx-d-m/views/base/view',
     'text!fx-d-m/templates/resume.hbs',
     'fx-d-m/components/resource-manager',
-    'i18n!fx-d-m/i18n/nls/ML_DataManagement'
+    'i18n!fx-d-m/nls/labels'
 ], function (Chaplin, View, template, ResourceManager, MLRes) {
     'use strict';
 
