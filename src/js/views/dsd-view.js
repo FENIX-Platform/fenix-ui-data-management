@@ -10,7 +10,7 @@ define([
     'fx-d-m/lib/fileuploadhelper',
     'fx-d-m/lib/notifications',
     'fx-d-m/components/resource-manager',
-    'i18n!fx-d-m/i18n/nls/ML_DataManagement'
+    'i18n!fx-d-m/nls/labels',
 ], function (Chaplin, C, DC, View, template, DSDEditor, FUploadHelper, Notif, ResourceManager, MLRes) {
     'use strict';
     var h = {

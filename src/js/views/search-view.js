@@ -8,7 +8,7 @@ define([
     'text!fx-d-m/templates/search.hbs',
     'fx-catalog/start',
     'fx-d-m/config/events',
-    'i18n!fx-d-m/i18n/nls/ML_DataManagement',
+    'i18n!fx-d-m/nls/labels',
     'amplify',
     'pnotify'
 ], function ($, Chaplin, C, DC, View, template, Catalog, Events, MLRes) {

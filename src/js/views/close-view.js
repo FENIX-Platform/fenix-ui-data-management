@@ -1,7 +1,7 @@
 define([
     'chaplin',
     'fx-d-m/views/base/view',
-    'i18n!fx-d-m/i18n/nls/ML_DataManagement',
+    'i18n!fx-d-m/nls/labels',
     'text!fx-d-m/templates/close.hbs'
 ], function (Chaplin, View, MLRes, template) {
     'use strict';

@@ -10,7 +10,7 @@ define([
     'fx-DataEditor/js/DataEditor/helpers/Validator_CSV',
     'fx-DataEditor/js/DataEditor/helpers/Validator_CSV_Errors',
     'fx-d-m/components/resource-manager',
-    'i18n!fx-d-m/i18n/nls/ML_DataManagement',
+    'i18n!fx-d-m/nls/labels',
     'chaplin',
     'amplify'
 ], function (View, template, DataEditor, Noti, FUploadHelper, CSVToDs, ColumnsMatch, DataValidator, CSV_Val, CSV_Val_Err, ResourceManager, MLRes, Chaplin) {
