@@ -3,8 +3,12 @@ define([
     'jquery',
     'backbone',
     'underscore',
-    'loglevel'
-], function ($, Backbone, _, log) {
+    'loglevel',
+    'fenix-ui-menu',
+    '../../config/config-menu',
+    '../views/view-landing',
+    '../views/view-search'
+], function ($, Backbone, _, log, FenixMenu, ConfigMenu, LandingView, SearchView) {
 
     'use strict';
 
@@ -29,9 +33,7 @@ define([
         routes: {
 
             '(/)landing(/)': 'onLanding',
-
             '(/)search(/)': 'onSearch',
-
             '(/)not-found(/)': 'onNotFound',
 
             // ROUTE DEFAULT
@@ -42,6 +44,9 @@ define([
             log.info("Render common views");
 
             //render menu
+            var fxmenu = new FenixMenu({
+                    config : ConfigMenu
+                });
 
         },
 
@@ -49,13 +54,24 @@ define([
 
         onLanding: function () {
 
-            log.info("Landing");
+            log.info("onLanding called.");
 
-            /*
-             this.switchView(ForbiddenVocabulary, {
-             el: s.CONTAINER
-             });
-             * */
+            this.switchView(LandingView, {
+                el: s.CONTAINER
+            });
+        },
+
+        //Landing
+
+        onSearch: function () {
+
+            log.info("Search");
+
+            log.info("onLanding called.");
+
+            this.switchView(SearchView, {
+                el: s.CONTAINER
+            });
         },
 
         //Not found
