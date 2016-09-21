@@ -2,10 +2,10 @@ var distFolderPath = "dist",
     demoFolderPath = "demo",
     devFolderPath = "dev",
     webpack = require('webpack'),
+    packageJson = require("./package.json"),
     ExtractTextPlugin = require("extract-text-webpack-plugin"),
     HtmlWebpackPlugin = require('html-webpack-plugin'),
     CleanWebpackPlugin = require('clean-webpack-plugin'),
-    packageJson = require("./package.json"),
     Path = require('path'),
     dependencies = Object.keys(packageJson.dependencies);
 
@@ -22,59 +22,49 @@ module.exports = {
     resolve: {
         root: Path.resolve(__dirname),
         alias: {
-            handlebars : Path.join(__dirname, 'node_modules/handlebars/dist/handlebars.js'),
-            jquery: Path.join(__dirname, 'node_modules/jquery/dist/jquery') //neede by eonasdan-bootstrap-datetimepicker
+            'bootstrap-table' : Path.join(__dirname, 'node_modules/bootstrap-table/dist/bootstrap-table.min.js'),
+            handlebars: Path.join(__dirname, 'node_modules/handlebars/dist/handlebars.js'),
+            jquery: Path.join(__dirname, 'node_modules/jquery/dist/jquery')
         }
-    },
-
-    node: {
-        fs: "empty"
     },
 
     externals: isProduction(dependencies, undefined),
 
     module: {
         loaders: [
-            {test: /\.css$/, loader: ExtractTextPlugin.extract("style-loader", "css-loader")},
+            isProduction(
+                {test: /\.css$/, loader: ExtractTextPlugin.extract("style-loader", "css-loader")},
+                {test: /\.css$/, loader: "style-loader!css-loader"}
+            ),
             {test: /\.hbs$/, loader: "handlebars-loader"},
-            {test: /\.json$/, loader: "json-loader"},
-            {test: /bootstrap.+\.(jsx|js)$/, loader: 'imports?jQuery=jquery,$=jquery'},
-            {test: /\.(jpe?g|png|gif|svg)$/i,
-                loaders: [
-                'file?hash=sha512&digest=hex&name=[hash].[ext]',
-                'image-webpack?bypassOnDebug&optimizationLevel=7&interlaced=false'
-                ]
-            }]
+            {test: /\.json/, loader: "json-loader"},
+            {test: /\.png$/, loader: "url-loader?limit=100000"},
+            {test: /\.jpg$/, loader: "file-loader?name=[name].[ext]&limit=100000"},
+            {test: /\.svg/, loader: "file-loader?name=[name].[ext]&limit=100000"},
+            {test: /\.gif/, loader: "file-loader?name=[name].[ext]&limit=100000"},
+
+            //Bootstrap loader
+            {test: /bootstrap\/js\//, loader: 'imports?jQuery=jquery'},
+            {test: /\.woff(\?v=\d+\.\d+\.\d+)?$/, loader: "url?limit=10000&minetype=application/font-woff"},
+            {test: /\.woff2(\?v=\d+\.\d+\.\d+)?$/, loader: "url?limit=10000&minetype=application/font-woff"},
+            {test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/, loader: "url?limit=10000&minetype=application/octet-stream"},
+            {test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, loader: "file"}
+        ]
     },
+
     plugins: clearArray([
-        //new webpack.ProvidePlugin({$: "jquery", jQuery: "jquery"}),
-        new ExtractTextPlugin(packageJson.name + '.min.css'),
-        isDemo(undefined, new CleanWebpackPlugin([distFolderPath])),
+        new webpack.ProvidePlugin({$: "jquery", jQuery: "jquery"}),
+        isProduction(new CleanWebpackPlugin([distFolderPath]), undefined),
         isProduction(new webpack.optimize.UglifyJsPlugin({
             compress: {warnings: false},
             output: {comments: false}
         })),
+        isProduction(new ExtractTextPlugin(packageJson.name + '.min.css')),
         isDevelop(new HtmlWebpackPlugin({
             inject: "body",
             template: devFolderPath + "/index.template.html"
         }))
-
     ])
-
-    /*
-        plugins: clearArray([
-            isProduction(new webpack.optimize.UglifyJsPlugin({
-                compress: {warnings: false},
-                output: {comments: false}
-            })),
-            new ExtractTextPlugin(packageJson.name + '.min.css'),
-            isDevelop(new HtmlWebpackPlugin({
-                inject: "body",
-                template: devFolderPath + "/index.template.html"
-            }))
-        ])
-
-    */
 };
 
 function getEntry() {
@@ -104,7 +94,7 @@ function getOutput() {
 
         case "demo" :
             output = {
-                path: Path.join(__dirname, demoFolderPath, distFolderPath),
+                path: Path.join(__dirname, demoFolderPath),
                 filename: "index.js"
             };
             break;
@@ -119,6 +109,7 @@ function getOutput() {
         case "develop" :
             output = {
                 path: Path.join(__dirname, devFolderPath),
+                //publicPath: "/dev/",
                 filename: "index.js"
             };
             break;

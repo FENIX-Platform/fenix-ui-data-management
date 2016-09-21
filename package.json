@@ -1,7 +1,7 @@
 {
   "name": "fenix-ui-data-management",
-  "version": "1.1.0",
-  "description": "Basic structure for Fenix Platform UI projects",
+  "version": "2.0.0-beta.0",
+  "description": "FENIX Data Management component",
   "homepage": "https://github.com/FENIX-Platform/fenix-ui-data-management",
   "author": "FENIX team (http://fenix.fao.org/)",
   "license": "GPL-2.0",
@@ -17,54 +17,52 @@
     "platform"
   ],
   "dependencies": {
-    "backbone": "1.1.2",
-    "backbone.layoutmanager": "0.9.5",
-    "bootstrap": "3.2.0",
-    "domReady": "https://github.com/requirejs/domReady/tarball/master",
-    "handlebars": "2.0.0",
-    "i18n": "https://github.com/requirejs/i18n/tarball/master",
-    "jquery": "2.1.0",
-    "jqwidgets": "http://fenixapps.fao.org/repository/js/jqwidgets/3.1.tgz",
-    "jstree": "3.0.8",
-    "nprogress": "0.1.6",
-    "pnotify": "3.0.0",
-    "requirejs": "2.1.14",
-    "rsvp": "3.2.1",
-    "text": "https://github.com/requirejs/text/tarball/master",
-    "underscore": "1.7.0"
+    "backbone": "^1.3.3",
+    "bootstrap": "^3.3.7",
+    "jquery": "^3.1.0",
+    "loglevel": "^1.4.1",
+    "underscore": "^1.8.3"
   },
+  "main": "dist/fenix-ui-data-management.min.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "main": "main.js",
-  "config": {
-    "sections": [
-      "home",
-      "view",
-      "analysis",
-      "data management",
-      "about"
-    ],
-    "langs": [
-      "en",
-      "fr",
-      "es"
-    ]
+    "test": "NODE_ENV=test karma start ./karma.config.js",
+    "build": "NODE_ENV=production webpack --display-error-details",
+    "build:demo": "NODE_ENV=demo webpack --display-error-details",
+    "dev": "NODE_ENV=develop webpack-dev-server --display-error-details --progress --color --content-base dev  --inline --hot",
+    "w-test": "SET NODE_ENV=test&& karma start ./karma.config.js",
+    "w-build": "SET NODE_ENV=production&& webpack --display-error-details",
+    "w-build:demo": "SET NODE_ENV=demo&& webpack --display-error-details",
+    "w-dev": "SET NODE_ENV=develop&& webpack-dev-server --display-error-details --progress --color --content-base dev  --inline --hot"
   },
   "devDependencies": {
-    "chai": "3.5.0",
-    "clean-webpack-plugin": "0.1.10",
-    "jshint": "2.9.3",
-    "jshint-loader": "0.8.3",
-    "karma": "1.2.0",
-    "karma-chai": "0.1.0",
-    "karma-chrome-launcher": "2.0.0",
-    "karma-coverage": "1.1.1",
-    "karma-firefox-launcher": "1.0.0",
-    "karma-mocha": "1.1.1",
-    "karma-webpack": "1.8.0",
-    "mocha": "3.0.2",
-    "webpack": "1.13.2",
-    "webpack-dev-server": "1.15.0"
+    "bootstrap-loader": "^2.0.0-beta.11",
+    "bootstrap-sass": "^3.3.7",
+    "chai": "^3.5.0",
+    "clean-webpack-plugin": "^0.1.10",
+    "css-loader": "^0.25.0",
+    "extract-text-webpack-plugin": "^1.0.1",
+    "file-loader": "^0.9.0",
+    "handlebars": "^4.0.5",
+    "handlebars-loader": "^1.4.0",
+    "html-webpack-plugin": "^2.22.0",
+    "image-webpack-loader": "^2.0.0",
+    "imports-loader": "^0.6.5",
+    "jshint": "^2.9.3",
+    "jshint-loader": "^0.8.3",
+    "karma": "^1.2.0",
+    "karma-chai": "^0.1.0",
+    "karma-chrome-launcher": "^2.0.0",
+    "karma-coverage": "^1.1.1",
+    "karma-firefox-launcher": "^1.0.0",
+    "karma-mocha": "^1.1.1",
+    "karma-webpack": "^1.8.0",
+    "mocha": "^3.0.2",
+    "node-sass": "^3.10.0",
+    "resolve-url-loader": "^1.6.0",
+    "sass-loader": "^4.0.2",
+    "style-loader": "^0.13.1",
+    "url-loader": "^0.5.7",
+    "webpack": "^1.13.2",
+    "webpack-dev-server": "^1.15.1"
   }
 }
