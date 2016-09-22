@@ -1,22 +1,25 @@
 define([
+    "backbone",
     "loglevel"
-],function(log){
+],function(Backbone, log){
 
     "use strict";
 
-    var LandingView = Backbone.View.extend({
+    var DeniedView = Backbone.View.extend({
+
         render: function () {
-            log.info("Rendering View - Landing");
-            $(this.el).html("<h1>Hello world from Landing</h1>");
+            log.info("Rendering NOtFound - Search");
+
+            this.$el.html("<h1>!Denied</h1>");
             return this;
         },
+
         remove: function() {
             Backbone.View.prototype.remove.apply(this, arguments);
         }
+
     });
 
-
-
-    return LandingView;
+    return DeniedView;
 
 });

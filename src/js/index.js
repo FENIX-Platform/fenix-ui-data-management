@@ -30,7 +30,7 @@ define([
     DataManagement.prototype._start = function () {
 
         this.router = new Router({
-            el: this.el,
+            $el: this.$el,
             cache: this.cache,
             environment: this.environment
         });
