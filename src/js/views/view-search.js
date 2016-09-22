@@ -9,7 +9,11 @@ define([
             log.info("Rendering View - Search");
             $(this.el).html("<h1>Hello world from Search</h1>");
             return this;
+        },
+        remove: function() {
+            Backbone.View.prototype.remove.apply(this, arguments);
         }
+
     });
 
     return SearchView;
