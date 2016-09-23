@@ -69,7 +69,9 @@ define([
 
             this.switchView(LandingView, {
                 el: s.CONTAINER,
-                menu : "landing"
+                menu : "landing",
+                lang : this.lang,
+                environment: this.environment
             });
         },
 
@@ -79,11 +81,13 @@ define([
 
             log.info("Search");
 
-            log.info("onLanding called.");
+            log.info("onSearch called.");
 
             this.switchView(SearchView, {
                 el: s.CONTAINER,
-                menu : "search"
+                menu : "search",
+                lang : this.lang,
+                environment: this.environment
             });
         },
 
@@ -93,7 +97,9 @@ define([
             log.info("Denied");
 
             this.switchView(DeniedView, {
-                el: s.CONTAINER
+                el: s.CONTAINER,
+                lang : this.lang,
+                environment: this.environment
             });
         },
 
@@ -102,7 +108,9 @@ define([
         onNotFound: function () {
             log.info("Not found");
             this.switchView(NotFoundView, {
-                el: s.CONTAINER
+                el: s.CONTAINER,
+                lang : this.lang,
+                environment: this.environment
             });
         },
 

@@ -10,6 +10,7 @@ define([
             DATA_MNG: "#data-mng"
         },
         cache = false,
+        lang = "EN",
         environment = "develop";
 
     function Dev() {
@@ -18,7 +19,7 @@ define([
 
         this._importThirdPartyCss();
 
-        log.setLevel('silent');
+        log.setLevel('trace');
 
         this.start();
     }
@@ -36,7 +37,8 @@ define([
         this.dataMng = new DataManagement({
             environment: environment,
             el: s.DATA_MNG,
-            cache: cache
+            cache: cache,
+            lang: lang
         });
     };
 

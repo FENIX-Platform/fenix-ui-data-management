@@ -32,7 +32,8 @@ define([
         this.router = new Router({
             $el: this.$el,
             cache: this.cache,
-            environment: this.environment
+            environment: this.environment,
+            lang : this.lang
         });
     };
 
