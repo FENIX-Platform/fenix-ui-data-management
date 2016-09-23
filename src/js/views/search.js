@@ -20,9 +20,6 @@ define([
 
             $.extend(true, CatalogConfig, {}, this);
 
-
-            this.$el.html("<h1>Hello world from Search f/t Catalog.</h1>");
-
             this.catalog = new Catalog(CatalogConfig);
 
             this.bindEventListeners();

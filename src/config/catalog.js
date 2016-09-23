@@ -3,10 +3,10 @@ define(function(){
     'use strict';
 
     return {
-        el: this.$el,
-        lang : this.lang,
+        el: "",
+        lang : "",
         defaultSelectors: ['resourceType', 'contextSystem'],
-        environment: this.environment,
+        environment: "",
         hideCloseButton : true,
         pluginRegistry : {
         contextSystem : {

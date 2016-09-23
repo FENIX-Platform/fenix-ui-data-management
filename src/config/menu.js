@@ -6,12 +6,22 @@ define(function () {
         "items": [
             {
                 "attrs": {
+                    "id": "home"
+                },
+                "target": "#",
+                "label": {
+                    "EN": "Home",
+                    "FR": "Home"
+                }
+            },
+            {
+                "attrs": {
                     "id": "lading"
                 },
                 "target": "#landing",
                 "label": {
-                    "EN": "Home - Landing",
-                    "FR": "Home - Landing FR"
+                    "EN": "Landing",
+                    "FR": "Landing FR"
                 }
             },
             {
@@ -73,19 +83,13 @@ define(function () {
                     "EN": "Delete",
                     "FR": "Delete FR"
                 }
-            },
-            {
-                "attrs": {
-                    "id": "wrong"
-                },
-                "target": "#wroong",
-                "label": {
-                    "EN": "Wrong",
-                    "FR": "Wrong"
-                }
             }
         ],
         "type": "sidemenu",
-        "languages": []
+        "languages": [],
+        "active": [
+            "landing",
+            "search"
+        ]
     }
 });

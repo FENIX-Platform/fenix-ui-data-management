@@ -14,9 +14,12 @@ define([
     '../views/delete',
     '../views/metadata',
     '../views/dsd',
-    '../views/data'
+    '../views/data',
+    '../views/home',
+    '../components/resource-manager'
 ], function ($, Backbone, _, log, Menu, ConfigMenu,
-             LandingView, SearchView, NotFoundView, DeniedView, AddView, DeleteView, MetadataView, DSDView, DataView
+             LandingView, SearchView, NotFoundView, DeniedView, AddView, DeleteView, MetadataView, DSDView, DataView, HomeView,
+             RM
 ) {
 
     'use strict';
@@ -34,16 +37,17 @@ define([
             $.extend(true, this, o);
 
             this.initCommonViews();
-
             this.initVariables();
+            this.bindEventListeners();
 
             Backbone.history.start();
         },
 
         routes: {
             '(/)': 'onLanding',
-
             '(/)landing(/)': 'onLanding',
+
+            '(/)home(/)': 'onHome',
             '(/)add(/)': 'onAdd',
 
             '(/)metadata(/)': 'onMetadata',
@@ -74,6 +78,17 @@ define([
             this.$viewsHolder = this.$el.find(s.HOLDER);
         },
 
+        bindEventListeners: function () {
+            log.info("bindEventListeners");
+            this.listenTo(Backbone,"resource:loaded", function(){
+                log.info("resource:loaded IS loaded");
+                log.info(RM.resource);
+                this.goTo("#/home");
+            });
+        },
+
+        //  Views
+
         //Landing
 
         onLanding: function () {
@@ -87,6 +102,21 @@ define([
                 environment: this.environment
             });
         },
+
+        //Home
+
+        onHome: function () {
+
+            log.info("onHome called.");
+
+            this.switchView(HomeView, {
+                el: s.CONTAINER,
+                menu : "home",
+                lang : this.lang,
+                environment: this.environment
+            });
+        },
+
 
         //Search
 
@@ -135,6 +165,7 @@ define([
 
             this.switchView(MetadataView, {
                 el: s.CONTAINER,
+                menu : "metadata",
                 lang : this.lang,
                 environment: this.environment
             });
@@ -147,6 +178,7 @@ define([
 
             this.switchView(DSDView, {
                 el: s.CONTAINER,
+                menu : "dsd",
                 lang : this.lang,
                 environment: this.environment
             });
@@ -159,6 +191,7 @@ define([
 
             this.switchView(DataView, {
                 el: s.CONTAINER,
+                menu : "data",
                 lang : this.lang,
                 environment: this.environment
             });
@@ -171,6 +204,7 @@ define([
 
             this.switchView(DeleteView, {
                 el: s.CONTAINER,
+                menu : "delete",
                 lang : this.lang,
                 environment: this.environment
             });
