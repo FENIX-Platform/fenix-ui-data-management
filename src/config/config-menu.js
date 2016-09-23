@@ -1,49 +1,89 @@
-define(function(){
+define(function () {
 
     'use strict';
 
     return {
         "items": [
-        {
-            "attrs": {
-                "id": "home"
+            {
+                "attrs": {
+                    "id": "lading"
+                },
+                "target": "#landing",
+                "label": {
+                    "EN": "Home - Landing",
+                    "FR": "Home - Landing FR"
+                }
             },
-            "target": "#",
-            "label": {
-                "EN": "Home",
-                "FR": "Accueil"
-            }
-        },
-        {
-            "attrs": {
-                "id": "lading"
+            {
+                "attrs": {
+                    "id": "search"
+                },
+                "target": "#search",
+                "label": {
+                    "EN": "Search",
+                    "FR": "Search FR"
+                }
             },
-            "target": "#landing",
-            "label": {
-                "EN": "Landing",
-                "FR": "Landing"
-            }
-        },
-        {
-            "attrs": {
-                "id": "search"
+            {
+                "attrs": {
+                    "id": "add"
+                },
+                "target": "#add",
+                "label": {
+                    "EN": "Add",
+                    "FR": "Add FR"
+                }
             },
-            "target": "#search",
-            "label": {
-                "EN": "Search",
-                "FR": "Search"
-            }
-        },
-        {
-            "attrs": {
-                "id": "wrong"
+            {
+                "attrs": {
+                    "id": "metadata"
+                },
+                "target": "#metadata",
+                "label": {
+                    "EN": "Metadata",
+                    "FR": "Metadata FR"
+                }
             },
-            "target": "#wroong",
-            "label": {
-                "EN": "Wrong",
-                "FR": "Wrong"
+            {
+                "attrs": {
+                    "id": "dsd"
+                },
+                "target": "#dsd",
+                "label": {
+                    "EN": "DSD",
+                    "FR": "DSD FR"
+                }
+            },
+            {
+                "attrs": {
+                    "id": "data"
+                },
+                "target": "#data",
+                "label": {
+                    "EN": "Data",
+                    "FR": "Data FR"
+                }
+            },
+            {
+                "attrs": {
+                    "id": "delete"
+                },
+                "target": "#delete",
+                "label": {
+                    "EN": "Delete",
+                    "FR": "Delete FR"
+                }
+            },
+            {
+                "attrs": {
+                    "id": "wrong"
+                },
+                "target": "#wroong",
+                "label": {
+                    "EN": "Wrong",
+                    "FR": "Wrong"
+                }
             }
-        }
         ],
         "type": "sidemenu",
         "languages": []

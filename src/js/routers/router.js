@@ -10,7 +10,14 @@ define([
     '../views/search',
     '../views/notFound',
     '../views/denied',
-], function ($, Backbone, _, log, Menu, ConfigMenu, LandingView, SearchView, NotFoundView, DeniedView) {
+    '../views/add',
+    '../views/delete',
+    '../views/metadata',
+    '../views/dsd',
+    '../views/data'
+], function ($, Backbone, _, log, Menu, ConfigMenu,
+             LandingView, SearchView, NotFoundView, DeniedView, AddView, DeleteView, MetadataView, DSDView, DataView
+) {
 
     'use strict';
 
@@ -37,7 +44,13 @@ define([
             '(/)': 'onLanding',
 
             '(/)landing(/)': 'onLanding',
+            '(/)add(/)': 'onAdd',
 
+            '(/)metadata(/)': 'onMetadata',
+            '(/)dsd(/)': 'onDSD',
+            '(/)data(/)': 'onData',
+
+            '(/)delete(/)': 'onDelete',
             '(/)search(/)': 'onSearch',
             '(/)not-found(/)': 'onNotFound',
 
@@ -97,6 +110,66 @@ define([
             log.info("Denied");
 
             this.switchView(DeniedView, {
+                el: s.CONTAINER,
+                lang : this.lang,
+                environment: this.environment
+            });
+        },
+
+        // Add Resource
+
+        onAdd: function () {
+            log.info("Add Resource");
+
+            this.switchView(AddView, {
+                el: s.CONTAINER,
+                lang : this.lang,
+                environment: this.environment
+            });
+        },
+
+        // Metadata View
+
+        onMetadata: function () {
+            log.info("Metadata View");
+
+            this.switchView(MetadataView, {
+                el: s.CONTAINER,
+                lang : this.lang,
+                environment: this.environment
+            });
+        },
+
+        // DSD View
+
+        onDSD: function () {
+            log.info("DSD View");
+
+            this.switchView(DSDView, {
+                el: s.CONTAINER,
+                lang : this.lang,
+                environment: this.environment
+            });
+        },
+
+        // Data View
+
+        onData: function () {
+            log.info("Delete Resource");
+
+            this.switchView(DataView, {
+                el: s.CONTAINER,
+                lang : this.lang,
+                environment: this.environment
+            });
+        },
+
+        // Delete Resource
+
+        onDelete: function () {
+            log.info("Delete Resource");
+
+            this.switchView(DeleteView, {
                 el: s.CONTAINER,
                 lang : this.lang,
                 environment: this.environment
