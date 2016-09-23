@@ -5,7 +5,7 @@ define([
     'underscore',
     'loglevel',
     'fenix-ui-menu',
-    '../../config/config-menu',
+    '../../config/menu',
     '../views/landing',
     '../views/search',
     '../views/notFound',
