@@ -11,12 +11,12 @@ define(function () {
                 "target": "#",
                 "label": {
                     "EN": "Home",
-                    "FR": "Home"
+                    "FR": "Home FR"
                 }
             },
             {
                 "attrs": {
-                    "id": "lading"
+                    "id": "landing"
                 },
                 "target": "#landing",
                 "label": {

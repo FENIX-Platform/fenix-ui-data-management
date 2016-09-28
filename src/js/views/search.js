@@ -16,21 +16,19 @@ define([
 
 
         render: function () {
-            log.info("Rendering View - Search");
+            log.info("{SEARCH} Rendering View");
 
             $.extend(true, CatalogConfig, {}, this);
-
             this.catalog = new Catalog(CatalogConfig);
-
             this.bindEventListeners();
+            RM.unloadResource();
 
             return this;
         },
 
-
         bindEventListeners: function () {
             var self = this;
-            log.info("bindEventListeners()");
+            log.info("{SEARCH} bindEventListeners()");
             this.catalog.on('select', function(ret){
                 log.info("*select* triggered");
                 self.selectResource(ret)
@@ -38,29 +36,10 @@ define([
         },
 
         selectResource: function (resource) {
-            log.info("selectResource()");
-            log.info("with resource: ", resource);
+            log.info("{SEARCH} selectResource() ", resource);
 
             RM.loadResource(resource);
-
         },
-
-
-
-        accessControl: function () {
-
-            return new Q.Promise(function (fulfilled, rejected) {
-
-                //perform checks
-
-                fulfilled();
-
-                //rejected()
-
-            });
-        },
-
-
 
         remove: function() {
             Backbone.View.prototype.remove.apply(this, arguments);

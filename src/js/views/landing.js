@@ -1,32 +1,23 @@
 define([
+    "jquery",
     "backbone",
     "loglevel",
-    "q"
-],function( Backbone,log, Q){
+    '../../nls/labels'
+],function( $, Backbone, log, MultiLang){
 
     "use strict";
 
     var LandingView = Backbone.View.extend({
 
-        render: function () {
+        render: function (o) {
+            $.extend(true, this, o);
+
+            this.lang = this.lang.toLowerCase();
+
             log.info("Rendering View - Landing");
-            this.$el.html("<h1>Hello world from Landing</h1>");
+            this.$el.html("<h1>"+MultiLang[this.lang]['DManHeader']+"</h1><hr><p>"+MultiLang[this.lang]['DManIntro']+"</p>");
             return this;
         },
-
-        accessControl: function () {
-
-            return new Q.Promise(function (fulfilled, rejected) {
-
-                //perform checks
-
-                fulfilled();
-
-                //rejected()
-
-            });
-        },
-
         remove: function() {
             Backbone.View.prototype.remove.apply(this, arguments);
         }

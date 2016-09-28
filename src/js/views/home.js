@@ -3,17 +3,24 @@ define([
     "backbone",
     "loglevel",
     "q",
-    '../components/resource-manager'
-],function($, Backbone,log, Q, RM){
+    '../components/resource-manager',
+    '../../nls/labels'
+],function($, Backbone,log, Q, RM, MultiLang){
 
     "use strict";
 
     var HomeView = Backbone.View.extend({
 
-        render: function () {
+        render: function (o) {
+            $.extend(true, this, o);
+
+            this.lang = this.lang.toLowerCase();
+
             console.log(RM.resource)
             log.info("Rendering View - Home");
-            this.$el.html("<h1>Hello world from Home</h1><br>This is our object:<br><blockquote>" + JSON.stringify(RM.resource) + "</blockquote>" );
+            this.$el.html("<h1>Hello world from Home</h1><hr>" +
+                "<br>And, by the way, this is our object:<br><code>" + JSON.stringify(RM.resource) + "</code><br>" );
+
             return this;
         },
 

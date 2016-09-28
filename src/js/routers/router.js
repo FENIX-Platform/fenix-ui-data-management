@@ -16,17 +16,21 @@ define([
     '../views/dsd',
     '../views/data',
     '../views/home',
-    '../components/resource-manager'
+    '../components/resource-manager',
+    '../../nls/labels'
 ], function ($, Backbone, _, log, Menu, ConfigMenu,
              LandingView, SearchView, NotFoundView, DeniedView, AddView, DeleteView, MetadataView, DSDView, DataView, HomeView,
-             RM
+             RM,
+             MultiLang
 ) {
 
     'use strict';
 
     var s = {
         CONTAINER: '#fx-data-management-content',
-        HOLDER: "#fx-data-management-content-holder"
+        HOLDER: "#fx-data-management-content-holder",
+        BTN_CONTAINER: "#fx-data-managment-update-model-holder",
+        BTN_ELEMENT : "#fx-data-managment-update-button"
     };
 
     return Backbone.Router.extend({
@@ -66,12 +70,23 @@ define([
 
         initCommonViews: function () {
             log.info("Render common views");
+            // Init Buttons
+            $(s.BTN_CONTAINER).hide();
+            this.initMenu();
 
-            //render menu
+        },
+
+        initMenu: function() {
+            log.info("render menu");
+            var self = this;
             this.menu = new Menu({
+                lang: self.lang,
                 config: ConfigMenu
             });
-
+            var disabledByDefault = ['delete','metadata','dsd','data','home']
+            $.each(disabledByDefault, function(index,object){
+                self.menu.disableItem(object);
+            })
         },
 
         initVariables: function () {
@@ -80,11 +95,39 @@ define([
 
         bindEventListeners: function () {
             log.info("bindEventListeners");
+            // When a resource is loaded
             this.listenTo(Backbone,"resource:loaded", function(){
-                log.info("resource:loaded IS loaded");
-                log.info(RM.resource);
+                log.info("[EVT] resource:loaded ", RM.resource);
+
+                var self = this,
+                    enableOnValidResource = ['delete','metadata','dsd','data','home'];
+                    $.each(enableOnValidResource, function(index,object){
+                        self.menu.activateItem(object);
+                    });
+                    self.menu.disableItem('add');
+
                 this.goTo("#/home");
             });
+            // When a resource is unloaded (search or new is triggered)
+            this.listenTo(Backbone,"resource:unloaded", function(){
+                log.info("[EVT] resource:loaded ", RM.resource);
+
+                var self = this,
+                    enableOnValidResource = ['delete','metadata','dsd','data','home'];
+                $.each(enableOnValidResource, function(index,object){
+                    self.menu.disableItem(object);
+                });
+                self.menu.activateItem('add');
+
+            });
+            // When the save button is clicked
+            this.listenTo(Backbone, "resource:updated", function() {
+                log.info("[EVT] resource:updated ", RM.resource);
+                //TODO: Message of saving (popup or something)
+                this.goTo("#/home");
+
+            });
+
         },
 
         //  Views
@@ -92,9 +135,7 @@ define([
         //Landing
 
         onLanding: function () {
-
             log.info("onLanding called.");
-
             this.switchView(LandingView, {
                 el: s.CONTAINER,
                 menu : "landing",
@@ -106,9 +147,8 @@ define([
         //Home
 
         onHome: function () {
-
             log.info("onHome called.");
-
+            $(s.BTN_CONTAINER).hide();
             this.switchView(HomeView, {
                 el: s.CONTAINER,
                 menu : "home",
@@ -121,11 +161,9 @@ define([
         //Search
 
         onSearch: function () {
-
-            log.info("Search");
-
             log.info("onSearch called.");
-
+            log.warn("TODO: Check if this search is voluntary [if Resource is loaded]");
+            $(s.BTN_CONTAINER).hide();
             this.switchView(SearchView, {
                 el: s.CONTAINER,
                 menu : "search",
@@ -137,20 +175,16 @@ define([
         //Denied
 
         onDenied: function () {
-            log.info("Denied");
-
-            this.switchView(DeniedView, {
-                el: s.CONTAINER,
-                lang : this.lang,
-                environment: this.environment
-            });
+            log.info("Denied - Routing to Lading");
+            $(s.BTN_CONTAINER).hide();
+            this.goTo("#/landing");
         },
 
         // Add Resource
 
         onAdd: function () {
             log.info("Add Resource");
-
+            $(s.BTN_CONTAINER).hide();
             this.switchView(AddView, {
                 el: s.CONTAINER,
                 lang : this.lang,
@@ -162,7 +196,6 @@ define([
 
         onMetadata: function () {
             log.info("Metadata View");
-
             this.switchView(MetadataView, {
                 el: s.CONTAINER,
                 menu : "metadata",
@@ -175,12 +208,16 @@ define([
 
         onDSD: function () {
             log.info("DSD View");
+            // Init Buttons
+            $(s.BTN_ELEMENT).html(MultiLang[this.lang.toLowerCase()]['btnSave']);
+            $(s.BTN_CONTAINER).show();
 
             this.switchView(DSDView, {
                 el: s.CONTAINER,
                 menu : "dsd",
                 lang : this.lang,
-                environment: this.environment
+                environment: this.environment,
+                savebtn : s.BTN_ELEMENT
             });
         },
 
@@ -201,7 +238,7 @@ define([
 
         onDelete: function () {
             log.info("Delete Resource");
-
+            $(s.BTN_CONTAINER).hide();
             this.switchView(DeleteView, {
                 el: s.CONTAINER,
                 menu : "delete",
@@ -214,6 +251,7 @@ define([
 
         onNotFound: function () {
             log.info("Not found");
+            $(s.BTN_CONTAINER).hide();
             this.switchView(NotFoundView, {
                 el: s.CONTAINER,
                 lang : this.lang,
@@ -230,12 +268,10 @@ define([
         //Utils
 
         switchView: function (View, o) {
-
             if (this.currentViewCreator === View) {
                 log.warn("Abort switch view because candidate view is current view")
                 return;
             }
-
             this.currentViewCreator = View;
 
             log.info("Switch view");
@@ -244,70 +280,51 @@ define([
                 candidate = new View(o);
 
             if (typeof candidate.accessControl === "function") {
-
                 log.info("View has access control");
-
                 candidate.accessControl().then(
                     function () {
-                        log.warn("Access control: granted");
-
+                        log.warn("Access control: GRANTED");
                         self.resetView();
-
-                       self.renderView(View, o);
+                        self.renderView(View, o);
 
                     },
                     function () {
                         log.warn("Access control: DENIED");
-
                         self.resetView();
-
                         self.onDenied()
-                    });
-
-            }
-            else {
+                    }
+                );
+            } else {
                 log.info("View has NOT access control");
-
                 this.resetView();
-
                 this.renderView(View, o)
-
             }
 
         },
 
         resetView: function () {
             this.disposeCurrentView();
-
             this.addViewContainer();
         },
 
         renderView : function (View, o) {
-
             var candidate = new View(o);
-
-            this.currentView = candidate.render();
-
+            this.currentView = candidate.render(o);
             this.menu.select(o.menu);
-
         },
 
         disposeCurrentView: function () {
-
             if (this.currentView && this.currentView.remove) {
                 this.currentView.remove();
                 delete this.currentView;
                 log.info("Removed current view");
-
             }
             log.info("Dispose current view: success");
-
         },
 
         addViewContainer: function () {
             this.$viewsHolder.append('<div id="' + s.CONTAINER.substring(1) + '"></div>');
             log.info("Add view container: success");
-
         },
 
         goTo: function (loc, trigger, replace) {
