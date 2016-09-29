@@ -13,10 +13,10 @@ define(function(){
             selector : {
                 id : "dropdown",
                     source : [
-                    {value : "cstat_afg", label : "CountrySTAT Afghanistan"},
-                    {value : "uneca", label : "UNECA"}
+                    {value : "uneca", label : "UNECA"},
+                    {value : "cstat_afg", label : "CountrySTAT Afghanistan"}
                 ],
-            default : ["cstat_afg"],
+            default : ["uneca"],
                     hideSummary : true,
                     config : {
                     plugins: ['remove_button'],

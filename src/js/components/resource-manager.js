@@ -11,8 +11,14 @@ define([
     function ResourceManager() {
         log.info("FENIX Data Management - Resource Manager");
         this.bridge = new Bridge();
+        console.log(this.bridge.environment);
         this.resource = {};
 
+    };
+
+    ResourceManager.prototype.setEnvironment = function (env) {
+        log.info("FENIX Data Management - Current Environment: "+ env);
+        this.environment = env;
     }
 
     // Validation
@@ -24,6 +30,12 @@ define([
 
     ResourceManager.prototype.isDSDValid = function(DSDRes) {
         //TODO: Apply some logic here!
+        var meta = DSDRes;
+        if (!meta.dsd) throw new Error("DSD to update cannot be null");
+        if (!meta.dsd.datasources) throw new Error("Datasources cannot be null");
+            else if (meta.dsd.datasources.length == 0) throw new Error("Datasources cannot be null");
+        if (!meta.dsd.contextSystem) throw new Error("ContextSystem cannot be null");
+
         return true
 
     };
@@ -61,9 +73,9 @@ define([
     }
 
     ResourceManager.prototype.getCodelist = function(codelistUID) {
-        this.bridge.getCodeList({
+        this.bridge.getResource({
             body: [],
-            uid: codelistUID
+            uid: codelistUID,
         }).then(
             _.bind(this._onGetCodelistSuccess, this),
             _.bind(this._onGetCodelistError, this)
@@ -71,21 +83,17 @@ define([
     };
 
     ResourceManager.prototype._onGetCodelistSuccess = function (resource) {
-        log.info("Get codelist success");
-        log.info(resource);
+        log.info("Get codelist success", resource);
         return(resource);
-
     };
 
     ResourceManager.prototype._onGetCodelistError = function (e) {
-        log.error("Get codelist error");
-        log.error(e);
+        log.error("Get codelist error", e);
         return false;
     };
 
 
     ResourceManager.prototype.loadResource = function (resource) {
-
         this.bridge.getResource({
                 body: [],
                 uid: resource.model.uid,
@@ -97,15 +105,14 @@ define([
     };
 
     ResourceManager.prototype._onLoadResourceSuccess = function (resource) {
-        log.info("Load resource success");
-        log.info(resource);
+        log.info("Load resource success", resource);
         this.resource = resource;
         log.info("navigate to home");
         Backbone.trigger("resource:loaded");
     };
 
     ResourceManager.prototype._onLoadResourceError = function (e) {
-        log.error("Load resource error");
+        log.error("Load resource error", e);
         log.error(e);
 
     };
@@ -145,9 +152,19 @@ define([
 
     ResourceManager.prototype.setDSD = function (resource) {
         log.info("setDSD Called.", resource);
-        this.resource.metadata.dsd.columns = resource;
-        Backbone.trigger("resource:updated");
+        if (isDSDValid(resource)) {
+            this.resource.metadata.dsd.columns = resource;
+            Backbone.trigger("resource:updated");
+        }
     };
+
+    // Data
+
+    ResourceManager.prototype.getData = function () {
+        log.info("getData called.",this.resource.data);
+        var obj = this.resource.data;
+        return obj;
+    }
 
 
 

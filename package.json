@@ -21,6 +21,7 @@
     "backbone": "^1.3.3",
     "bootstrap": "^3.3.7",
     "fenix-ui-DSDEditor": "^2.0.0-beta.0",
+    "fenix-ui-DataEditor": "^2.0.0-beta.0",
     "fenix-ui-bridge": "^1.0.0-beta.6",
     "fenix-ui-catalog": "^2.0.0-beta.2",
     "fenix-ui-menu": "^3.0.0-beta.1",
