@@ -27,18 +27,34 @@ define([
 
             var callB = function() {
                 log.info('{Data} Editor Callback');
-                Data.setData(RM.getData());
-                log.info('{Data} Calling DSD');
-                var curCodelist = RM.getCodelist('UNECA_ClassificationOfActivities');
-                Data.setColumns(RM.getDSD, {'UNECA_ClassificationOfActivities': curCodelist}, function() {
-                    console.log("qua");
-                });
                 log.info('{Data} Calling the Codelists');
-//              DataEditor.setColumns(testDSD, {'CountrySTAT_Indicators': Codelist}, callB);
-                console.log();
+                RM.generateDSDStructure().then (function (result) {
+                    log.info('{Data} Calling the DSD');
+                    var dsd = RM.getDSD();
+                    console.log("params");
+                    console.log(JSON.stringify(dsd));
+                    console.log(JSON.stringify(result));
+                    Data.setColumns(dsd, result, function() {
+                        log.info("{Data} Columns Setted.");
+                        Data.setData(RM.getData());
+                    });
+                    /*
+                    Data.setColumns(RM.getDSD, result, function() {
+                        log.info("{Data} Columns Setted.");
+                        Data.setData(RM.getData());
+                    });
+                    */
+                })
             };
 
             Data.init(this.$el, config, callB);
+
+            /*
+             DataEditor.isEditable(false);
+             DataEditor.setColumns(testDSD, {'CountrySTAT_Indicators': Codelist}, callB);
+             DataEditor.setData(testData);
+
+             */
 
         },
 

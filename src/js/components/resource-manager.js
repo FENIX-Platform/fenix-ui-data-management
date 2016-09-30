@@ -2,9 +2,10 @@ define([
     'jquery',
     'underscore',
     'loglevel',
+    "q",
     'fenix-ui-bridge',
     'backbone'
-],function($, _, log, Bridge, Backbone){
+],function($, _, log, Q, Bridge, Backbone){
 
     "use strict";
 
@@ -73,23 +74,15 @@ define([
     }
 
     ResourceManager.prototype.getCodelist = function(codelistUID) {
-        this.bridge.getResource({
-            body: [],
-            uid: codelistUID,
-        }).then(
-            _.bind(this._onGetCodelistSuccess, this),
-            _.bind(this._onGetCodelistError, this)
-        );
-    };
-
-    ResourceManager.prototype._onGetCodelistSuccess = function (resource) {
-        log.info("Get codelist success", resource);
-        return(resource);
-    };
-
-    ResourceManager.prototype._onGetCodelistError = function (e) {
-        log.error("Get codelist error", e);
-        return false;
+        log.info('getCodelist called ', codelistUID);
+        return this.bridge.getResource({
+                body: [],
+                uid: codelistUID
+            }).then(
+                function(resource) {
+                    return resource;
+                }
+            );
     };
 
 
@@ -164,9 +157,35 @@ define([
         log.info("getData called.",this.resource.data);
         var obj = this.resource.data;
         return obj;
-    }
+    };
 
+    // Utils
 
+    ResourceManager.prototype.getCurrentResourceCodelists = function() {
+        log.info("getCurrentResourceCodelists called.")
+        var codelists = [];
+        var columns = this.resource.metadata.dsd.columns;
+        $.each(columns, function (index, object) {
+            if (object.dataType == "code")
+                codelists.push(object.domain.codes[0].idCodeList)
+        });
+        return _.unique(codelists);
+    };
+
+    ResourceManager.prototype.generateDSDStructure = function() {
+        log.info("generateDSDStructure called.")
+        var self = this;
+        var codelists = self.getCurrentResourceCodelists();
+        var ps = [];
+
+        $.each(codelists, function (index, object) { ps.push(self.getCodelist(object)); } );
+
+        return Q.all(ps).then(function(result){
+            var structure = {};
+            $.each(result, function (index, object) { structure[object.metadata.uid] = object;  });
+            return structure;
+        });
+    };
 
     return new ResourceManager();
 
