@@ -1,31 +1,21 @@
 define([
+    "jquery",
     "backbone",
     "loglevel",
-    "q"
-],function( Backbone,log, Q){
+    '../components/resource-manager'
+
+],function($, Backbone, log, RM){
 
     "use strict";
 
     var AddView = Backbone.View.extend({
 
-        render: function () {
-            log.info("Rendering View - Add");
-            this.$el.html("<h1>Hello world from Add</h1>");
+        render: function (o) {
+            $.extend(true, this, o);
+            log.info("Rendering View - Add", this);
+            //this.$el.html("<h1>Hello world from Add</h1>");
+            RM.newResource();
             return this;
-        },
-
-        accessControl: function () {
-
-            return new Q.Promise(function (fulfilled, rejected) {
-
-                //perform checks
-
-                fulfilled();
-
-
-                //rejected()
-
-            });
         },
 
         remove: function() {

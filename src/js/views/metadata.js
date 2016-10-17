@@ -1,17 +1,38 @@
 define([
+    "jquery",
     "backbone",
     "loglevel",
-    "q"
-],function( Backbone,log, Q){
+    "q",
+    "fenix-ui-metadata-editor",
+],function($, Backbone, log, Q, MDE){
 
     "use strict";
 
     var MetadataView = Backbone.View.extend({
 
-        render: function () {
-            log.info("Rendering View - Metadata");
-            this.$el.html("<h1>Hello world from Metadata</h1>");
+        render: function (o) {
+            $.extend(true, this, o);
+
+            log.info("Rendering View - Metadata", this);
+            this.lang = this.lang.toLowerCase();
+            log.info("{MDE} Rendering View");
+            this.initViews();
+            //this.bindEventListeners();
             return this;
+
+        },
+
+        initViews: function () {
+            log.info("{MDE} initViews");
+
+            this.MDE = new MDE({
+                el: this.$el,
+                lang: this.lang,
+                config: this.config,
+                cache : this.cache,
+                environment : this.environment
+        });
+
         },
 
         accessControl: function () {

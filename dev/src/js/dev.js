@@ -1,8 +1,11 @@
 define([
     'loglevel',
     'jquery',
-    '../../../src/js/index'
-], function (log, $, DataManagement) {
+    '../../../src/js/index',
+    '../config/dsd',
+    '../config/fenix_metadata'
+
+], function (log, $, DataManagement, DSDConf, MDConf) {
 
     'use strict';
 
@@ -16,18 +19,14 @@ define([
     function Dev() {
 
         console.clear();
-
         this._importThirdPartyCss();
-
         log.setLevel('trace');
-
         this.start();
     }
 
     Dev.prototype.start = function () {
 
         log.trace("Test started");
-
         this._render();
 
     };
@@ -38,7 +37,10 @@ define([
             environment: environment,
             el: s.DATA_MNG,
             cache: cache,
-            lang: lang
+            lang: lang,
+            dsdEditor: DSDConf,
+            metadataEditor: MDConf
+
         });
     };
 

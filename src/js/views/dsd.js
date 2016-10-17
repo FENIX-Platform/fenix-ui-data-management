@@ -16,7 +16,7 @@ define([
             $.extend(true, this, o);
 
             this.lang = this.lang.toLowerCase();
-            log.info("{DSD} Rendering View");
+            log.info("{DSD} Rendering View", this);
             this.initViews();
             this.bindEventListeners();
             return this;
@@ -25,14 +25,14 @@ define([
         bindEventListeners: function () {
             log.info("{DSD} bindEventListeners()");
             $(this.savebtn).on("click", function(){
-                console.log(DSD.validate());
                 RM.setDSD(DSD.get());
             });
 
         },
 
         initViews: function() {
-            log.info("{DSD} initViews");
+            log.info("{DSD} initViews", this.config);
+/*
             var cfg = {
                 columnEditor: {
                     codelists: "../config/dev_codelists.json"
@@ -377,7 +377,8 @@ define([
 
                 ]
             };
-
+*/
+            var cfg = this.config;
             var callB = function() {
                 log.info('{DSD} Editor Callback');
                 DSD.set(RM.getDSD());

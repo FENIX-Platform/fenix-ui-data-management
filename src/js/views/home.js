@@ -16,7 +16,6 @@ define([
 
             this.lang = this.lang.toLowerCase();
 
-            console.log(RM.resource)
             log.info("Rendering View - Home");
             this.$el.html("<h1>Hello world from Home</h1><hr>" +
                 "<br>And, by the way, this is our object:<br><code>" + JSON.stringify(RM.resource) + "</code><br>" );

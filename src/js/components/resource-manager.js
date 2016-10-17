@@ -10,17 +10,24 @@ define([
     "use strict";
 
     function ResourceManager() {
-        log.info("FENIX Data Management - Resource Manager");
+        log.info("FENIX DM - Resource Manager");
         this.bridge = new Bridge();
-        console.log(this.bridge.environment);
+        log.info("FENIX DM - RM : We'll work on '"+this.bridge.environment+"' environment.");
         this.resource = {};
-
     };
 
     ResourceManager.prototype.setEnvironment = function (env) {
-        log.info("FENIX Data Management - Current Environment: "+ env);
+        log.info("FENIX DM - Current Environment: "+ env);
         this.environment = env;
-    }
+        this.bridge.environment = env;
+    };
+
+    ResourceManager.prototype.getEnvironment = function () {
+        log.info("FENIX DM - Current Environment: "+ this.environment);
+        log.info("FENIX DM - Bridge Environment: "+ this.bridge.environment);
+        return this.environment;
+    };
+
 
     // Validation
 
@@ -30,7 +37,6 @@ define([
     };
 
     ResourceManager.prototype.isDSDValid = function(DSDRes) {
-        //TODO: Apply some logic here!
         var meta = DSDRes;
         if (!meta.dsd) throw new Error("DSD to update cannot be null");
         if (!meta.dsd.datasources) throw new Error("Datasources cannot be null");
@@ -40,11 +46,13 @@ define([
         return true
 
     };
+
     ResourceManager.prototype.isDataValid = function(DSDRes) {
         //TODO: Apply some logic here!
         return true
 
     };
+
     ResourceManager.prototype.isMetaValid = function(DSDRes) {
         //TODO: Apply some logic here!
         return true
@@ -58,6 +66,11 @@ define([
     };
 
     // Resource
+
+    ResourceManager.prototype.newResource = function() {
+        this.resource = {};
+        Backbone.trigger("resource:new");
+    };
 
     ResourceManager.prototype.isResourceAvailable = function() {
         //TODO: Check if resource is valid.

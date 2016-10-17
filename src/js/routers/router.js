@@ -110,7 +110,7 @@ define([
             });
             // When a resource is unloaded (search or new is triggered)
             this.listenTo(Backbone,"resource:unloaded", function(){
-                log.info("[EVT] resource:loaded ", RM.resource);
+                log.info("[EVT] resource:unloaded ", RM.resource);
 
                 var self = this,
                     enableOnValidResource = ['delete','metadata','dsd','data','home'];
@@ -126,6 +126,12 @@ define([
                 //TODO: Message of saving (popup or something)
                 this.goTo("#/home");
 
+            });
+
+            this.listenTo(Backbone, "resource:new", function() {
+                log.info("[EVT] resource:new ", RM.resource);
+                //TODO: Message of new resource (popup or something)\
+                this.goTo("#/metadata");
             });
 
         },
@@ -162,7 +168,7 @@ define([
 
         onSearch: function () {
             log.info("onSearch called.");
-            log.warn("TODO: Check if this search is voluntary [if Resource is loaded]");
+            //log.warn("TODO: Check if this search is voluntary [if Resource is loaded]");
             $(s.BTN_CONTAINER).hide();
             this.switchView(SearchView, {
                 el: s.CONTAINER,
@@ -200,6 +206,7 @@ define([
                 el: s.CONTAINER,
                 menu : "metadata",
                 lang : this.lang,
+                config: this.metadataEditor,
                 environment: this.environment
             });
         },
@@ -211,12 +218,13 @@ define([
             // Init Buttons
             $(s.BTN_ELEMENT).html(MultiLang[this.lang.toLowerCase()]['btnSave']);
             $(s.BTN_CONTAINER).show();
-
+            console.log("this.dsd",this.dsd);
             this.switchView(DSDView, {
                 el: s.CONTAINER,
                 menu : "dsd",
                 lang : this.lang,
                 environment: this.environment,
+                config: this.dsdEditor,
                 savebtn : s.BTN_ELEMENT
             });
         },

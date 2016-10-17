@@ -2,19 +2,18 @@ define([
     "loglevel",
     "jquery",
     "./routers/router",
-    "../html/main.hbs"
-], function (log, $, Router, Template) {
+    "../html/main.hbs",
+    "./components/resource-manager"
+], function (log, $, Router, Template, RM) {
 
     "use strict";
 
     function DataManagement(o) {
-        log.info("FENIX Data Management");
-        log.info(o);
-
+        log.info("FENIX Data Management", o);
         $.extend(true, this, {}, o);
-
+        // Init Resource Manager Environment
+        RM.setEnvironment(this.environment);
         this._attach();
-
         this._start();
     }
 
@@ -33,7 +32,8 @@ define([
             $el: this.$el,
             cache: this.cache,
             environment: this.environment,
-            lang : this.lang
+            lang : this.lang,
+            dsdEditor : this.dsdEditor
         });
     };
 
