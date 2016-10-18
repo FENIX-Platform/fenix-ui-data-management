@@ -17,11 +17,10 @@ define([
 
         render: function (o) {
             log.info("{SEARCH} Rendering View");
-
+            $.extend(true, CatalogConfig, o.catalog);
             $.extend(true, CatalogConfig, {}, this, o);
-            console.log("CatalogConfig",CatalogConfig);
+
             this.catalog = new Catalog(CatalogConfig);
-            console.log(this.catalog.environment);
             this.bindEventListeners();
             RM.unloadResource();
 

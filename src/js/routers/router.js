@@ -134,10 +134,6 @@ define([
                 this.goTo("#/metadata");
             });
 
-            this.listenTo(Backbone, "data:csvupload", function() {
-                log.info("[EVT] data:csvupload ", RM.resource);
-            });
-
         },
 
         //  Views
@@ -178,7 +174,8 @@ define([
                 el: s.CONTAINER,
                 menu : "search",
                 lang : this.lang,
-                environment: this.environment
+                environment: this.environment,
+                catalog: this.catalog,
             });
         },
 
@@ -206,12 +203,16 @@ define([
 
         onMetadata: function () {
             log.info("Metadata View");
+            // Init Buttons
+            $(s.BTN_ELEMENT).html(MultiLang[this.lang.toLowerCase()]['btnSave']);
+            $(s.BTN_CONTAINER).show();
             this.switchView(MetadataView, {
                 el: s.CONTAINER,
                 menu : "metadata",
                 lang : this.lang,
                 config: this.metadataEditor,
-                environment: this.environment
+                environment: this.environment,
+                savebtn : s.BTN_ELEMENT
             });
         },
 
@@ -222,7 +223,6 @@ define([
             // Init Buttons
             $(s.BTN_ELEMENT).html(MultiLang[this.lang.toLowerCase()]['btnSave']);
             $(s.BTN_CONTAINER).show();
-            console.log("this.dsd",this.dsd);
             this.switchView(DSDView, {
                 el: s.CONTAINER,
                 menu : "dsd",
@@ -237,12 +237,15 @@ define([
 
         onData: function () {
             log.info("Delete Resource");
-
+            // Init Buttons
+            $(s.BTN_ELEMENT).html(MultiLang[this.lang.toLowerCase()]['btnSave']);
+            $(s.BTN_CONTAINER).show();
             this.switchView(DataView, {
                 el: s.CONTAINER,
                 menu : "data",
                 lang : this.lang,
-                environment: this.environment
+                environment: this.environment,
+                savebtn : s.BTN_ELEMENT
             });
         },
 
@@ -273,7 +276,7 @@ define([
 
         onDefaultRoute: function () {
             log.info("Default");
-
+            $(s.BTN_CONTAINER).hide();
             this.goTo("#/not-found");
         },
 

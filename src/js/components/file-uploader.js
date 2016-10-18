@@ -1,15 +1,17 @@
 define([
     'jquery',
-    'amplify-pubsub'
-],function ($, amplify) {
-        var widgetName = 'FileUploadHelper';
-        var evtTextFileUploaded = 'textFileUploaded.' + widgetName + '.fenix';
+    'loglevel',
+    'backbone'
+],function ($, log, Backbone) {
+        var widgetName = 'data';
+        var evtTextFileUploaded = 'uploaded';
         var defConfig = {
             accept: [],
             maxFileBytes: 0
         };
 
         function FileUploadHelper(config) {
+            log.info("{FUH} started.");
             this.config = {};
             $.extend(true, this.config, defConfig, config);
             for (var i = 0; i < this.config.accept.length; i++)
@@ -18,14 +20,17 @@ define([
         };
 
         FileUploadHelper.prototype.render = function (fileInputId) {
+            log.info("{FUH} render ");
             this.initUploadInput(fileInputId);
         }
 
         FileUploadHelper.prototype.reset = function () {
+            log.info("{FUH} reset ");
             this.$uploadInput.val('');
         }
 
         FileUploadHelper.prototype.initUploadInput = function (inputId) {
+            log.info("{FUH} initUploadInput ");
             this.$uploadInput = $(inputId);
             var me = this;
 
@@ -51,7 +56,7 @@ define([
                     var reader = new FileReader();
                     reader.onload = function (e) {
                         var str = e.target.result;
-                        amplify.publish(evtTextFileUploaded, str);
+                        Backbone.trigger(widgetName+":"+evtTextFileUploaded,str);
                     };
                     reader.readAsText(e.target.files.item(0));
                 }
@@ -60,6 +65,7 @@ define([
         }
 
         FileUploadHelper.prototype.enabled = function (isEnabled) {
+            log.info("{FUH} enabled ");
             if (isEnabled) {
                 this.$uploadInput.removeAttr('disabled');
             }
@@ -69,6 +75,7 @@ define([
         }
 
         FileUploadHelper.prototype.destroy = function () {
+            log.info("{FUH} destroy ");
             this.$uploadInput.off('change');
         }
 

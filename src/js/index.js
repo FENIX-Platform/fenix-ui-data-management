@@ -33,8 +33,10 @@ define([
             cache: this.cache,
             environment: this.environment,
             lang : this.lang,
-            dsdEditor : this.dsdEditor
+            dsdEditor : this.dsdEditor,
+            catalog: this.catalog
         });
+
     };
 
     return DataManagement;

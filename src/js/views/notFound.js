@@ -8,7 +8,7 @@ define([
     var NotFoundView = Backbone.View.extend({
 
         render: function () {
-            log.info("Rendering NOtFound - Search");
+            log.info("Rendering NotFound - Search");
 
             this.$el.html("<h1>Oh snap! 404</h1>");
             return this;

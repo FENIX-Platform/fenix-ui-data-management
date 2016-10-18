@@ -3,9 +3,10 @@ define([
     'jquery',
     '../../../src/js/index',
     '../config/dsd',
-    '../config/fenix_metadata'
+    '../config/fenix_metadata',
+    '../config/catalog',
 
-], function (log, $, DataManagement, DSDConf, MDConf) {
+], function (log, $, DataManagement, DSDConf, MDConf, CataConf) {
 
     'use strict';
 
@@ -20,7 +21,8 @@ define([
 
         console.clear();
         this._importThirdPartyCss();
-        log.setLevel('trace');
+        // trace silent
+        log.setLevel('silent');
         this.start();
     }
 
@@ -39,9 +41,10 @@ define([
             cache: cache,
             lang: lang,
             dsdEditor: DSDConf,
-            metadataEditor: MDConf
-
+            metadataEditor: MDConf,
+            catalog: CataConf
         });
+
     };
 
     Dev.prototype._importThirdPartyCss = function () {

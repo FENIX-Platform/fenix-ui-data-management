@@ -4,9 +4,7 @@ define(function(){
 
 
     return {
-        columnEditor: {
-            codelists: "../config/dev_codelists.json"
-        },
+
         MLEditor: {
             langs: ["EN", "FR"]
         },
