@@ -1,0 +1,34 @@
+<div class="row">
+    <div class="col-xs-12">
+        <div id="btnUploadGroup" class="form-group pull-right">
+            <table>
+                <thead>
+                <tr>
+                    <td id="DataDeleteAll" width="100px">Delete all</td>
+                    <!--This was used before the CSV and the DSD matching was not handled in the UI, remove it if not needed anymore-->
+                    <!--<td width="120px">CSV Template</td>-->
+                    <td width="100px"><label id="lblUpload" for="dataFUpload">Upload</label></td>
+                    <td width="100px"><label id="lblSeparator" for="csvSeparator">CSV Separator</label></td>
+                </tr>
+                </thead>
+                <tr>
+                    <td>
+                        <button type="button" id="btnDelAllData" class="glyphicon glyphicon-remove-circle"></button>
+                    </td>
+                    <!--This was used before the CSV and the DSD matching was not handled in the UI, remove it if not needed anymore-->
+                    <!--<td>
+                        <button type="button" id="btnGetCSVTemplate">Get CSV template</button>
+                    </td>-->
+                    <td>
+                        <input type="file" name="filename" id="dataFUpload" />
+                    </td>
+                    <td>
+                        <input type="radio" id="csvSeparatorComma" name="csvSeparator" value="," checked><label id="DatalblcsvSeparatorComma" class="filter-enabled-label" for="csvSeparatorComma">Comma</label>
+                        <br>
+                        <input type="radio" id="csvSeparatorSemi" name="csvSeparator" value=";"><label id="DatalblcsvSeparatorSemi" class="filter-enabled-label" for="csvSeparatorSemi">Semicolon</label>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>

@@ -134,6 +134,10 @@ define([
                 this.goTo("#/metadata");
             });
 
+            this.listenTo(Backbone, "data:csvupload", function() {
+                log.info("[EVT] data:csvupload ", RM.resource);
+            });
+
         },
 
         //  Views

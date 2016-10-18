@@ -4,9 +4,11 @@ define([
     "loglevel",
     "q",
     "fenix-ui-DataEditor",
-    '../components/resource-manager'
+    "../components/resource-manager",
+    "../components/file-uploader",
+    "../../html/file-uploader.hbs",
 
-],function($, Backbone, log, Q, Data, RM){
+],function($, Backbone, log, Q, Data, RM, FileUploader, TemplateFU){
 
     "use strict";
 
@@ -15,9 +17,11 @@ define([
         render: function (o) {
             $.extend(true, this, o);
 
+            this.UTILITY = '#fx-data-management-utility-holder';
             this.lang = this.lang.toLowerCase();
             log.info("{Data} Rendering View");
             this.initViews();
+            this.bindEventListeners();
             return this;
         },
 
@@ -31,30 +35,22 @@ define([
                 RM.generateDSDStructure().then (function (result) {
                     log.info('{Data} Calling the DSD');
                     var dsd = RM.getDSD();
-                    console.log("params");
-                    console.log(JSON.stringify(dsd));
-                    console.log(JSON.stringify(result));
                     Data.setColumns(dsd, result, function() {
                         log.info("{Data} Columns Setted.");
                         Data.setData(RM.getData());
                     });
-                    /*
-                    Data.setColumns(RM.getDSD, result, function() {
-                        log.info("{Data} Columns Setted.");
-                        Data.setData(RM.getData());
-                    });
-                    */
                 })
             };
 
+            $(this.UTILITY).html(TemplateFU);
+
             Data.init(this.$el, config, callB);
 
-            /*
-             DataEditor.isEditable(false);
-             DataEditor.setColumns(testDSD, {'CountrySTAT_Indicators': Codelist}, callB);
-             DataEditor.setData(testData);
 
-             */
+        },
+
+        bindEventListeners: function() {
+            log.info('{DATA} bindEventListeners');
 
         },
 
