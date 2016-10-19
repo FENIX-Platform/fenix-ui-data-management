@@ -3,13 +3,15 @@ define([
     "backbone",
     "loglevel",
     "q",
+    "toastr",
     "fenix-ui-DataEditor",
     "../../config/data-editor",
+    "../../config/notify",
     "../components/resource-manager",
     "../components/file-uploader",
     "../../html/file-uploader.hbs",
 
-],function($, Backbone, log, Q, Data, Config, RM, FileUploader, TemplateFU){
+],function($, Backbone, log, Q, Notify, Data, Config, NotiConfig, RM, FileUploader, TemplateFU){
 
     "use strict";
 
@@ -26,7 +28,10 @@ define([
                 csvSeparator: "input[name=csvSeparator]:checked",
             };
 
+            Notify.options = NotiConfig;
+
             this.lang = this.lang.toLowerCase();
+            this.cLists = RM.getCurrentResourceCodelists();
             log.info("{Data} Rendering View");
             this.initViews();
             this.initFileUploader();
@@ -44,8 +49,15 @@ define([
                 RM.generateDSDStructure().then (function (result) {
                     log.info('{Data} Calling the DSD');
                     var dsd = RM.getDSD();
+                    log.info('{Data} Setting the DSD...');
+                    //console.log(result)
+                    //console.log(JSON.stringify(result))
+                    //console.log(dsd);
+                    //console.log(JSON.stringify(dsd));
+                    //console.log(RM.getData());
+                    //console.log(JSON.stringify(RM.getData()));
                     Data.setColumns(dsd, result, function() {
-                        log.info("{Data} Columns Setted.");
+                        log.info("{Data} DSD Columns Setted.");
                         Data.setData(RM.getData());
                     });
                 })
@@ -87,42 +99,45 @@ define([
             log.info('{DATA} csvLoaded', data);
             this.fUpload.reset();
             var conf = {};
-            var conv = Data.CSV_To_Dataset(conf,$(this.s.csvSeparator).val());
-            console.log(conv);
-            //conv.convert(data);
+            var conv = new Data.CSV_To_Dataset(conf,$(this.s.csvSeparator).val());
+            conv.convert(data);
 
-/*
             this.tmpCsvCols = conv.getColumns();
             this.tmpCsvData = conv.getData();
-*/
-            console.log(this);
 
-            /*
+            var validator = new Data.Validator_CSV();
+
             //Validates the CSV structure (null columns, less columns than the DSD...)
-            var valRes = CSV_Val.validate(DataEditor.getColumns(), DataEditor.getCodelists(), this.tmpCsvCols, this.tmpCsvData);
+            var valRes = validator.validate(Data.getColumns(), Data.getCodelists(), this.tmpCsvCols, this.tmpCsvData);
 
             if (valRes && valRes.length > 0) {
                 for (var n = 0; n < valRes.length; n++) {
-                    Noti.showError(MLRes.error, MLRes[valRes[n].type]);
+                    //console.log(MLRes.error, MLRes[valRes[n].type]);
+                    Notify["error"](valRes[n].type);
                 }
                 return;
             }
 
-            this._showCSvColumnMatcher();
-            this.columnsMatch.setData(this.resource.metadata.dsd, this.tmpCsvCols, this.tmpCsvData);
-            /*
-             //Validates the CSV contents
-             var dv = new DataValidator();
-             var wrongDatatypes = dv.checkWrongDataTypes(DataEditor.getColumns(), this.cLists, this.tmpCsvData);
+            //this._showCSvColumnMatcher(); <- this is needed
+            //this.columnsMatch.setData(this.resource.metadata.dsd, this.tmpCsvCols, this.tmpCsvData);
+
+            //Validates the CSV contents
+            var dv = new Data.Data_Validator();
+/*
+            console.log(JSON.stringify(Data.getColumns()));
+            console.log(JSON.stringify(RM.getCurrentResourceCodelists()));
+            console.log(JSON.stringify(this.tmpCsvData));
+*/
+            var wrongDatatypes = dv.checkWrongDataTypes(Data.getColumns(), this.cLists, this.tmpCsvData);
 
              if (wrongDatatypes && wrongDatatypes.length > 0) {
-             for (n = 0; n < wrongDatatypes.length; n++) {
-             Noti.showError(MLRes.error, MLRes[wrongDatatypes[n].error] + " - Row: " + wrongDatatypes[n].dataIndex);
-             }
-             return;
+                 for (n = 0; n < wrongDatatypes.length; n++) {
+                     Notify["error"]([wrongDatatypes[n].error] + " - Row: " + wrongDatatypes[n].dataIndex);
+                 }
+                 return;
              }
 
-             */
+
         },
 
         accessControl: function () {
@@ -137,8 +152,9 @@ define([
         },
 
         remove: function() {
+            log.warn("{DATA} - Remove View");
             this.unbindEventListeners();
-            $(this.UTILITY).html('');
+            $(this.s.utility).html('');
             Backbone.View.prototype.remove.apply(this, arguments);
         }
     });

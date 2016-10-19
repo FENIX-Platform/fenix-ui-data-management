@@ -13,11 +13,12 @@ define(function(){
             selector : {
                 id : "dropdown",
                     source : [
+                        {value : "uneca", label : "UNECA"},
                         {value : "cstat_cog", label : "CountrySTAT Congo"},
                         {value : "cstat_afg", label : "CountrySTAT Afghanistan"},
                         {value : "cstat_cmr", label : "CountrySTAT Cameroon"}
                 ],
-            default : ["cstat_afg"],
+            default : ["uneca"],
                     hideSummary : true,
                     config : {
                     plugins: ['remove_button'],

@@ -22,7 +22,7 @@ define([
         console.clear();
         this._importThirdPartyCss();
         // trace silent
-        log.setLevel('silent');
+        log.setLevel('trace');
         this.start();
     }
 
@@ -54,12 +54,12 @@ define([
         //dropdown selector
         require("../../../node_modules/selectize/dist/css/selectize.bootstrap3.css");
         // fenix-ui-filter
-        require("../../../node_modules/fenix-ui-filter/dist/fenix-ui-filter.min.css");
+//        require("../../../node_modules/fenix-ui-filter/dist/fenix-ui-filter.min.css");
         // fenix-ui-dropdown
-        require("../../../node_modules/fenix-ui-dropdown/dist/fenix-ui-dropdown.min.css");
+//        require("../../../node_modules/fenix-ui-dropdown/dist/fenix-ui-dropdown.min.css");
 
         // bootstrap-table
-        require("../../../node_modules/bootstrap-table/dist/bootstrap-table.min.css");
+//        require("../../../node_modules/bootstrap-table/dist/bootstrap-table.min.css");
 
 
     };

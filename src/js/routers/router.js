@@ -4,6 +4,8 @@ define([
     'backbone',
     'underscore',
     'loglevel',
+    "toastr",
+    "../../config/notify",
     'fenix-ui-menu',
     '../../config/menu',
     '../views/landing',
@@ -18,7 +20,7 @@ define([
     '../views/home',
     '../components/resource-manager',
     '../../nls/labels'
-], function ($, Backbone, _, log, Menu, ConfigMenu,
+], function ($, Backbone, _, log, Notify, ConfigNotify, Menu, ConfigMenu,
              LandingView, SearchView, NotFoundView, DeniedView, AddView, DeleteView, MetadataView, DSDView, DataView, HomeView,
              RM,
              MultiLang
@@ -71,6 +73,7 @@ define([
         initCommonViews: function () {
             log.info("Render common views");
             // Init Buttons
+            Notify.options = ConfigNotify;
             $(s.BTN_CONTAINER).hide();
             this.initMenu();
 
@@ -105,7 +108,7 @@ define([
                         self.menu.activateItem(object);
                     });
                     self.menu.disableItem('add');
-
+                Notify['success'](MultiLang[this.lang.toLowerCase()]['resourceLoaded']);
                 this.goTo("#/home");
             });
             // When a resource is unloaded (search or new is triggered)
@@ -123,15 +126,21 @@ define([
             // When the save button is clicked
             this.listenTo(Backbone, "resource:updated", function() {
                 log.info("[EVT] resource:updated ", RM.resource);
-                //TODO: Message of saving (popup or something)
+                Notify['success'](MultiLang[this.lang.toLowerCase()]['resourceSaved']);
                 this.goTo("#/home");
 
             });
 
             this.listenTo(Backbone, "resource:new", function() {
                 log.info("[EVT] resource:new ", RM.resource);
-                //TODO: Message of new resource (popup or something)\
+                //TODO: Message of new resource (popup or something)
                 this.goTo("#/metadata");
+            });
+
+            this.listenTo(Backbone, "resource:deleted", function() {
+                log.info("[EVT] resource:deleted ", RM.resource);
+                Notify['success'](MultiLang[this.lang.toLowerCase()]['resourceDeleted']);
+                this.goTo("#/landing");
             });
 
         },
@@ -236,7 +245,7 @@ define([
         // Data View
 
         onData: function () {
-            log.info("Delete Resource");
+            log.info("Data View");
             // Init Buttons
             $(s.BTN_ELEMENT).html(MultiLang[this.lang.toLowerCase()]['btnSave']);
             $(s.BTN_CONTAINER).show();

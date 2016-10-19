@@ -72,6 +72,12 @@ define([
         Backbone.trigger("resource:new");
     };
 
+    ResourceManager.prototype.deleteResource = function() {
+        //TODO: Call Brdige and delete, then trigger the deleted.
+        Backbone.trigger("resource:deleted");
+    };
+
+
     ResourceManager.prototype.isResourceAvailable = function() {
         //TODO: Check if resource is valid.
         return $.isEmptyObject(this.resource);
@@ -88,10 +94,16 @@ define([
 
     ResourceManager.prototype.getCodelist = function(codelistUID) {
         log.info('getCodelist called ', codelistUID);
-        return this.bridge.getResource({
-                body: [],
-                uid: codelistUID
-            }).then(
+        var requ = {
+            body: [],
+            uid: codelistUID
+        };
+        if (codelistUID.indexOf("|") != -1) {
+            requ['version'] = codelistUID.substr(codelistUID.indexOf("|")+1, codelistUID.length);
+            requ['uid'] = codelistUID.substr(0, codelistUID.indexOf("|"));
+        }
+        console.log(requ);
+        return this.bridge.getResource(requ).then(
                 function(resource) {
                     return resource;
                 }
@@ -179,9 +191,20 @@ define([
         var codelists = [];
         var columns = this.resource.metadata.dsd.columns;
         $.each(columns, function (index, object) {
+            var output = "";
+            if (object.dataType == "code") {
+                output = object.domain.codes[0].idCodeList;
+                if (object.domain.codes[0].version) output = output + "|" + object.domain.codes[0].version;
+                codelists.push(output);
+            }
+        });
+
+        /*
+        $.each(columns, function (index, object) {
             if (object.dataType == "code")
                 codelists.push(object.domain.codes[0].idCodeList)
         });
+        */
         return _.unique(codelists);
     };
 
@@ -195,7 +218,13 @@ define([
 
         return Q.all(ps).then(function(result){
             var structure = {};
-            $.each(result, function (index, object) { structure[object.metadata.uid] = object;  });
+            $.each(result, function (index, object) {
+                if (object.metadata.version) {
+                    structure[object.metadata.uid+"|"+object.metadata.version] = object;
+                } else {
+                    structure[object.metadata.uid] = object;
+                }
+            });
             return structure;
         });
     };
