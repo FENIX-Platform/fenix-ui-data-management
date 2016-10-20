@@ -9,11 +9,20 @@ define([
 
     "use strict";
 
+    var url = {
+        baseUrl: "http://fenix.fao.org/d3s_dev/msd/", // qui in dev
+        saveMetadata: "resources/metadata",
+        saveDSD: "resources/dsd",
+        saveData: "resources"
+    };
+
     function ResourceManager() {
-        log.info("FENIX DM - Resource Manager");
+        log.info("FENIX DM - Resource Manager", this);
         this.bridge = new Bridge();
         log.info("FENIX DM - RM : We'll work on '"+this.bridge.environment+"' environment.");
         this.resource = {};
+        this.url = url;
+        console.log()
     };
 
     ResourceManager.prototype.setEnvironment = function (env) {
@@ -24,36 +33,38 @@ define([
 
     ResourceManager.prototype.getEnvironment = function () {
         log.info("FENIX DM - Current Environment: "+ this.environment);
-        log.info("FENIX DM - Bridge Environment: "+ this.bridge.environment);
+        log.info("FENIX DM - Current Bridge Environment: "+ this.bridge.environment);
         return this.environment;
     };
 
 
     // Validation
 
-    ResourceManager.prototype.isResourceValid = function(DSDRes) {
+    ResourceManager.prototype.isResourceValid = function(Res) {
         //TODO: Apply some logic here!
         return true
     };
 
     ResourceManager.prototype.isDSDValid = function(DSDRes) {
+        //TODO: Apply some logic here! Logic is under, just convert
+        /*
         var meta = DSDRes;
         if (!meta.dsd) throw new Error("DSD to update cannot be null");
         if (!meta.dsd.datasources) throw new Error("Datasources cannot be null");
             else if (meta.dsd.datasources.length == 0) throw new Error("Datasources cannot be null");
         if (!meta.dsd.contextSystem) throw new Error("ContextSystem cannot be null");
-
+        */
         return true
 
     };
 
-    ResourceManager.prototype.isDataValid = function(DSDRes) {
+    ResourceManager.prototype.isDataValid = function(DataRes) {
         //TODO: Apply some logic here!
         return true
 
     };
 
-    ResourceManager.prototype.isMetaValid = function(DSDRes) {
+    ResourceManager.prototype.isMetaValid = function(MetaRes) {
         //TODO: Apply some logic here!
         return true
 
@@ -88,9 +99,46 @@ define([
         Backbone.trigger("resource:unloaded");
     };
 
-    ResourceManager.prototype.updateResource = function() {
-        console.log(JSON.stringify(this.resource));
-        Backbone.trigger("resource:updated");
+    ResourceManager.prototype.createResource = function(resource, serv) {
+        var self = this;
+        console.log("I'm trying to upload this: ",JSON.stringify(resource));
+        $.ajax({
+            contentType: "application/json",
+            url: this.url.baseUrl + serv,
+            dataType: 'json',
+            type: 'POST',
+            data: JSON.stringify(resource),
+            crossDomain: true,
+            success: function (data) {
+                console.log(data);
+                Backbone.trigger("resource:updated");
+            },
+            error: function (xhr) {
+                console.log("Error on createResource", xhr)
+            }
+        });
+
+    }
+
+    ResourceManager.prototype.updateResource = function(resource, serv) {
+        var self = this;
+        console.log("I'm trying to upload this: ",JSON.stringify(resource));
+            $.ajax({
+                contentType: "application/json",
+                url: this.url.baseUrl + serv,
+                dataType: 'json',
+                type: 'PUT',
+                data: JSON.stringify(resource),
+                crossDomain: true,
+                success: function (data) {
+                    console.log(data);
+                    Backbone.trigger("resource:updated");
+                },
+                error: function (xhr, textstatus) {
+                    console.log("Error on updateResource", xhr, textstatus)
+                }
+            });
+
     }
 
     ResourceManager.prototype.getCodelist = function(codelistUID) {
@@ -160,6 +208,17 @@ define([
         return false;
     };
 
+    ResourceManager.prototype.setMetadata = function(resource) {
+        log.info("setMetadata Called.",resource);
+        this.resource.metadata = resource;
+        if (this.isMetaValid(resource)) {
+            this.resource.metadata = resource;
+            Backbone.trigger("resource:updated");
+        }
+
+    };
+
+
     // DSD
 
     ResourceManager.prototype.getDSD = function () {
@@ -170,11 +229,16 @@ define([
 
     ResourceManager.prototype.setDSD = function (resource) {
         log.info("setDSD Called.", resource);
-        if (isDSDValid(resource)) {
+        if (this.isDSDValid(resource)) {
             this.resource.metadata.dsd.columns = resource;
-            Backbone.trigger("resource:updated");
+            this.updateDSD(this.resource.metadata.dsd);
         }
     };
+
+    ResourceManager.prototype.updateDSD = function (resource) {
+        log.info("updateDSD called", resource);
+        this.updateResource(resource, this.url.saveDSD);
+    }
 
     // Data
 
@@ -183,6 +247,8 @@ define([
         var obj = this.resource.data;
         return obj;
     };
+
+    ResourceManager.prototype.setData = function () {};
 
     // Utils
 
@@ -229,6 +295,8 @@ define([
             return structure;
         });
     };
+
+
 
     return new ResourceManager();
 

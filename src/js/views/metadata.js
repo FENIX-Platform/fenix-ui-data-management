@@ -19,10 +19,20 @@ define([
             this.lang = this.lang.toLowerCase();
             log.info("{MDE} Rendering View");
             this.initViews();
-            //this.bindEventListeners();
+            this.bindEventListeners();
             return this;
 
         },
+
+        bindEventListeners: function () {
+            log.info("{MDE} bindEventListeners()");
+            $(this.savebtn).on("click", function(){
+                //RM.setMetadata(MDE.get());
+                //RM.updateResource();
+            });
+
+        },
+
 
         initViews: function () {
             log.info("{MDE} initViews");

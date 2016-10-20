@@ -15,7 +15,7 @@ define([
         },
         cache = false,
         lang = "EN",
-        environment = "develop";
+        environment = "production"; // develop
 
     function Dev() {
 
