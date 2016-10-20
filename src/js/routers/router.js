@@ -150,11 +150,11 @@ define([
                 this.menuInitial();
                 this.goTo("#/landing");
             });
-
+/*
             $(s.BTN_CONTAINER).on("click", function(){
                 RM.updateResource();
             });
-
+*/
 
 
         },
