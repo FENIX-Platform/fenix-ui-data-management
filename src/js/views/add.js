@@ -13,7 +13,6 @@ define([
         render: function (o) {
             $.extend(true, this, o);
             log.info("Rendering View - Add", this);
-            //this.$el.html("<h1>Hello world from Add</h1>");
             RM.newResource();
             return this;
         },

@@ -4,7 +4,9 @@ define([
     "loglevel",
     "q",
     "fenix-ui-metadata-editor",
-],function($, Backbone, log, Q, MDE){
+    '../components/resource-manager'
+
+],function($, Backbone, log, Q, MDE, RM){
 
     "use strict";
 
@@ -31,21 +33,18 @@ define([
                 config: this.config,
                 cache : this.cache,
                 environment : this.environment
-        });
+            });
 
         },
 
         accessControl: function () {
 
             return new Q.Promise(function (fulfilled, rejected) {
-
-                //perform checks
-
-                fulfilled();
-
-
-                //rejected()
-
+            //    if (!$.isEmptyObject(RM.resource)) {
+                    fulfilled();
+            //    } else {
+            //        rejected();
+            //    }
             });
         },
 

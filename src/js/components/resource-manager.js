@@ -89,6 +89,7 @@ define([
     };
 
     ResourceManager.prototype.updateResource = function() {
+        console.log(JSON.stringify(this.resource));
         Backbone.trigger("resource:updated");
     }
 
@@ -102,7 +103,6 @@ define([
             requ['version'] = codelistUID.substr(codelistUID.indexOf("|")+1, codelistUID.length);
             requ['uid'] = codelistUID.substr(0, codelistUID.indexOf("|"));
         }
-        console.log(requ);
         return this.bridge.getResource(requ).then(
                 function(resource) {
                     return resource;
@@ -219,8 +219,9 @@ define([
         return Q.all(ps).then(function(result){
             var structure = {};
             $.each(result, function (index, object) {
+                console.log("obj", object)
                 if (object.metadata.version) {
-                    structure[object.metadata.uid+"|"+object.metadata.version] = object;
+                    structure[object.metadata.uid+"|"+object.metadata.uid] = object;
                 } else {
                     structure[object.metadata.uid] = object;
                 }

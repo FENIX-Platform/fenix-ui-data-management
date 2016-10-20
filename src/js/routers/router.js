@@ -42,6 +42,8 @@ define([
 
             $.extend(true, this, o);
 
+            console.log(this);
+
             this.initCommonViews();
             this.initVariables();
             this.bindEventListeners();
@@ -74,6 +76,7 @@ define([
             log.info("Render common views");
             // Init Buttons
             Notify.options = ConfigNotify;
+            $(s.BTN_ELEMENT).html(MultiLang[this.lang.toLowerCase()]['btnSave']);
             $(s.BTN_CONTAINER).hide();
             this.initMenu();
 
@@ -86,10 +89,26 @@ define([
                 lang: self.lang,
                 config: ConfigMenu
             });
+            this.menuInitial();
+        },
+
+        menuInitial: function() {
+            var self = this;
             var disabledByDefault = ['delete','metadata','dsd','data','home']
             $.each(disabledByDefault, function(index,object){
                 self.menu.disableItem(object);
-            })
+            });
+            self.menu.activateItem('add');
+            $(s.BTN_CONTAINER).hide();
+        },
+
+        menuActivated: function() {
+            var self = this,
+                enableOnValidResource = ['delete','metadata','dsd','data','home'];
+            $.each(enableOnValidResource, function(index,object){
+                self.menu.activateItem(object);
+            });
+            self.menu.disableItem('add');
         },
 
         initVariables: function () {
@@ -101,26 +120,14 @@ define([
             // When a resource is loaded
             this.listenTo(Backbone,"resource:loaded", function(){
                 log.info("[EVT] resource:loaded ", RM.resource);
-
-                var self = this,
-                    enableOnValidResource = ['delete','metadata','dsd','data','home'];
-                    $.each(enableOnValidResource, function(index,object){
-                        self.menu.activateItem(object);
-                    });
-                    self.menu.disableItem('add');
+                this.menuActivated();
                 Notify['success'](MultiLang[this.lang.toLowerCase()]['resourceLoaded']);
                 this.goTo("#/home");
             });
             // When a resource is unloaded (search or new is triggered)
             this.listenTo(Backbone,"resource:unloaded", function(){
                 log.info("[EVT] resource:unloaded ", RM.resource);
-
-                var self = this,
-                    enableOnValidResource = ['delete','metadata','dsd','data','home'];
-                $.each(enableOnValidResource, function(index,object){
-                    self.menu.disableItem(object);
-                });
-                self.menu.activateItem('add');
+                this.menuInitial();
 
             });
             // When the save button is clicked
@@ -128,20 +135,27 @@ define([
                 log.info("[EVT] resource:updated ", RM.resource);
                 Notify['success'](MultiLang[this.lang.toLowerCase()]['resourceSaved']);
                 this.goTo("#/home");
-
             });
 
             this.listenTo(Backbone, "resource:new", function() {
                 log.info("[EVT] resource:new ", RM.resource);
                 //TODO: Message of new resource (popup or something)
+                this.menuActivated();
                 this.goTo("#/metadata");
             });
 
             this.listenTo(Backbone, "resource:deleted", function() {
                 log.info("[EVT] resource:deleted ", RM.resource);
                 Notify['success'](MultiLang[this.lang.toLowerCase()]['resourceDeleted']);
+                this.menuInitial();
                 this.goTo("#/landing");
             });
+
+            $(s.BTN_CONTAINER).on("click", function(){
+                RM.updateResource();
+            });
+
+
 
         },
 
@@ -157,6 +171,7 @@ define([
                 lang : this.lang,
                 environment: this.environment
             });
+            this.menuInitial();
         },
 
         //Home
@@ -213,7 +228,6 @@ define([
         onMetadata: function () {
             log.info("Metadata View");
             // Init Buttons
-            $(s.BTN_ELEMENT).html(MultiLang[this.lang.toLowerCase()]['btnSave']);
             $(s.BTN_CONTAINER).show();
             this.switchView(MetadataView, {
                 el: s.CONTAINER,
@@ -230,7 +244,6 @@ define([
         onDSD: function () {
             log.info("DSD View");
             // Init Buttons
-            $(s.BTN_ELEMENT).html(MultiLang[this.lang.toLowerCase()]['btnSave']);
             $(s.BTN_CONTAINER).show();
             this.switchView(DSDView, {
                 el: s.CONTAINER,
@@ -247,7 +260,6 @@ define([
         onData: function () {
             log.info("Data View");
             // Init Buttons
-            $(s.BTN_ELEMENT).html(MultiLang[this.lang.toLowerCase()]['btnSave']);
             $(s.BTN_CONTAINER).show();
             this.switchView(DataView, {
                 el: s.CONTAINER,

@@ -18,10 +18,8 @@ define([
     }
 
     DataManagement.prototype._attach = function () {
-
         //force this$el to be a jQuery object
         this.$el = $(this.el);
-
         //inject main template
         this.$el.html(Template);
     };
@@ -34,7 +32,8 @@ define([
             environment: this.environment,
             lang : this.lang,
             dsdEditor : this.dsdEditor,
-            catalog: this.catalog
+            catalog: this.catalog,
+            metadataEditor: this.metadataEditor
         });
 
     };
