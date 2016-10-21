@@ -38,13 +38,13 @@ define([
 
         initViews: function () {
             log.info("{MDE} initViews");
-
             this.MDE = new MDE({
                 el: this.$el,
                 lang: this.lang,
                 config: this.config,
                 cache : this.cache,
-                environment : this.environment
+                environment : this.environment,
+                model: RM.getMetadata()
             });
 
         },

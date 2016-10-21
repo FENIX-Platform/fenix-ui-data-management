@@ -10,25 +10,28 @@ define([
     "use strict";
 
     var url = {
-        baseUrl: "http://fenix.fao.org/d3s_dev/msd/", // qui in dev
+        baseUrl: "http://fenix.fao.org/d3s_dev/msd/", // dev as default
+        develop: "http://fenix.fao.org/d3s_dev/msd/",
+        production: "http://fenixservices.fao.org/d3s/msd/",
         saveMetadata: "resources/metadata",
         saveDSD: "resources/dsd",
         saveData: "resources"
     };
 
     function ResourceManager() {
-        log.info("FENIX DM - Resource Manager", this);
+        log.info("FENIX DM - Resource Manager");
         this.bridge = new Bridge();
-        log.info("FENIX DM - RM : We'll work on '"+this.bridge.environment+"' environment.");
+        log.info("FENIX DM - RM : We'll work on '"+this.environment+"' environment.");
         this.resource = {};
         this.url = url;
-        console.log()
+        log.info("FENIX DM - Resource Manager completed.",this);
     };
 
     ResourceManager.prototype.setEnvironment = function (env) {
-        log.info("FENIX DM - Current Environment: "+ env);
         this.environment = env;
         this.bridge.environment = env;
+        this.url.baseUrl = url[env];
+        log.info("FENIX DM - Current Environment: "+ env + " ["+this.url.baseUrl+"]");
     };
 
     ResourceManager.prototype.getEnvironment = function () {
