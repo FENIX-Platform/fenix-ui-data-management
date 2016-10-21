@@ -27,7 +27,9 @@ define([
         bindEventListeners: function () {
             log.info("{MDE} bindEventListeners()");
             $(this.savebtn).on("click", function(){
-                //RM.setMetadata(MDE.get());
+                console.log(MDE)
+                console.log(MDE.getValues('plain'));
+                //RM.setMetadata(MDE.getValues('plain'));
                 //RM.updateResource();
             });
 

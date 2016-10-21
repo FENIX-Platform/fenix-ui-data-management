@@ -47,15 +47,9 @@ define([
                 log.info('{Data} Editor Callback');
                 log.info('{Data} Calling the Codelists');
                 RM.generateDSDStructure().then (function (result) {
-                    log.info('{Data} Calling the DSD');
+                    log.info('{Data} Calling the DSD',result);
                     var dsd = RM.getDSD();
-                    log.info('{Data} Setting the DSD...');
-                    //console.log(result)
-                    //console.log(JSON.stringify(result))
-                    //console.log(dsd);
-                    //console.log(JSON.stringify(dsd));
-                    //console.log(RM.getData());
-                    //console.log(JSON.stringify(RM.getData()));
+                    log.info('{Data} Setting the DSD...', dsd);
                     Data.setColumns(dsd, result, function() {
                         log.info("{Data} DSD Columns Setted.");
                         Data.setData(RM.getData());

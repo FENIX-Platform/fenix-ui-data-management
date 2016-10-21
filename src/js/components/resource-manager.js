@@ -61,13 +61,11 @@ define([
     ResourceManager.prototype.isDataValid = function(DataRes) {
         //TODO: Apply some logic here!
         return true
-
     };
 
     ResourceManager.prototype.isMetaValid = function(MetaRes) {
         //TODO: Apply some logic here!
         return true
-
     };
 
     // Controls
@@ -90,7 +88,7 @@ define([
 
 
     ResourceManager.prototype.isResourceAvailable = function() {
-        //TODO: Check if resource is valid.
+        //TODO: Check if singolar entity of the resource is valid first.
         return $.isEmptyObject(this.resource);
     };
 
@@ -185,7 +183,7 @@ define([
 
     // METADATA
 
-    ResourceManager.prototype.getMetadata = function () {
+    ResourceManager.prototype.getMetadataFromServer = function () {
         this.bridge.getMetadata({
             body: [],
             uid: this.resource.metadata.uid
@@ -193,6 +191,11 @@ define([
             _.bind(this._onGetMetadataSuccess, this),
             _.bind(this._onGetMetadataError, this)
         );
+    };
+
+    ResourceManager.prototype.getMetadata = function () {
+        log.info("getMetadata",this.resource.metadata);
+        return this.resource.metadata;
     };
 
     ResourceManager.prototype._onGetMetadataSuccess = function (resource) {
@@ -210,7 +213,6 @@ define([
 
     ResourceManager.prototype.setMetadata = function(resource) {
         log.info("setMetadata Called.",resource);
-        this.resource.metadata = resource;
         if (this.isMetaValid(resource)) {
             this.resource.metadata = resource;
             Backbone.trigger("resource:updated");
@@ -238,7 +240,7 @@ define([
     ResourceManager.prototype.updateDSD = function (resource) {
         log.info("updateDSD called", resource);
         this.updateResource(resource, this.url.saveDSD);
-    }
+    };
 
     // Data
 
@@ -248,7 +250,19 @@ define([
         return obj;
     };
 
-    ResourceManager.prototype.setData = function () {};
+    ResourceManager.prototype.setData = function (resource) {
+        log.info("setData called.",resource);
+        if (this.isDataValid(resource)){
+            this.resource.data = resource;
+            this.updateData(this.resource.data);
+        }
+    };
+
+    ResourceManager.prototype.updateData = function (resource) {
+        log.info("updateData called", resource);
+        this.updateResource(resource, this.url.saveData);
+    }
+
 
     // Utils
 
@@ -265,12 +279,6 @@ define([
             }
         });
 
-        /*
-        $.each(columns, function (index, object) {
-            if (object.dataType == "code")
-                codelists.push(object.domain.codes[0].idCodeList)
-        });
-        */
         return _.unique(codelists);
     };
 
@@ -285,9 +293,8 @@ define([
         return Q.all(ps).then(function(result){
             var structure = {};
             $.each(result, function (index, object) {
-                console.log("obj", object)
                 if (object.metadata.version) {
-                    structure[object.metadata.uid+"|"+object.metadata.uid] = object;
+                    structure[object.metadata.uid+"|"+object.metadata.version] = object;
                 } else {
                     structure[object.metadata.uid] = object;
                 }
