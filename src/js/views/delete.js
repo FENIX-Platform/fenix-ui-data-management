@@ -18,7 +18,6 @@ define([
             this.lang = this.lang.toLowerCase();
             this.initViews();
             this.bindEventListeners();
-
             return this;
         },
 
@@ -37,7 +36,7 @@ define([
             });
             $('#btnDeleteUndo').on("click", function(){
                 log.info("{DELETE} btnDeleteUndo");
-                Backbone.navigate("#/landing");
+                Backbone.Router.navigate("#/landing");
             });
 
         },

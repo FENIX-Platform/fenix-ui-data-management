@@ -17,8 +17,12 @@ define([
             this.lang = this.lang.toLowerCase();
 
             log.info("Rendering View - Home");
-            this.$el.html("<h1>Hello world from Home</h1><hr>" +
-                "<br>And, by the way, this is our object:<br><code>" + JSON.stringify(RM.resource) + "</code><br>" );
+            this.$el.html("<h1>Resource is loaded. Please use the upper menu.</h1><hr>" +
+                "<br>And, by the way, this is our object:<hr>Metadata<br><br>" +
+                "<code>" + JSON.stringify(RM.resource.metadata) + "</code><hr>DSD<br><br>" +
+                "<code>" + JSON.stringify(RM.resource.metadata.dsd) + "</code><hr>DATA<br><br>" +
+                "<code>" + JSON.stringify(RM.resource.data) + "</code>"
+            );
 
             return this;
         },

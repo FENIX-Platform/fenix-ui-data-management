@@ -39,10 +39,8 @@ define([
 
         // The Router constructor
         initialize: function (o) {
-
+            log.info("Data Management - Router",o);
             $.extend(true, this, o);
-
-            console.log(this);
 
             this.initCommonViews();
             this.initVariables();
@@ -149,6 +147,12 @@ define([
                 Notify['success'](MultiLang[this.lang.toLowerCase()]['resourceDeleted']);
                 this.menuInitial();
                 this.goTo("#/landing");
+            });
+
+            this.listenTo(Backbone, "error:showerror", function(code, xhr){
+                log.info("[EVT] error:showerror ", code, xhr);
+                var out = MultiLang[this.lang.toLowerCase()][code] || JSON.stringify(xhr) || "Generic Error";
+                Notify['error'](out);
             });
 /*
             $(s.BTN_CONTAINER).on("click", function(){

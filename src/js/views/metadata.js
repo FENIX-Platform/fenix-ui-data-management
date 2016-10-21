@@ -27,12 +27,19 @@ define([
         bindEventListeners: function () {
             log.info("{MDE} bindEventListeners()");
             $(this.savebtn).on("click", function(){
-                console.log(MDE)
-                console.log(MDE.getValues('plain'));
+                console.log('it should save now');
+                //TODO: Show some loading, inhibit further clicking.
                 //RM.setMetadata(MDE.getValues('plain'));
                 //RM.updateResource();
+                console.log('meantime let\'s fake it');
+                Backbone.trigger("resource:updated");
             });
 
+        },
+
+        unbindEventListeners: function () {
+            log.info("{MDE} unbindEventListeners()");
+            $(this.savebtn).off("click");
         },
 
 
@@ -61,6 +68,7 @@ define([
         },
 
         remove: function() {
+            this.unbindEventListeners();
             Backbone.View.prototype.remove.apply(this, arguments);
         }
     });

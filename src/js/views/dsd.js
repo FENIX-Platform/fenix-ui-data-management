@@ -36,7 +36,8 @@ define([
             var cfg = this.config;
             var callB = function() {
                 log.info('{DSD} Editor Callback');
-                DSD.set(RM.getDSD());
+                var col = RM.getDSD();
+                DSD.set(col.columns);
                 log.info('{DSD} is editable ',RM.isDSDEditable());
                 DSD.editable(RM.isDSDEditable());
             };

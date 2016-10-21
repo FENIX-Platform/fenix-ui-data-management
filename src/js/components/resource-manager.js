@@ -50,13 +50,12 @@ define([
 
     ResourceManager.prototype.isDSDValid = function(DSDRes) {
         //TODO: Apply some logic here! Logic is under, just convert
-        /*
-        var meta = DSDRes;
-        if (!meta.dsd) throw new Error("DSD to update cannot be null");
-        if (!meta.dsd.datasources) throw new Error("Datasources cannot be null");
-            else if (meta.dsd.datasources.length == 0) throw new Error("Datasources cannot be null");
-        if (!meta.dsd.contextSystem) throw new Error("ContextSystem cannot be null");
-        */
+
+        if (!DSDRes) throw new Error("DSD to update cannot be null");
+        if (!DSDRes.datasources) throw new Error("Datasources cannot be null");
+            else if (DSDRes.datasources.length == 0) throw new Error("Datasources cannot be null");
+        if (!DSDRes.contextSystem) throw new Error("ContextSystem cannot be null");
+
         return true
 
     };
@@ -85,8 +84,25 @@ define([
     };
 
     ResourceManager.prototype.deleteResource = function() {
-        //TODO: Call Brdige and delete, then trigger the deleted.
-        Backbone.trigger("resource:deleted");
+        log.info("RM: deleteResource");
+        log.info(this.url.baseUrl +"/uid/" + this.resource.metadata.uid);
+
+        $.ajax({
+            url: this.url.baseUrl +"/uid/" + this.resource.metadata.uid,
+            type: 'DELETE',
+            crossDomain: true,
+            // Datatype changed to text as the server returns an empty response,
+            // setting it to json would trigger an error on success
+            dataType: 'text',
+            success: function () {
+                this.resource = null;
+                Backbone.trigger("resource:deleted");
+            },
+            error: function (xhr, textstatus) {
+                Backbone.trigger("error:showerror", texstatus, xhr);
+            }
+        });
+
     };
 
 
@@ -198,7 +214,7 @@ define([
 
     ResourceManager.prototype.getMetadata = function () {
         log.info("getMetadata",this.resource.metadata);
-        return this.resource.metadata;
+        return (this.isMetaValid(this.resource.metadata)) ? this.resource.metadata : {};
     };
 
     ResourceManager.prototype._onGetMetadataSuccess = function (resource) {
@@ -228,14 +244,13 @@ define([
 
     ResourceManager.prototype.getDSD = function () {
         log.info("getDSD Called.",this.resource.metadata.dsd);
-        var obj = this.resource.metadata.dsd.columns;
-        return obj
+        return this.resource.metadata.dsd;
     };
 
     ResourceManager.prototype.setDSD = function (resource) {
         log.info("setDSD Called.", resource);
         if (this.isDSDValid(resource)) {
-            this.resource.metadata.dsd.columns = resource;
+            this.resource.metadata.dsd = resource;
             this.updateDSD(this.resource.metadata.dsd);
         }
     };
@@ -249,8 +264,7 @@ define([
 
     ResourceManager.prototype.getData = function () {
         log.info("getData called.",this.resource.data);
-        var obj = this.resource.data;
-        return obj;
+        return this.resource.data;
     };
 
     ResourceManager.prototype.setData = function (resource) {

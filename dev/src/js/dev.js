@@ -15,7 +15,7 @@ define([
         },
         cache = false,
         lang = "EN",
-        environment = "production"; // develop
+        environment = "develop"; // develop production
 
     function Dev() {
 
@@ -63,6 +63,7 @@ define([
         require("../../../node_modules/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css");
         // fenix filter
         require("../../../node_modules/fenix-ui-filter/dist/fenix-ui-filter.min.css");
+        require("../../../node_modules/toastr/build/toastr.min.css");
 
 
     };
