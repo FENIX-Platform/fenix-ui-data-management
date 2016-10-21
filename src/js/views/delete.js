@@ -45,13 +45,11 @@ define([
         accessControl: function () {
 
             return new Q.Promise(function (fulfilled, rejected) {
-
-                //perform checks
-
-                fulfilled();
-
-
-                //rejected()
+                if (!$.isEmptyObject(RM.resource)) {
+                    fulfilled();
+                } else {
+                    rejected();
+                }
 
             });
         },
