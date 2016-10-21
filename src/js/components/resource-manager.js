@@ -20,7 +20,9 @@ define([
 
     function ResourceManager() {
         log.info("FENIX DM - Resource Manager");
-        this.bridge = new Bridge();
+        this.bridge = new Bridge({
+            environment: this.environment
+        });
         log.info("FENIX DM - RM : We'll work on '"+this.environment+"' environment.");
         this.resource = {};
         this.url = url;
@@ -29,7 +31,9 @@ define([
 
     ResourceManager.prototype.setEnvironment = function (env) {
         this.environment = env;
-        this.bridge.environment = env;
+        this.bridge = new Bridge({
+            environment: env
+        });
         this.url.baseUrl = url[env];
         log.info("FENIX DM - Current Environment: "+ env + " ["+this.url.baseUrl+"]");
     };
@@ -84,11 +88,10 @@ define([
     };
 
     ResourceManager.prototype.deleteResource = function() {
-        log.info("RM: deleteResource");
-        log.info(this.url.baseUrl +"/uid/" + this.resource.metadata.uid);
+        log.info("RM: deleteResource through "+this.url.baseUrl +"resources/uid/" + this.resource.metadata.uid);
 
         $.ajax({
-            url: this.url.baseUrl +"/uid/" + this.resource.metadata.uid,
+            url: this.url.baseUrl +"resources/uid/" + this.resource.metadata.uid,
             type: 'DELETE',
             crossDomain: true,
             // Datatype changed to text as the server returns an empty response,
@@ -99,7 +102,7 @@ define([
                 Backbone.trigger("resource:deleted");
             },
             error: function (xhr, textstatus) {
-                Backbone.trigger("error:showerror", texstatus, xhr);
+                Backbone.trigger("error:showerror", null, xhr);
             }
         });
 
@@ -177,6 +180,9 @@ define([
 
 
     ResourceManager.prototype.loadResource = function (resource) {
+        log.info("Load resource", resource);
+        log.info("Loading: "+resource.model.uid);
+        console.log(this.bridge);
         this.bridge.getResource({
                 body: [],
                 uid: resource.model.uid,

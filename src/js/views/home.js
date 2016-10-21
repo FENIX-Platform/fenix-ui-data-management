@@ -12,6 +12,7 @@ define([
     var HomeView = Backbone.View.extend({
 
         render: function (o) {
+            log.info("DM {HOME} view",o);
             $.extend(true, this, o);
 
             this.lang = this.lang.toLowerCase();

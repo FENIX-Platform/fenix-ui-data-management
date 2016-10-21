@@ -137,7 +137,7 @@ define([
 
             this.listenTo(Backbone, "resource:new", function() {
                 log.info("[EVT] resource:new ", RM.resource);
-                //TODO: Message of new resource (popup or something)
+                Notify['info'](MultiLang[this.lang.toLowerCase()]['resourceNew']);
                 this.menuActivated();
                 this.goTo("#/metadata");
             });

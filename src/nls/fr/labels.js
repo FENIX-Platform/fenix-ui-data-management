@@ -5,6 +5,7 @@ define(function () {
         //Generic
         "confirmDataRemove": "Voulez-vous supprimer toutes les données?",
         "success": "Réussite",
+        "resourceNew": "Ressource Créée",
         "resourceSaved": "Ressource enregistrée",
         "resourceDeleted": "Ressource supprimée",
         "resourceLoaded": "Ressource chargée",
