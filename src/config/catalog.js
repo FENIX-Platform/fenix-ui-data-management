@@ -14,7 +14,7 @@ define(function(){
                 id : "dropdown",
                     source : [
                     {value : "uneca", label : "UNECA"},
-                    {value : "cstat_afg", label : "CountrySTAT Afghanistan"}
+                    {value : "cstat_training", label : "CountrySTAT Training"}
                 ],
             default : ["uneca"],
                     hideSummary : true,

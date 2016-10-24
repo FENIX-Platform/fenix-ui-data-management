@@ -53,7 +53,7 @@ define([
     };
 
     ResourceManager.prototype.isDSDValid = function(DSDRes) {
-        //TODO: Apply some logic here! Logic is under, just convert
+        //TODO: Add message callback
 
         if (!DSDRes) throw new Error("DSD to update cannot be null");
         if (!DSDRes.datasources) throw new Error("Datasources cannot be null");
@@ -76,14 +76,22 @@ define([
 
     // Controls
 
+    ResourceManager.prototype.isDSDEmpty = function () {
+        return ((this.resource.metadata.dsd.columns === undefined )) ;
+
+    };
+
     ResourceManager.prototype.isDSDEditable = function () {
-        return !Boolean(this.resource.metadata.dsd.columns.length);
+        if (this.resource.data !== undefined) return false;
+        return true; //Boolean(this.resource.metadata.dsd.columns.length);
     };
 
     // Resource
 
-    ResourceManager.prototype.newResource = function() {
+    ResourceManager.prototype.newResource = function(res) {
         this.resource = {};
+        this.resource.metadata = {};
+        this.resource.metadata.dsd = res;
         Backbone.trigger("resource:new");
     };
 
@@ -237,14 +245,15 @@ define([
     };
 
     ResourceManager.prototype.setMetadata = function(resource) {
-        log.info("setMetadata Called.",resource);
+        log.info("setMetadata Called.");
         if (this.isMetaValid(resource)) {
+            var temp = this.resource.metadata.dsd;
             this.resource.metadata = resource;
+            this.resource.metadata.dsd = temp;
+            // REMOVE BELOW AND USE REAL SAVE FROM SERVER!
             Backbone.trigger("resource:updated");
         }
-
     };
-
 
     // DSD
 
@@ -253,10 +262,18 @@ define([
         return this.resource.metadata.dsd;
     };
 
-    ResourceManager.prototype.setDSD = function (resource) {
-        log.info("setDSD Called.", resource);
-        if (this.isDSDValid(resource)) {
-            this.resource.metadata.dsd = resource;
+    ResourceManager.prototype.setDSDColumns = function (cols) {
+        this.resource.metadata.dsd.columns = cols;
+        // REMOVE BELOW AND USE REAL SAVE FROM SERVER!
+        Backbone.trigger("resource:updated");
+    };
+
+    ResourceManager.prototype.setDSD = function (candidate) {
+        var toval = this.resource.metadata.dsd;
+        toval['columns'] = candidate;
+        log.info("setDSD Called.", toval);
+        if (this.isDSDValid(toval)) {
+            this.resource.metadata.dsd = toval;
             this.updateDSD(this.resource.metadata.dsd);
         }
     };

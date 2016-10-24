@@ -14,6 +14,7 @@ define(function(){
                 id : "dropdown",
                     source : [
                         {value : "uneca", label : "UNECA"},
+                        {value : "uniente", label : "UNiente"},
                         {value : "cstat_cog", label : "CountrySTAT Congo"},
                         {value : "cstat_afg", label : "CountrySTAT Afghanistan"},
                         {value : "cstat_cmr", label : "CountrySTAT Cameroon"}

@@ -15,7 +15,11 @@ define([
         },
         cache = false,
         lang = "EN",
-        environment = "develop"; // develop production
+        conf = {
+            "contextSystem":"uneca",
+            "datasources":["D3S"]
+        },
+        environment = "production"; // develop production [demo is not available]
 
     function Dev() {
 
@@ -40,6 +44,7 @@ define([
             el: s.DATA_MNG,
             cache: cache,
             lang: lang,
+            config: conf,
             dsdEditor: DSDConf,
             metadataEditor: MDConf,
             catalog: CataConf

@@ -223,7 +223,8 @@ define([
             this.switchView(AddView, {
                 el: s.CONTAINER,
                 lang : this.lang,
-                environment: this.environment
+                environment: this.environment,
+                config: this.config
             });
         },
 

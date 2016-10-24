@@ -13,7 +13,7 @@ define([
         render: function (o) {
             $.extend(true, this, o);
             log.info("Rendering View - Add", this);
-            RM.newResource();
+            RM.newResource(o.config);
             return this;
         },
 

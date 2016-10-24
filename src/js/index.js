@@ -3,14 +3,17 @@ define([
     "jquery",
     "./routers/router",
     "../html/main.hbs",
+    "../config/config",
     "./components/resource-manager"
-], function (log, $, Router, Template, RM) {
+], function (log, $, Router, Template, Config, RM) {
 
     "use strict";
 
     function DataManagement(o) {
         log.info("FENIX Data Management", o);
         $.extend(true, this, {}, o);
+        $.extend(true, this.config, {}, Config);
+        console.log(this.config);
         // Init Resource Manager Environment
         RM.setEnvironment(this.environment);
         this._attach();
@@ -33,6 +36,7 @@ define([
             lang : this.lang,
             dsdEditor : this.dsdEditor,
             catalog: this.catalog,
+            config: this.config,
             metadataEditor: this.metadataEditor
         });
 
