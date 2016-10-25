@@ -150,6 +150,8 @@ define([
             crossDomain: true,
             success: function (data) {
                 console.log(data);
+                this.resource.metadata.uid = data.uid;
+                this.resource.rid = data.rid;
                 Backbone.trigger("resource:updated");
             },
             error: function (xhr) {
@@ -188,15 +190,16 @@ define([
     ResourceManager.prototype.getCodelist = function(codelistUID) {
         log.info('getCodelist called ', codelistUID);
         var requ = {
-            body: [],
             uid: codelistUID
         };
         if (codelistUID.indexOf("|") != -1) {
             requ['version'] = codelistUID.substr(codelistUID.indexOf("|")+1, codelistUID.length);
             requ['uid'] = codelistUID.substr(0, codelistUID.indexOf("|"));
         }
+        log.info('>bridge.getResource',requ);
         return this.bridge.getResource(requ).then(
                 function(resource) {
+                    log.info('<bridge.getResource',resource);
                     return resource;
                 }
             );
@@ -208,7 +211,6 @@ define([
         log.info("Loading: "+resource.model.uid);
         console.log(this.bridge);
         this.bridge.getResource({
-                body: [],
                 uid: resource.model.uid,
                 params: {dsd: true, full: true}
         }).then(
@@ -285,6 +287,12 @@ define([
         return this.resource.metadata.dsd;
     };
 
+    ResourceManager.prototype.getDSDColumns = function () {
+        log.info("getDSDColumns Called.",this.resource.metadata.dsd.columns);
+        return this.resource.metadata.dsd.columns;
+    };
+
+
     ResourceManager.prototype.setDSDColumns = function (cols) {
         this.resource.metadata.dsd.columns = cols;
         this.updateDSD(this.resource.metadata.dsd);
@@ -312,11 +320,17 @@ define([
         return this.resource.data;
     };
 
+    ResourceManager.prototype.setDataEmpty = function() {
+        log.info("setDataEmpty called.");
+        this.resource.data = {};
+    };
+
     ResourceManager.prototype.setData = function (resource) {
         log.info("setData called.",resource);
         if (this.isDataValid(resource)){
             this.resource.data = resource;
-            this.updateData(this.resource.data);
+            // Data needs the whole package.
+            this.updateData(this.resource);
         }
     };
 
