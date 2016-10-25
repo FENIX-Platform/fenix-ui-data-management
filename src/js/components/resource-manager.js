@@ -129,6 +129,17 @@ define([
 
     ResourceManager.prototype.createResource = function(resource, serv) {
         var self = this;
+        //TODO MOCK! REMOVE!!!!
+        resource.contacts = [
+            {
+                "organization": {
+                    "EN": "FENIX"
+                },
+                "contactInfo": {
+                    "phone": "54097"
+                }
+            }
+        ];
         console.log("I'm trying to upload this: ",JSON.stringify(resource));
         $.ajax({
             contentType: "application/json",
@@ -148,15 +159,20 @@ define([
 
     }
 
-    ResourceManager.prototype.updateResource = function(resource, serv) {
+    ResourceManager.prototype.updateResource = function(res, serv) {
         var self = this;
-        console.log("I'm trying to upload this: ",JSON.stringify(resource));
+        if (self.resource.metadata.uid === undefined) {
+            log.info("RM - Switching to create.")
+            this.createResource(res,serv);
+            return;
+        }
+        console.log("I'm trying to upload this: ",JSON.stringify(res));
             $.ajax({
                 contentType: "application/json",
                 url: this.url.baseUrl + serv,
                 dataType: 'json',
                 type: 'PUT',
-                data: JSON.stringify(resource),
+                data: JSON.stringify(res),
                 crossDomain: true,
                 success: function (data) {
                     console.log(data);
@@ -250,9 +266,16 @@ define([
             var temp = this.resource.metadata.dsd;
             this.resource.metadata = resource;
             this.resource.metadata.dsd = temp;
-            // REMOVE BELOW AND USE REAL SAVE FROM SERVER!
-            Backbone.trigger("resource:updated");
+            this.resource.metadata.meContent = {
+                "resourceRepresentationType": "dataset"
+            };
+            this.updateMeta(this.resource.metadata);
         }
+    };
+
+    ResourceManager.prototype.updateMeta = function (resource) {
+        log.info("updateMeta called", resource);
+        this.updateResource(resource, this.url.saveMetadata);
     };
 
     // DSD
@@ -264,8 +287,7 @@ define([
 
     ResourceManager.prototype.setDSDColumns = function (cols) {
         this.resource.metadata.dsd.columns = cols;
-        // REMOVE BELOW AND USE REAL SAVE FROM SERVER!
-        Backbone.trigger("resource:updated");
+        this.updateDSD(this.resource.metadata.dsd);
     };
 
     ResourceManager.prototype.setDSD = function (candidate) {

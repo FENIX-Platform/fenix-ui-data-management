@@ -19,7 +19,7 @@ define([
             "contextSystem":"uneca",
             "datasources":["D3S"]
         },
-        environment = "production"; // develop production [demo is not available]
+        environment = "develop"; // develop production [demo is not available]
 
     function Dev() {
 

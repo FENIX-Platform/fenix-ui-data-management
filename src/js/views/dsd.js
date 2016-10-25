@@ -26,9 +26,8 @@ define([
             log.info("{DSD} bindEventListeners()");
             var self = this;
             $(this.savebtn).on("click", function(){
-                log.info("{DSD} click", self.dsd.get());
+                log.info("{DSD} saving", self.dsd.get());
                 RM.setDSDColumns(self.dsd.get());
-                //RM.updateDSD();
             });
 
         },
@@ -36,7 +35,6 @@ define([
         initViews: function() {
 
             log.info("{DSD} initViews", this.config);
-            console.log("this is the DSD: ", RM.getDSD());
             var cfg = this.config;
             this.dsd = DSD;
 
@@ -45,7 +43,6 @@ define([
             log.info('{DSD}', col.columns);
             if (col.columns !== undefined && col.columns.length) this.dsd.set(col.columns);
             log.info('{DSD} is editable', RM.isDSDEditable());
-            console.log('{DSD} ' + (RM.isDSDEditable()))
             this.dsd.editable(RM.isDSDEditable());
 
         },
