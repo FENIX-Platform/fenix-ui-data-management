@@ -17,6 +17,7 @@ define([
                 btnSearch : "#btnSearch",
                 btnAdd : "#btnAdd"
             };
+
             this.lang = this.lang.toLowerCase();
 
             log.info("Rendering View - Landing");
@@ -26,11 +27,12 @@ define([
         },
 
         bindEventListeners: function() {
+            var self = this;
             $(this.s.btnSearch).on("click", function() {
-                Backbone.Router.navigate("#/search");
+                self.router.navigate("#/search");
             });
             $(this.s.btnAdd).on("click", function() {
-                Backbone.Router.navigate("#/add");
+                self.router.navigate("#/add");
             });
         },
         removeEventListeners: function() {

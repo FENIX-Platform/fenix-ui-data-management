@@ -71,8 +71,8 @@ define([
         require("../../../node_modules/fenix-ui-filter/dist/fenix-ui-filter.min.css");
         require("../../../node_modules/fenix-ui-catalog/dist/fenix-ui-catalog.min.css");
         require("../../../node_modules/fenix-ui-metadata-editor/dist/fenix-ui-metadata-editor.min.css");
-        require("../../../node_modules/fenix-ui-visualization-box/dist/fenix-ui-visualization-box.min.css");
         require("../../../node_modules/fenix-ui-dropdown/dist/fenix-ui-dropdown.min.css");
+        require("../../../node_modules/fenix-ui-DataEditor/dist/fenix-ui-DataEditor.min.css");
         require("../../../node_modules/toastr/build/toastr.min.css");
 
 

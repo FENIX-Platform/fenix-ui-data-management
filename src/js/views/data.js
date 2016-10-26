@@ -23,6 +23,7 @@ define([
             // Buttons
             this.s = {
                 utility: '#fx-data-management-utility-holder',
+                btnFileUploader: "#btnFileUploader",
                 btnDelAllData: "#btnDelAllData",
                 dataFileUpload: "#dataFUpload",
                 csvSeparator: "input[name=csvSeparator]:checked",
@@ -83,6 +84,11 @@ define([
         bindEventListeners: function() {
             log.info('{DATA} bindEventListeners');
             var self = this;
+            $(this.s.btnFileUploader).on("click", function(e){
+                e.stopPropagation();
+                $('.dropdown-menu').toggle();
+            });
+            /*
             $(this.s.btnDelAllData).on('click', function() {
                 console.log("btnDelAllData");
                 var res = confirm(MultiLang[self.lang.toLowerCase()]['confirmDataRemove']);
@@ -90,6 +96,7 @@ define([
                 Data.removeAllData();
                 //RM.setDataEmpty();
             });
+            */
             $(this.savebtn).on("click", function(){
                 log.info("{DATA} saving", Data.getData());
                 if (Data.getData()){ RM.setData(Data.getData()); }

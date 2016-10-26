@@ -151,9 +151,8 @@ define([
             data: JSON.stringify(resource),
             crossDomain: true,
             success: function (data) {
-                console.log(data);
-                this.resource.metadata.uid = data.uid;
-                this.resource.rid = data.rid;
+                if (data.uid) this.resource.metadata.uid = data.uid;
+                if (data.rid) this.resource.rid = data.rid;
                 Backbone.trigger("resource:updated");
             },
             error: function (xhr) {

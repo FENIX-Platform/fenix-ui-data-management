@@ -36,7 +36,7 @@ define([
             });
             $('#btnDeleteUndo').on("click", function(){
                 log.info("{DELETE} btnDeleteUndo");
-                Backbone.Router.navigate("#/landing");
+                self.router.navigate("#/landing");
             });
 
         },

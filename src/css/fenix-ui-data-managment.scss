@@ -1,6 +1,5 @@
 /* FENIX Data Management */
 
-//@import '../../../fenix-ui-DSDEditor/src/css/fx-dsd-editor';
 @import 'utils/fx-functions';
 @import 'utils/fx-mixins';
 @import 'utils/fx-utils';
@@ -14,6 +13,10 @@
 @import 'base/fx-icons';
 @import 'base/fx-radio-checkbox';
 @import 'base/fx-typography';
+
+#fx-datamng-utility-buttons {
+
+}
 
 #main-container {
   .container{

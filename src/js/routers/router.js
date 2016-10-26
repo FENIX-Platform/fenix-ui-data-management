@@ -135,6 +135,35 @@ define([
                 this.goTo("#/home");
             });
 
+            this.listenTo(Backbone, "data:loading", function() {
+                log.info("[EVT] data:loading ");
+                //TODO: Do some stuff here;
+            });
+
+            this.listenTo(Backbone, "data:loaded", function() {
+                log.info("[EVT] data:loaded ");
+                //TODO: Do some stuff here;
+            });
+            this.listenTo(Backbone, "meta:loading", function() {
+                log.info("[EVT] meta:loading");
+                //TODO: Do some stuff here;
+            });
+
+            this.listenTo(Backbone, "meta:loaded", function() {
+                log.info("[EVT] meta:loaded");
+                //TODO: Do some stuff here;
+            });
+            this.listenTo(Backbone, "dsd:loading", function() {
+                log.info("[EVT] dsd:loading");
+                //TODO: Do some stuff here;
+            });
+
+            this.listenTo(Backbone, "dsd:loaded", function() {
+                log.info("[EVT] dsd:loaded ");
+                //TODO: Do some stuff here;
+            });
+
+
             this.listenTo(Backbone, "resource:new", function() {
                 log.info("[EVT] resource:new ", RM.resource);
                 Notify['info'](MultiLang[this.lang.toLowerCase()]['resourceNew']);
@@ -173,6 +202,7 @@ define([
                 el: s.CONTAINER,
                 menu : "landing",
                 lang : this.lang,
+                router: this,
                 environment: this.environment
             });
             this.menuInitial();
@@ -187,6 +217,7 @@ define([
                 el: s.CONTAINER,
                 menu : "home",
                 lang : this.lang,
+                router: this,
                 environment: this.environment
             });
         },
@@ -284,6 +315,7 @@ define([
                 el: s.CONTAINER,
                 menu : "delete",
                 lang : this.lang,
+                router : this,
                 environment: this.environment
             });
         },
