@@ -13,8 +13,10 @@ define([
         log.info("FENIX Data Management", o);
         $.extend(true, this, {}, o);
         $.extend(true, this.config, {}, Config);
-        console.log(this.config);
-        // Init Resource Manager Environment
+
+        require("../css/fenix-ui-data-managment.css");
+
+        log.info('Init Resource Manager Environment');
         RM.setEnvironment(this.environment);
         this._attach();
         this._start();

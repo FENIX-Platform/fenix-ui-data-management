@@ -6,9 +6,10 @@ define([
     "fenix-ui-catalog",
     "../../config/catalog",
     "fenix-ui-bridge",
-    "../components/resource-manager"
+    "../components/resource-manager",
+    "../../html/search.hbs",
 
-],function($, Backbone, log, Q, Catalog, CatalogConfig, Bridge, RM){
+],function($, Backbone, log, Q, Catalog, CatalogConfig, Bridge, RM, Template){
 
     "use strict";
 
@@ -16,9 +17,17 @@ define([
 
 
         render: function (o) {
-            log.info("{SEARCH} Rendering View");
+            log.info("{SEARCH} Rendering View",o);
             $.extend(true, CatalogConfig, o.catalog);
             $.extend(true, CatalogConfig, {}, this, o);
+
+            this.s = {
+                catalogContainer : "#catalog-container"
+            };
+
+            CatalogConfig.el = this.s.catalogContainer;
+
+            this.$el.html(Template);
 
             this.catalog = new Catalog(CatalogConfig);
             this.bindEventListeners();

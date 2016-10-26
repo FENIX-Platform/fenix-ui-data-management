@@ -48,8 +48,11 @@ define([
     // Validation
 
     ResourceManager.prototype.isResourceValid = function(Res) {
-        //TODO: Apply some logic here!
-        return true
+        return (
+            (this.isMetaValid(Res.metadata)) &&
+            (this.isDSDValid(Res.metadata.dsd)) &&
+            (this.isDataValid(Res.data))
+        );
     };
 
     ResourceManager.prototype.isDSDValid = function(DSDRes) {
@@ -65,12 +68,12 @@ define([
     };
 
     ResourceManager.prototype.isDataValid = function(DataRes) {
-        //TODO: Apply some logic here!
+        //TODO: There's no logic here with the current form of the Data Editor
         return true
     };
 
     ResourceManager.prototype.isMetaValid = function(MetaRes) {
-        //TODO: Apply some logic here!
+        //TODO: There's no logic here with the current form of the MetaData Editor
         return true
     };
 
@@ -78,7 +81,6 @@ define([
 
     ResourceManager.prototype.isDSDEmpty = function () {
         return ((this.resource.metadata.dsd.columns === undefined )) ;
-
     };
 
     ResourceManager.prototype.isDSDEditable = function () {

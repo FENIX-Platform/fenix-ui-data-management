@@ -2,8 +2,9 @@ define([
     "jquery",
     "backbone",
     "loglevel",
-    '../../nls/labels'
-],function( $, Backbone, log, MultiLang){
+    '../../nls/labels',
+    "../../html/landing.hbs",
+],function( $, Backbone, log, MultiLang, Template){
 
     "use strict";
 
@@ -12,13 +13,32 @@ define([
         render: function (o) {
             $.extend(true, this, o);
 
+            this.s = {
+                btnSearch : "#btnSearch",
+                btnAdd : "#btnAdd"
+            };
             this.lang = this.lang.toLowerCase();
 
             log.info("Rendering View - Landing");
-            this.$el.html("<h1>"+MultiLang[this.lang]['DManHeader']+"</h1><hr><p>"+MultiLang[this.lang]['DManIntro']+"</p>");
+            this.$el.html(Template);
+            this.bindEventListeners();
             return this;
         },
+
+        bindEventListeners: function() {
+            $(this.s.btnSearch).on("click", function() {
+                Backbone.Router.navigate("#/search");
+            });
+            $(this.s.btnAdd).on("click", function() {
+                Backbone.Router.navigate("#/add");
+            });
+        },
+        removeEventListeners: function() {
+            $(this.s.btnSearch).off("click");
+            $(this.s.btnAdd).off("click");
+        },
         remove: function() {
+            this.removeEventListeners();
             Backbone.View.prototype.remove.apply(this, arguments);
         }
     });
