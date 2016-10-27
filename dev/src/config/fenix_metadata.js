@@ -58,6 +58,9 @@ define(
                     },
                     "format": {
                         "output" : "label"
+                    },
+                    "validation" : {
+                        "mandatory" : true
                     }
                 },
                 "creationDate": {
@@ -77,6 +80,9 @@ define(
                     },
                     "format": {
                         "output" : "date"
+                    },
+                    "validation" : {
+                        "mandatory" : true
                     }
                 },
                 "characterSet": {
@@ -321,6 +327,107 @@ define(
                             "template": {
                                 "title": "Specify",
                                 "description": "Textual metadata element that allows to specify the role performed by the responsible party. This field is conditional to the element .",
+
+                            },
+                            "format": {
+                                "output" : "string"
+                            }
+                        },
+
+                        "phone": {
+                            "selector": {
+                                "id": "input",
+                                "type": "text",
+                                "source": [
+                                    {
+                                        "value": "phone",
+                                        "label": "Contact information - Phone"
+                                    }
+                                ]
+                            },
+                            "template": {
+                                "title": "Phone",
+                                "description": "Telephone numbers at which the organization or individual may be contacted.",
+
+                            },
+                            "format": {
+                                "output" : "string"
+                            }
+                        },
+                        "address": {
+                            "selector": {
+                                "id": "input",
+                                "type": "text",
+                                "source": [
+                                    {
+                                        "value": "address",
+                                        "label": "Contact information - Address"
+                                    }
+                                ]
+                            },
+                            "template": {
+                                "title": "Address",
+                                "description": "Physical address at which the organization or individual may be contacted.",
+
+                            },
+                            "format": {
+                                "output" : "string"
+                            }
+                        },
+                        "emailAddress": {
+                            "selector": {
+                                "id": "input",
+                                "type": "text",
+                                "source": [
+                                    {
+                                        "value": "emailAddress",
+                                        "label": "Contact information - E-mail address"
+                                    }
+                                ]
+                            },
+                            "template": {
+                                "title": "E-mail address",
+                                "description": "E-mail address at which the organization or individual may be contacted.",
+
+                            },
+                            "format": {
+                                "output" : "string"
+                            }
+                        },
+                        "hoursOfService": {
+                            "selector": {
+                                "id": "input",
+                                "type": "text",
+                                "source": [
+                                    {
+                                        "value": "hoursOfService",
+                                        "label": "Contact information - Hour of service"
+                                    }
+                                ]
+                            },
+                            "template": {
+                                "title": "Hour of service",
+                                "description": "Time period (including time zone) when individuals can contact the organization or individual.",
+
+                            },
+                            "format": {
+                                "output" : "string"
+                            }
+                        },
+                        "contactInstruction": {
+                            "selector": {
+                                "id": "input",
+                                "type": "text",
+                                "source": [
+                                    {
+                                        "value": "contactInstruction",
+                                        "label": "Contact information - Instruction"
+                                    }
+                                ]
+                            },
+                            "template": {
+                                "title": "Instruction",
+                                "description": "Supplemental instructions on how or when to contact the individual or organization.",
 
                             },
                             "format": {

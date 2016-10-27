@@ -85,16 +85,18 @@ define([
 
     ResourceManager.prototype.isDSDEditable = function () {
         if (this.resource.data !== undefined) return false;
-        return true; //Boolean(this.resource.metadata.dsd.columns.length);
+        return true;
     };
 
     // Resource
 
-    ResourceManager.prototype.newResource = function(res) {
+    ResourceManager.prototype.newResource = function(res, silent) {
+        log.info("RM: new Resource",res);
         this.resource = {};
         this.resource.metadata = {};
         this.resource.metadata.dsd = res;
-        Backbone.trigger("resource:new");
+        if (!silent) Backbone.trigger("resource:new");
+
     };
 
     ResourceManager.prototype.deleteResource = function() {
@@ -120,7 +122,6 @@ define([
 
 
     ResourceManager.prototype.isResourceAvailable = function() {
-        //TODO: Check if singolar entity of the resource is valid first.
         return $.isEmptyObject(this.resource);
     };
 
@@ -131,18 +132,7 @@ define([
 
     ResourceManager.prototype.createResource = function(resource, serv) {
         var self = this;
-        //TODO MOCK! REMOVE!!!!
-        resource.contacts = [
-            {
-                "organization": {
-                    "EN": "FENIX"
-                },
-                "contactInfo": {
-                    "phone": "54097"
-                }
-            }
-        ];
-        console.log("I'm trying to upload this: ",JSON.stringify(resource));
+        log.info("[createResource] I'm trying to upload this: ",JSON.stringify(resource));
         $.ajax({
             contentType: "application/json",
             url: this.url.baseUrl + serv,
@@ -151,25 +141,26 @@ define([
             data: JSON.stringify(resource),
             crossDomain: true,
             success: function (data) {
-                if (data.uid) this.resource.metadata.uid = data.uid;
-                if (data.rid) this.resource.rid = data.rid;
+                self.resource.metadata = data; //create always return the metadata;
                 Backbone.trigger("resource:updated");
             },
             error: function (xhr) {
-                console.log("Error on createResource", xhr)
+                Backbone.trigger("error:showerror", null, xhr);
+                //console.log("Error on createResource", xhr)
             }
         });
 
     }
 
     ResourceManager.prototype.updateResource = function(res, serv) {
+        console.log("UPD: ",this.resource);
         var self = this;
         if (self.resource.metadata.uid === undefined) {
             log.info("RM - Switching to create.")
             this.createResource(res,serv);
             return;
         }
-        console.log("I'm trying to upload this: ",JSON.stringify(res));
+        log.info("[updateResource] I'm trying to upload this: ",JSON.stringify(res));
             $.ajax({
                 contentType: "application/json",
                 url: this.url.baseUrl + serv,
@@ -182,7 +173,8 @@ define([
                     Backbone.trigger("resource:updated");
                 },
                 error: function (xhr, textstatus) {
-                    console.log("Error on updateResource", xhr, textstatus)
+                    Backbone.trigger("error:showerror", null, xhr);
+                    //console.log("Error on updateResource", xhr, textstatus)
                 }
             });
 
@@ -272,6 +264,15 @@ define([
             this.resource.metadata.meContent = {
                 "resourceRepresentationType": "dataset"
             };
+            //TODO: REMOVE MOCK!
+            if (this.resource.metadata.contacts) this.resource.metadata.contacts.contactInfo =  {
+                "address" : this.resource.metadata.contacts.address,
+                "emailAddress" : this.resource.metadata.contacts.emailAddress,
+                "phone": this.resource.metadata.contacts.phone,
+                "hoursOfService" : this.resource.metadata.contacts.hoursOfService,
+                "contactInstruction" : this.resource.metadata.contacts.contactInstruction
+            };
+
             this.updateMeta(this.resource.metadata);
         }
     };

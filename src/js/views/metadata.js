@@ -28,13 +28,7 @@ define([
             var self = this;
             log.info("{MDE} bindEventListeners()");
             $(this.savebtn).on("click", function(){
-                console.log('it should save now');
-                //TODO: Show some loading, inhibit further clicking.
-                //console.log(self.MDE.getValues('metadata'));
                 RM.setMetadata(self.MDE.getValues());
-                //RM.updateResource();
-                //console.log('meantime let\'s fake it');
-                //Backbone.trigger("resource:updated");
             });
 
         },
@@ -62,11 +56,11 @@ define([
         accessControl: function () {
 
             return new Q.Promise(function (fulfilled, rejected) {
-            //    if (!$.isEmptyObject(RM.resource)) {
+                if (!$.isEmptyObject(RM.resource)) {
                     fulfilled();
-            //    } else {
-            //        rejected();
-            //    }
+                } else {
+                    rejected();
+                }
             });
         },
 
