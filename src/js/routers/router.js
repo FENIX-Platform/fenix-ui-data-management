@@ -88,7 +88,6 @@ define([
                 lang: self.lang,
                 config: ConfigMenu
             });
-            console.log(this.menu.o.active);
             this.menuInitial();
         },
 
@@ -387,8 +386,10 @@ define([
             var candidate = new View(o);
             this.currentView = candidate.render(o);
             this.menu.select(o.menu);
-            $(s.HEADER).html(this.menu.o.active);
-            if (RM.resource.metadata !== undefined) $(s.RES_TITLE).html(' / '+RM.resource.metadata.title[this.lang]);
+            $(s.HEADER).html(this.menu.o.active)
+            if ((RM.resource.metadata !== undefined) &&
+                (RM.resource.metadata.title !== undefined) )
+                $(s.RES_TITLE).html(' / '+RM.resource.metadata.title[this.lang]);
         },
 
         disposeCurrentView: function () {
