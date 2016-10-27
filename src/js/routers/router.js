@@ -29,6 +29,7 @@ define([
     'use strict';
 
     var s = {
+        MENU: '#fx-data-management-menu',
         CONTAINER: '#fx-data-management-content',
         HOLDER: "#fx-data-management-content-holder",
         BTN_CONTAINER: "#fx-data-managment-update-model-holder",
@@ -84,9 +85,11 @@ define([
         initMenu: function() {
             log.info("render menu");
             var self = this;
+
             this.menu = new Menu({
                 lang: self.lang,
-                config: ConfigMenu
+                config: ConfigMenu,
+                container: s.MENU
             });
             this.menuInitial();
         },
@@ -117,6 +120,12 @@ define([
 
         bindEventListeners: function () {
             log.info("bindEventListeners");
+            var self = this;
+            // Menu Event Listener
+            this.menu.on("select", function(evt){
+                self.goTo("#/"+evt.id);
+            });
+
             // When a resource is loaded
             this.listenTo(Backbone,"resource:loaded", function(){
                 log.info("[EVT] resource:loaded ", RM.resource);

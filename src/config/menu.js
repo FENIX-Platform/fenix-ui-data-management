@@ -8,17 +8,15 @@ define(function () {
                 "attrs": {
                     "id": "home"
                 },
-                "target": "#home",
                 "label": {
                     "EN": "Home",
-                    "FR": "Home FR"
+                    "FR": "Accueil"
                 }
             },
             {
                 "attrs": {
                     "id": "landing"
                 },
-                "target": "#landing",
                 "label": {
                     "EN": "Landing",
                     "FR": "Landing FR"
@@ -28,64 +26,57 @@ define(function () {
                 "attrs": {
                     "id": "search"
                 },
-                "target": "#search",
                 "label": {
                     "EN": "Search",
-                    "FR": "Search FR"
+                    "FR": "Rchercher"
                 }
             },
             {
                 "attrs": {
                     "id": "add"
                 },
-                "target": "#add",
                 "label": {
                     "EN": "Add",
-                    "FR": "Add FR"
+                    "FR": "Ajouter"
                 }
             },
             {
                 "attrs": {
                     "id": "metadata"
                 },
-                "target": "#metadata",
                 "label": {
                     "EN": "Metadata",
-                    "FR": "Metadata FR"
+                    "FR": "Métadonnées"
                 }
             },
             {
                 "attrs": {
                     "id": "dsd"
                 },
-                "target": "#dsd",
                 "label": {
                     "EN": "DSD",
-                    "FR": "DSD FR"
+                    "FR": "DSD"
                 }
             },
             {
                 "attrs": {
                     "id": "data"
                 },
-                "target": "#data",
                 "label": {
                     "EN": "Data",
-                    "FR": "Data FR"
+                    "FR": "Données"
                 }
             },
             {
                 "attrs": {
                     "id": "delete"
                 },
-                "target": "#delete",
                 "label": {
                     "EN": "Delete",
-                    "FR": "Delete FR"
+                    "FR": "Supprimer"
                 }
             }
         ],
-        "type": "sidemenu",
         "languages": [],
         "active": [
             "landing",

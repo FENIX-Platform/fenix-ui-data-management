@@ -8,8 +8,8 @@
         MLEditor: {
             langs: ["EN", "FR"]
         },
-        "contextSystem":"uneca",
-        "datasources":["D3S"],
+            "contextSystem":"uneca",
+            "datasources":["D3S"],
         D3SConnector: {
         },
         lang: "EN",
