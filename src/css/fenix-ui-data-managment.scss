@@ -14,6 +14,12 @@
 @import 'base/fx-radio-checkbox';
 @import 'base/fx-typography';
 
+@import 'base/fx-preload';
+
+#fx-data-managment-header-title {
+  text-transform: capitalize;
+}
+
 #fx-datamng-utility-buttons {
 
 }

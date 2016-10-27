@@ -73,6 +73,7 @@ define([
         require("../../../node_modules/fenix-ui-metadata-editor/dist/fenix-ui-metadata-editor.min.css");
         require("../../../node_modules/fenix-ui-dropdown/dist/fenix-ui-dropdown.min.css");
         require("../../../node_modules/fenix-ui-DataEditor/dist/fenix-ui-DataEditor.min.css");
+        require("../../../node_modules/fenix-ui-DSDEditor/dist/fenix-ui-DSDEditor.min.css");
         require("../../../node_modules/toastr/build/toastr.min.css");
 
 

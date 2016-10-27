@@ -32,7 +32,9 @@ define([
         CONTAINER: '#fx-data-management-content',
         HOLDER: "#fx-data-management-content-holder",
         BTN_CONTAINER: "#fx-data-managment-update-model-holder",
-        BTN_ELEMENT : "#fx-data-managment-update-button"
+        BTN_ELEMENT : "#fx-data-managment-update-button",
+        HEADER : "#fx-data-managment-header-title",
+        RES_TITLE: "#fx-data-managment-resource-title"
     };
 
     return Backbone.Router.extend({
@@ -77,7 +79,6 @@ define([
             $(s.BTN_ELEMENT).html(MultiLang[this.lang.toLowerCase()]['btnSave']);
             $(s.BTN_CONTAINER).hide();
             this.initMenu();
-
         },
 
         initMenu: function() {
@@ -87,6 +88,7 @@ define([
                 lang: self.lang,
                 config: ConfigMenu
             });
+            console.log(this.menu.o.active);
             this.menuInitial();
         },
 
@@ -98,6 +100,7 @@ define([
             });
             self.menu.activateItem('add');
             $(s.BTN_CONTAINER).hide();
+
         },
 
         menuActivated: function() {
@@ -384,6 +387,8 @@ define([
             var candidate = new View(o);
             this.currentView = candidate.render(o);
             this.menu.select(o.menu);
+            $(s.HEADER).html(this.menu.o.active);
+            if (RM.resource.metadata !== undefined) $(s.RES_TITLE).html(' / '+RM.resource.metadata.title[this.lang]);
         },
 
         disposeCurrentView: function () {

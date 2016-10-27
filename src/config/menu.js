@@ -8,7 +8,7 @@ define(function () {
                 "attrs": {
                     "id": "home"
                 },
-                "target": "#",
+                "target": "#home",
                 "label": {
                     "EN": "Home",
                     "FR": "Home FR"

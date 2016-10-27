@@ -60,6 +60,7 @@ define([
         accessControl: function () {
 
             return new Q.Promise(function (fulfilled, rejected) {
+                console.log(RM.resource);
                 if (!$.isEmptyObject(RM.resource)) {
                     fulfilled();
                 } else {
