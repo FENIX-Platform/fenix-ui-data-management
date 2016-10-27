@@ -75,6 +75,15 @@ define(function () {
                     "EN": "Delete",
                     "FR": "Supprimer"
                 }
+            },
+            {
+                "attrs": {
+                    "id": "close"
+                },
+                "label": {
+                    "EN": "Close",
+                    "FR": "Annuller"
+                }
             }
         ],
         "languages": [],

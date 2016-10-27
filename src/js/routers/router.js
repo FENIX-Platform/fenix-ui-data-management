@@ -63,6 +63,7 @@ define([
             '(/)dsd(/)': 'onDSD',
             '(/)data(/)': 'onData',
 
+            '(/)close(/)' : 'onClose',
             '(/)delete(/)': 'onDelete',
             '(/)search(/)': 'onSearch',
             '(/)not-found(/)': 'onNotFound',
@@ -78,6 +79,7 @@ define([
             // Init Buttons
             Notify.options = ConfigNotify;
             $(s.BTN_ELEMENT).html(MultiLang[this.lang.toLowerCase()]['btnSave']);
+            $(s.BTN_CLOSE).html(MultiLang[this.lang.toLowerCase()]['btnClose']);
             $(s.BTN_CONTAINER).hide();
             this.initMenu();
         },
@@ -96,7 +98,7 @@ define([
 
         menuInitial: function() {
             var self = this;
-            var disabledByDefault = ['delete','metadata','dsd','data','home']
+            var disabledByDefault = ['delete','metadata','dsd','data','home','close']
             $.each(disabledByDefault, function(index,object){
                 self.menu.disableItem(object);
             });
@@ -107,7 +109,7 @@ define([
 
         menuActivated: function() {
             var self = this,
-                enableOnValidResource = ['delete','metadata','dsd','data','home'];
+                enableOnValidResource = ['delete','metadata','dsd','data','home','close'];
             $.each(enableOnValidResource, function(index,object){
                 self.menu.activateItem(object);
             });
@@ -194,11 +196,6 @@ define([
                 var out = MultiLang[this.lang.toLowerCase()][code] || JSON.stringify(xhr) || "Generic Error";
                 Notify['error'](out);
             });
-/*
-            $(s.BTN_CONTAINER).on("click", function(){
-                RM.updateResource();
-            });
-*/
 
 
         },
@@ -255,6 +252,14 @@ define([
             log.info("Denied - Routing to Lading");
             $(s.BTN_CONTAINER).hide();
             this.goTo("#/landing");
+        },
+
+        onClose: function () {
+            log.info("Close - Routing to Lading");
+            RM.unloadResource();
+            Notify['success'](MultiLang[this.lang.toLowerCase()]['CloseHeader']);
+            this.goTo("#/landing");
+
         },
 
         // Add Resource

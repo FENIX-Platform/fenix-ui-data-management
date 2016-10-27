@@ -24,6 +24,11 @@
 
 }
 
+.data-mng-container {
+  position: relative;
+  z-index: 500;
+}
+
 #main-container {
   .container{
     padding: 0;

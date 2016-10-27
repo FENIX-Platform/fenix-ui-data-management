@@ -5429,6 +5429,10 @@ input[type="radio"]:disabled + label {
 #fx-data-managment-header-title {
   text-transform: capitalize; }
 
+.data-mng-container {
+  position: relative;
+  z-index: 500; }
+
 #main-container .container {
   padding: 0;
   width: 100%; }

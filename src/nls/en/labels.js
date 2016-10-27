@@ -63,6 +63,7 @@ define(function () {
         "btnCopyMeta" : "Copy Metadata",
         "btnLoadMeta" : "Load",
         "btnSaveDSD" : "Save",
+        "btnClose" : "Close",
         "btnCsvMatcherOk" : "OK",
         "btnCsvMatcherCancel" : "Cancel",
         "btnHome" : "Home",
