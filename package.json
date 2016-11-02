@@ -1,6 +1,6 @@
 {
   "name": "fenix-ui-data-management",
-  "version": "2.0.0-beta.17",
+  "version": "2.0.0-beta.18",
   "description": "FENIX Data Management component",
   "homepage": "https://github.com/FENIX-Platform/fenix-ui-data-management",
   "author": "FENIX team (http://fenix.fao.org/)",
@@ -19,17 +19,21 @@
   "dependencies": {
     "amplify-pubsub": "0.0.1",
     "backbone": "^1.3.3",
-    "fenix-ui-DSDEditor": "^2.0.0-beta.3",
-    "fenix-ui-DataEditor": "^2.0.0-beta.23",
+    "bootstrap-loader": "^2.0.0-exports.1",
+    "fenix-ui-DSDEditor": "^2.0.0-beta.10",
+    "fenix-ui-DataEditor": "^2.0.0-beta.26",
     "fenix-ui-bridge": "^1.0.0-beta.6",
-    "fenix-ui-catalog": "^2.0.0-beta.7",
-    "fenix-ui-menu": "^3.0.0-beta.1",
+    "fenix-ui-catalog": "^2.0.0-beta.9",
+    "fenix-ui-dropdown": "^1.0.0-beta-0",
+    "fenix-ui-menu": "^3.0.0-beta.3",
     "fenix-ui-metadata-editor": "^2.0.0-beta.1",
+    "html-webpack-plugin": "^2.24.1",
     "jquery": "^3.1.0",
     "loglevel": "^1.4.1",
     "q": "^1.4.1",
     "toastr": "^2.1.2",
-    "underscore": "^1.8.3"
+    "underscore": "^1.8.3",
+    "webpack": "^1.13.3"
   },
   "main": "dist/fenix-ui-data-management.min.js",
   "scripts": {

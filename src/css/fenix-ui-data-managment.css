@@ -5426,6 +5426,25 @@ input[type="radio"]:disabled + label {
 @keyframes loading {
   100% {
     transform: rotate(360deg); } }
+.fx-text-primary-color {
+  color: #0076ff; }
+
+.fx-background-color-primary-color {
+  background-color: #0076ff; }
+
+.fx-button-primary-color {
+  color: white;
+  border-color: #005ecc;
+  background-color: #0076ff; }
+  .fx-button-primary-color:hover {
+    color: white;
+    border-color: #005ecc;
+    background-color: #006ae6; }
+  .fx-button-primary-color:focus {
+    color: white;
+    border-color: #004799;
+    background-color: #0053b3; }
+
 #fx-data-managment-header-title {
   text-transform: capitalize; }
 
@@ -5464,41 +5483,6 @@ input[type="radio"]:disabled + label {
   .datamng-welcome h3 {
     margin-top: 0;
     font-size: 22px; }
-  .datamng-welcome .datamng-welcome-btn {
-    display: inline-block;
-    width: 75px;
-    height: 75px;
-    background-color: #f2f2f2;
-    border: 2px solid transparent;
-    cursor: pointer;
-    -webkit-border-radius: 3px;
-    -moz-border-radius: 3px;
-    -ms-border-radius: 3px;
-    border-radius: 3px;
-    -webkit-transition: all 0.3s ease 0s;
-    -moz-transition: all 0.3s ease 0s;
-    -ms-transition: all 0.3s ease 0s;
-    -o-transition: all 0.3s ease 0s;
-    transition: all 0.3s ease 0s;
-    margin: 5px; }
-    .datamng-welcome .datamng-welcome-btn:hover {
-      border-color: #0076ff; }
-    .datamng-welcome .datamng-welcome-btn a {
-      display: inline-block;
-      position: relative;
-      top: 50%;
-      width: 100%;
-      -ms-transform: translateY(-40%);
-      -webkit-transform: translateY(-40%);
-      transform: translateY(-40%); }
-      .datamng-welcome .datamng-welcome-btn a span:first-child {
-        font-size: 30px;
-        color: #333; }
-      .datamng-welcome .datamng-welcome-btn a span:last-child {
-        text-transform: uppercase;
-        font-size: 12px; }
-      .datamng-welcome .datamng-welcome-btn a:hover, .datamng-welcome .datamng-welcome-btn a:active, .datamng-welcome .datamng-welcome-btn a:focus {
-        text-decoration: none; }
 
 #data-mng-menu-container .fx-menu {
   margin-bottom: 0;
