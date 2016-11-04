@@ -5445,6 +5445,9 @@ input[type="radio"]:disabled + label {
     border-color: #004799;
     background-color: #0053b3; }
 
+.fx-data-management-menu .disabled {
+  pointer-events: none; }
+
 #fx-data-managment-header-title {
   text-transform: capitalize; }
 

@@ -6,20 +6,11 @@ define(function () {
         "items": [
             {
                 "attrs": {
-                    "id": "home"
-                },
-                "label": {
-                    "EN": "Home",
-                    "FR": "Accueil"
-                }
-            },
-            {
-                "attrs": {
                     "id": "landing"
                 },
                 "label": {
-                    "EN": "Landing",
-                    "FR": "Landing FR"
+                    "EN": "Data Management",
+                    "FR": "Data Management FR"
                 }
             },
             {
@@ -38,6 +29,15 @@ define(function () {
                 "label": {
                     "EN": "Add",
                     "FR": "Ajouter"
+                }
+            },
+            {
+                "attrs": {
+                    "id": "home"
+                },
+                "label": {
+                    "EN": "Home",
+                    "FR": "Accueil"
                 }
             },
             {
