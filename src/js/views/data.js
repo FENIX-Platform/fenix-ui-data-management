@@ -139,7 +139,7 @@ define([
             $(this.$container.find(s.btnDataMergeCancel)).on('click', function () {
                 self.tmpCsvData = null;
                 self.tmpCsvCols = null;
-                self._switchPanelVisibility(self.s.dataEditorContainer);
+                self._switchPanelVisibility($(self.$container.find(self.s.dataEditorContainer)));
                 $(self.s.utility).show();
             });
 
@@ -169,7 +169,7 @@ define([
 
             //this.tmpCsvData = csvData;
             if (keyDuplicates && keyDuplicates.length > 0) {
-                this._switchPanelVisibility(s.dataUploadContainer);
+                this._switchPanelVisibility($(this.$container.find(this.s.dataUploadContainer)));
             } else {
                 this._CSVLoadedMergeData('keepNew');
             }
@@ -203,14 +203,14 @@ define([
                 }
                 //Don't merge, return.
                 log.info("Don't merge, return.");
-                this._switchPanelVisibility(this.s.dataEditorContainer);
+                this._switchPanelVisibility($(this.$container.find(this.s.dataEditorContainer)));
                 this.tmpCsvCols = null;
                 this.tmpCsvData = null;
                 return;
             }
             dv.dataMerge(Data.getColumns(), data, this.tmpCsvData, keepOldOrNew);
             Data.setData(data);
-            this._switchPanelVisibility(this.s.dataEditorContainer);
+            this._switchPanelVisibility($(this.$container.find(this.s.dataEditorContainer)));
 
             this.tmpCsvCols = null;
             this.tmpCsvData = null;
@@ -243,7 +243,7 @@ define([
                 $(s.btnCsvMatcherOk).off("click");
                 self.tmpCsvData = null;
                 self.tmpCsvCols = null;
-                self._switchPanelVisibility( self.s.dataEditorContainer );
+                self._switchPanelVisibility($(self.$container.find(self.s.dataEditorContainer)));
                 $(s.utility).show();
             });
 
@@ -259,7 +259,8 @@ define([
                 return;
             }
 
-            this._switchPanelVisibility( s.dataUploadColsMatch  )
+            this._switchPanelVisibility($(this.$container.find(this.s.dataUploadColsMatch)));
+
             this.columnsMatch.setData(this.dsd, this.tmpCsvCols, this.tmpCsvData);
 
             //Validates the CSV contents
@@ -277,10 +278,10 @@ define([
         },
 
         _switchPanelVisibility: function (toShow) {
-            $(s.dataUploadColsMatch).hide();
-            $(s.dataEditorContainer).hide();
-            $(s.dataUploadContainer).hide();
-            $(toShow).show();
+            $(this.$container.find(s.dataUploadColsMatch)).hide();
+            $(this.$container.find(s.dataEditorContainer)).hide();
+            $(this.$container.find(s.dataUploadContainer)).hide();
+            toShow.show();
         },
 
         accessControl: function (Resource) {

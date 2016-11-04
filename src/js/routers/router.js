@@ -35,7 +35,8 @@ define([
         BTN_ELEMENT : "#fx-data-managment-update-button",
         HEADER : "#fx-data-managment-header-title",
         RES_TITLE: "#fx-data-managment-resource-title"
-    };
+    },
+        menus = ['home','landing','search','add','metadata','dsd','data','delete','close'];
 
     return Backbone.Router.extend({
 
@@ -93,23 +94,18 @@ define([
         },
 
         menuInitial: function() {
-            var self = this;
-            var disabledByDefault = ['delete','metadata','dsd','data','home','close']
-            $.each(disabledByDefault, function(index,object){
-                self.menu.disableItem(object);
-            });
-            self.menu.activateItem('add');
+            var enabledOnStart = ['add','search','landing'];
+            this.menu.disable(menus);
+            this.menu.activate(enabledOnStart);
+
             $(this.$el.find(s.BTN_CONTAINER)).hide();
 
         },
 
         menuActivated: function() {
-            var self = this,
-                enableOnValidResource = ['delete','metadata','dsd','data','home','close'];
-            $.each(enableOnValidResource, function(index,object){
-                self.menu.activateItem(object);
-            });
-            self.menu.disableItem('add');
+            var enableOnValidResource = ['delete','metadata','dsd','data','home','close'];
+            this.menu.disable(menus);
+            this.menu.activate(enableOnValidResource);
         },
 
         _initVariables: function () {
@@ -121,6 +117,7 @@ define([
             var self = this;
             // Menu Event Listener
             this.menu.on("select", function(evt){
+                console.log("select menu is fired", evt);
                 self.goTo("#/"+evt.id);
             });
 
@@ -292,13 +289,14 @@ define([
         onLanding: function () {
             log.info("onLanding called.");
             //log.warn("TODO: Check if this selection is voluntary [if Resource is loaded] or disable");
+            if ($.isEmptyObject(RM.resource)) this.menuInitial();
             this.switchView(LandingView, {
                 container: this.container,
                 menu : "landing",
                 lang : this.lang,
                 environment: this.environment
             });
-            this.menuInitial();
+
         },
 
         //Home
@@ -320,8 +318,8 @@ define([
         onSearch: function () {
             log.info("onSearch called.");
             //log.warn("TODO: Check if this search is voluntary or disable when res is loaded");
-            RM.unloadResource();
-            $(this.$el.find(s.BTN_CONTAINER)).hide();
+            //RM.unloadResource(); //TODO: This comment allow us to disable search when a resource is loaded.
+            if ($.isEmptyObject(RM.resource)) $(this.$el.find(s.BTN_CONTAINER)).hide();
             this.switchView(SearchView, {
                 container: this.container,
                 menu : "search",
@@ -340,11 +338,12 @@ define([
         },
 
         onClose: function () {
-            log.info("Close - Routing to Lading");
-            RM.unloadResource();
-            Notify['success'](MultiLang[this.lang.toLowerCase()]['CloseHeader']);
+            log.info("Close - Routing to Landing");
+            if (!$.isEmptyObject(RM.resource)) {
+                RM.unloadResource();
+                Notify['success'](MultiLang[this.lang.toLowerCase()]['CloseHeader']);
+            }
             this.goTo("#/landing");
-
         },
 
         // Add Resource
@@ -352,7 +351,7 @@ define([
         onAdd: function () {
             log.info("Add Resource");
             log.warn("Avoid to render the resource and directly cast the event");
-            RM.newResource(this.config);
+            if ($.isEmptyObject(RM.resource)) RM.newResource(this.config);
         },
 
         // Metadata View

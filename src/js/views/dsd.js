@@ -4,11 +4,10 @@ define([
     "loglevel",
     "q",
     "fenix-ui-DSDEditor",
-    '../components/resource-manager',
     "../../config/errors",
 
 
-],function($, Backbone, log, Q, DSD, RM, ERR){
+],function($, Backbone, log, Q, DSD, ERR){
 
     "use strict";
 

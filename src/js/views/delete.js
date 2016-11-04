@@ -5,9 +5,8 @@ define([
     "q",
     '../../nls/labels',
     "../../html/delete.hbs",
-    '../components/resource-manager',
     "../../config/errors",
-],function($, Backbone, log, Q, MultiLang, Template, RM, ERR){
+],function($, Backbone, log, Q, MultiLang, Template, ERR){
 
     "use strict";
 

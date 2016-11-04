@@ -4,10 +4,9 @@ define([
     "loglevel",
     "q",
     "fenix-ui-metadata-editor",
-    '../components/resource-manager',
     "../../config/errors",
 
-],function($, Backbone, log, Q, MDE, RM, ERR){
+],function($, Backbone, log, Q, MDE, ERR){
 
     "use strict";
 

@@ -76,6 +76,13 @@ define([
             });
         },
 
+        accessControl: function (Resource) {
+            //TODO: Currently, if a resource is present, stay where you are.
+            //TODO: I don't know if this is correct, but I would suggest this kind of approach.
+            return new Q.Promise(function (fulfilled) {
+                if ($.isEmptyObject(Resource)) fulfilled();
+            });
+        },
 
         remove: function() {
             this.catalog.dispose();

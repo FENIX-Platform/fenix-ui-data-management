@@ -113,16 +113,11 @@ define([
                 this.resource = null;
                 Backbone.trigger("resource:deleted");
             },
-            error: function (xhr, textstatus) {
+            error: function (xhr) {
                 Backbone.trigger("error:showerrorsrv", null, xhr);
             }
         });
 
-    };
-
-
-    ResourceManager.prototype.isResourceAvailable = function() {
-        return $.isEmptyObject(this.resource);
     };
 
     ResourceManager.prototype.unloadResource = function() {
