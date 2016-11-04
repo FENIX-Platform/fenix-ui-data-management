@@ -44,7 +44,7 @@
     "w-dev": "SET NODE_ENV=develop&& webpack-dev-server --display-error-details --progress --color --content-base dev  --inline --hot"
   },
   "devDependencies": {
-
+    "bootstrap": "^3.3.7",
     "chai": "^3.5.0",
     "clean-webpack-plugin": "^0.1.10",
     "css-loader": "^0.25.0",
