@@ -3,65 +3,85 @@ define([
     "backbone",
     "loglevel",
     "q",
-    '../components/resource-manager',
     '../../nls/labels',
     "../../html/home.hbs",
-],function($, Backbone,log, Q, RM, MultiLang, Template){
+    "../../config/errors",
+],function($, Backbone,log, Q, MultiLang, Template, ERR){
 
     "use strict";
+
+    var s = {
+        btnMeta : "#btnMeta",
+        btnDSD : "#btnDSD",
+        btnData : "#btnData"
+    };
 
     var HomeView = Backbone.View.extend({
 
         render: function (o) {
-            log.info("DM {HOME} view",o);
-            $.extend(true, this, o);
-            this.lang = this.lang.toLowerCase();
-            this.s = {
-                btnMeta : "#btnMeta",
-                btnDSD : "#btnDSD",
-                btnData : "#btnData"
-            };
+            $.extend(true, this, {initial: o});
 
-            log.info("Rendering View - Home");
-            this.$el.html(Template);
-            this.bindEventListener();
-            log.info('And, by the way, this is our object',RM.resource);
-            /*
-            this.$el.html("<h1>Resource is loaded. Please use the upper menu.</h1><hr>" +
-                "<br>And, by the way, this is our object:<hr>Metadata<br><br>" +
-                "<code>" + JSON.stringify(RM.resource.metadata) + "</code><hr>DSD<br><br>" +
-                "<code>" + JSON.stringify(RM.resource.metadata.dsd) + "</code><hr>DATA<br><br>" +
-                "<code>" + JSON.stringify(RM.resource.data) + "</code>"
-            );
-            */
-            return this;
+            this._parseInput();
+
+            var valid = this._validateInput();
+            if (valid === true) {
+                log.info("Rendering View - Home", this);
+                this.$container.html(Template);
+                this._bindEventListeners();
+                return this;
+            } else {
+                log.error("Impossible to render Home");
+                log.error(valid)
+            }
         },
 
-        bindEventListener: function() {
-            var self = this;
-            $(this.s.btnMeta).on("click",function(){
-                self.router.navigate("#/metadata");
+        _validateInput: function () {
+
+            var valid = true,
+                errors = [];
+
+            //Check if $el exist
+            if (this.$container.length === 0) {
+                errors.push({code: ERR.MISSING_CONTAINER});
+                log.warn("Impossible to find container");
+            }
+
+            return errors.length > 0 ? errors : valid;
+        },
+
+        _parseInput: function () {
+
+            this.$container = $(this.initial.container);
+            this.cache = this.initial.cache;
+            this.environment = this.initial.environment;
+            this.lang = this.initial.lang.toLowerCase();
+
+        },
+
+
+        _bindEventListeners: function() {
+            $(this.$container.find(s.btnMeta)).on("click",function(){
+                Backbone.trigger("button:metadata");
             });
-            $(this.s.btnDSD).on("click",function(){
-                self.router.navigate("#/dsd");
+            $(this.$container.find(s.btnDSD)).on("click",function(){
+                Backbone.trigger("button:dsd");
             });
-            $(this.s.btnData).on("click",function(){
-                self.router.navigate("#/data");
+            $(this.$container.find(s.btnData)).on("click",function(){
+                Backbone.trigger("button:data");
             });
 
         },
 
-        removeEventListener: function() {
-            $(this.s.btnMeta).off("click");
-            $(this.s.btnDSD).off("click");
-            $(this.s.btnData).off("click");
+        _removeEventListener: function() {
+            $(this.$container.find(s.btnMeta)).off("click");
+            $(this.$container.find(s.btnDSD)).off("click");
+            $(this.$container.find(s.btnData)).off("click");
         },
 
-        accessControl: function () {
+        accessControl: function (Resource) {
 
             return new Q.Promise(function (fulfilled, rejected) {
-                console.log(RM.resource);
-                if (!$.isEmptyObject(RM.resource)) {
+                if (!$.isEmptyObject(Resource)) {
                     fulfilled();
                 } else {
                     rejected();
@@ -70,7 +90,7 @@ define([
         },
 
         remove: function() {
-            this.removeEventListener();
+            this._removeEventListener();
             Backbone.View.prototype.remove.apply(this, arguments);
         }
     });

@@ -4,59 +4,93 @@ define([
     "loglevel",
     "q",
     "fenix-ui-metadata-editor",
-    '../components/resource-manager'
+    '../components/resource-manager',
+    "../../config/errors",
 
-],function($, Backbone, log, Q, MDE, RM){
+],function($, Backbone, log, Q, MDE, RM, ERR){
 
     "use strict";
 
     var MetadataView = Backbone.View.extend({
 
         render: function (o) {
-            $.extend(true, this, o);
+            $.extend(true, this, {initial: o});
 
-            log.info("Rendering View - Metadata", this);
-            this.lang = this.lang.toLowerCase();
-            log.info("{MDE} Rendering View");
-            this.initViews();
-            this.bindEventListeners();
-            return this;
+            this._parseInput();
+
+            var valid = this._validateInput();
+            if (valid === true) {
+                log.info("Rendering View - Metadata", this);
+                this._initViews();
+                this._bindEventListeners();
+                return this;
+            } else {
+                log.error("Impossible to render Metadata");
+                log.error(valid)
+            }
+        },
+
+        _validateInput: function () {
+
+            var valid = true,
+                errors = [];
+
+            //Check if $el exist
+            if (this.$container.length === 0) {
+                errors.push({code: ERR.MISSING_CONTAINER});
+                log.warn("Impossible to find container");
+            }
+            //Check if $savebtn is visible
+            if (!this.$savebtn.is(":visible")){
+                errors.push({code: ERR.MISSING_BUTTONS});
+                log.warn("Impossible to find save buttons");
+            }
+
+            return errors.length > 0 ? errors : valid;
+        },
+
+        _parseInput: function () {
+
+            this.$container = $(this.initial.container);
+            this.environment = this.initial.environment;
+            this.lang = this.initial.lang.toLowerCase();
+            this.model = this.initial.model;
+            this.config = this.initial.metadataEditor;
+            this.$savebtn = $(this.initial.savebtn);
 
         },
 
-        bindEventListeners: function () {
+
+        _bindEventListeners: function () {
             var self = this;
-            log.info("{MDE} bindEventListeners()");
-            $(this.savebtn).on("click", function(){
-                RM.setMetadata(self.MDE.getValues());
+            this.$savebtn.on("click", function(){
+                Backbone.trigger("meta:saving", self.MDE.getValues());
             });
 
         },
 
-        unbindEventListeners: function () {
-            log.info("{MDE} unbindEventListeners()");
-            $(this.savebtn).off("click");
+        _removeEventListeners: function () {
+            this.$savebtn.off("click");
         },
 
 
-        initViews: function () {
+        _initViews: function () {
             log.info("{MDE} initViews");
-            console.log(RM.getMetadata());
             this.MDE = new MDE({
-                el: this.$el,
+                el: this.$container,
                 lang: this.lang,
                 config: this.config,
                 cache : this.cache,
                 environment : this.environment,
-                model: RM.getMetadata()
+                model: this.model
             });
 
         },
 
-        accessControl: function () {
+        accessControl: function (Resource) {
 
             return new Q.Promise(function (fulfilled, rejected) {
-                if (!$.isEmptyObject(RM.resource)) {
+                if (!$.isEmptyObject(Resource)) {
                     fulfilled();
                 } else {
                     rejected();
@@ -65,7 +99,7 @@ define([
         },
 
         remove: function() {
-            this.unbindEventListeners();
+            this._removeEventListeners();
             Backbone.View.prototype.remove.apply(this, arguments);
         }
     });

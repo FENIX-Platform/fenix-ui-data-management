@@ -91,7 +91,7 @@ define([
     // Resource
 
     ResourceManager.prototype.newResource = function(res, silent) {
-        log.info("RM: new Resource",res);
+        log.info("RM: new Resource", res);
         this.resource = {};
         this.resource.metadata = {};
         this.resource.metadata.dsd = res;
@@ -114,7 +114,7 @@ define([
                 Backbone.trigger("resource:deleted");
             },
             error: function (xhr, textstatus) {
-                Backbone.trigger("error:showerror", null, xhr);
+                Backbone.trigger("error:showerrorsrv", null, xhr);
             }
         });
 
@@ -146,7 +146,7 @@ define([
                 Backbone.trigger("resource:updated");
             },
             error: function (xhr) {
-                Backbone.trigger("error:showerror", null, xhr);
+                Backbone.trigger("error:showerrorsrv", null, xhr);
                 //console.log("Error on createResource", xhr)
             }
         });
@@ -154,7 +154,7 @@ define([
     }
 
     ResourceManager.prototype.updateResource = function(res, serv) {
-        console.log("UPD: ",this.resource);
+        //console.log("UPD: ",this.resource);
         var self = this;
         if (self.resource.metadata.uid === undefined) {
             log.info("RM - Switching to create.")
@@ -170,11 +170,11 @@ define([
                 data: JSON.stringify(res),
                 crossDomain: true,
                 success: function (data) {
-                    console.log(data);
+                    //console.log(data);
                     Backbone.trigger("resource:updated");
                 },
                 error: function (xhr, textstatus) {
-                    Backbone.trigger("error:showerror", null, xhr);
+                    Backbone.trigger("error:showerrorsrv", null, xhr);
                     //console.log("Error on updateResource", xhr, textstatus)
                 }
             });
@@ -203,7 +203,7 @@ define([
     ResourceManager.prototype.loadResource = function (resource) {
         log.info("Load resource", resource);
         log.info("Loading: "+resource.model.uid);
-        console.log(this.bridge);
+        //console.log(this.bridge);
         this.bridge.getResource({
                 uid: resource.model.uid,
                 params: {dsd: true, full: true}
@@ -286,11 +286,18 @@ define([
     // DSD
 
     ResourceManager.prototype.getDSD = function () {
+        if (this.resource === undefined) return null;
+        if (this.resource.metadata === undefined) return null;
+        if (this.resource.metadata.dsd === undefined) return null;
         log.info("getDSD Called.",this.resource.metadata.dsd);
         return this.resource.metadata.dsd;
     };
 
     ResourceManager.prototype.getDSDColumns = function () {
+        if (this.resource === undefined) return null;
+        if (this.resource.metadata === undefined) return null;
+        if (this.resource.metadata.dsd === undefined) return null;
+        if (this.resource.metadata.dsd.columns === undefined) return null;
         log.info("getDSDColumns Called.",this.resource.metadata.dsd.columns);
         return this.resource.metadata.dsd.columns;
     };
@@ -347,6 +354,9 @@ define([
 
     ResourceManager.prototype.getCurrentResourceCodelists = function() {
         log.info("getCurrentResourceCodelists called.")
+        if (this.resource.metadata === undefined) return null;
+        if (this.resource.metadata.dsd === undefined) return null;
+        if (this.resource.metadata.dsd.columns === undefined) return null;
         var codelists = [];
         var columns = this.resource.metadata.dsd.columns;
         $.each(columns, function (index, object) {
@@ -381,7 +391,6 @@ define([
             return structure;
         });
     };
-
 
 
     return new ResourceManager();

@@ -4,43 +4,71 @@ define([
     "loglevel",
     '../../nls/labels',
     "../../html/landing.hbs",
-],function( $, Backbone, log, MultiLang, Template){
+    '../../config/errors',
+],function( $, Backbone, log, MultiLang, Template, ERR){
 
     "use strict";
+    var s = {
+        btnSearch : "#btnSearch",
+        btnAdd : "#btnAdd"
+    };
 
     var LandingView = Backbone.View.extend({
 
         render: function (o) {
-            $.extend(true, this, o);
+            $.extend(true, this, {initial: o});
 
-            this.s = {
-                btnSearch : "#btnSearch",
-                btnAdd : "#btnAdd"
-            };
+            this._parseInput();
 
-            this.lang = this.lang.toLowerCase();
-
-            log.info("Rendering View - Landing");
-            this.$el.html(Template);
-            this.bindEventListeners();
-            return this;
+            var valid = this._validateInput();
+            if (valid === true) {
+                log.info("Rendering View - Landing", this);
+                this.$container.html(Template);
+                this._bindEventListeners();
+                return this;
+            } else {
+                log.error("Impossible to render Landing");
+                log.error(valid)
+            }
         },
 
-        bindEventListeners: function() {
-            var self = this;
-            $(this.s.btnSearch).on("click", function() {
-                self.router.navigate("#/search");
+        _validateInput: function () {
+
+            var valid = true,
+                errors = [];
+
+            //Check if $el exist
+            if (this.$container.length === 0) {
+                errors.push({code: ERR.MISSING_CONTAINER});
+                log.warn("Impossible to find container");
+            }
+
+            return errors.length > 0 ? errors : valid;
+        },
+
+        _parseInput: function () {
+
+            this.$container = $(this.initial.container);
+            this.cache = this.initial.cache;
+            this.environment = this.initial.environment;
+            this.lang = this.initial.lang.toLowerCase();
+
+        },
+
+        _bindEventListeners: function() {
+            $(s.btnSearch).on("click", function() {
+                Backbone.trigger("button:search");
             });
-            $(this.s.btnAdd).on("click", function() {
-                self.router.navigate("#/add");
+            $(s.btnAdd).on("click", function() {
+                Backbone.trigger("button:new");
             });
         },
-        removeEventListeners: function() {
-            $(this.s.btnSearch).off("click");
-            $(this.s.btnAdd).off("click");
+        _removeEventListeners: function() {
+            $(s.btnSearch).off("click");
+            $(s.btnAdd).off("click");
         },
         remove: function() {
-            this.removeEventListeners();
+            this._removeEventListeners();
             Backbone.View.prototype.remove.apply(this, arguments);
         }
     });

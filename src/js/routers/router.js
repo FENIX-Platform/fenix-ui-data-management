@@ -6,13 +6,12 @@ define([
     'loglevel',
     "toastr",
     "../../config/notify",
+    "../../config/routes",
     'fenix-ui-menu',
     '../../config/menu',
     '../views/landing',
     '../views/search',
     '../views/notFound',
-    '../views/denied',
-    '../views/add',
     '../views/delete',
     '../views/metadata',
     '../views/dsd',
@@ -20,8 +19,8 @@ define([
     '../views/home',
     '../components/resource-manager',
     '../../nls/labels'
-], function ($, Backbone, _, log, Notify, ConfigNotify, Menu, ConfigMenu,
-             LandingView, SearchView, NotFoundView, DeniedView, AddView, DeleteView, MetadataView, DSDView, DataView, HomeView,
+], function ($, Backbone, _, log, Notify, ConfigNotify, Routes, Menu, ConfigMenu,
+             LandingView, SearchView, NotFoundView, DeleteView, MetadataView, DSDView, DataView, HomeView,
              RM,
              MultiLang
 ) {
@@ -43,44 +42,41 @@ define([
         // The Router constructor
         initialize: function (o) {
             log.info("Data Management - Router",o);
-            $.extend(true, this, o);
+            $.extend(true, this, {initial: o});
 
-            this.initCommonViews();
-            this.initVariables();
-            this.bindEventListeners();
+            this._parseInput();
+
+            this._initCommonViews();
+            this._initVariables();
+            this._bindEventListeners();
 
             Backbone.history.start();
         },
 
-        routes: {
-            '(/)': 'onLanding',
-            '(/)landing(/)': 'onLanding',
+        routes: Routes,
 
-            '(/)home(/)': 'onHome',
-            '(/)add(/)': 'onAdd',
+        _parseInput: function () {
 
-            '(/)metadata(/)': 'onMetadata',
-            '(/)dsd(/)': 'onDSD',
-            '(/)data(/)': 'onData',
+             this.$el = this.initial.$el;
+             this.container = this.initial.container || s.CONTAINER;
+             this.cache = this.initial.cache;
+             this.environment = this.initial.environment;
+             this.lang = this.initial.lang ;
 
-            '(/)close(/)' : 'onClose',
-            '(/)delete(/)': 'onDelete',
-            '(/)search(/)': 'onSearch',
-            '(/)not-found(/)': 'onNotFound',
+             this.config = this.initial.config;
 
-            '(/)denied(/)': 'onDenied',
+             this.dsdEditor = this.initial.dsdEditor;
+             this.catalog = this.initial.catalog;
+             this.metadataEditor = this.initial.metadataEditor;
 
-            // fallback route
-            '(/)*path': 'onDefaultRoute'
         },
 
-        initCommonViews: function () {
+        _initCommonViews: function () {
             log.info("Render common views");
             // Init Buttons
             Notify.options = ConfigNotify;
-            $(s.BTN_ELEMENT).html(MultiLang[this.lang.toLowerCase()]['btnSave']);
-            $(s.BTN_CLOSE).html(MultiLang[this.lang.toLowerCase()]['btnClose']);
-            $(s.BTN_CONTAINER).hide();
+            $(this.$el.find(s.BTN_ELEMENT)).html(MultiLang[this.lang.toLowerCase()]['btnSave']);
+            $(this.$el.find(s.BTN_CONTAINER)).hide();
             this.initMenu();
         },
 
@@ -103,7 +99,7 @@ define([
                 self.menu.disableItem(object);
             });
             self.menu.activateItem('add');
-            $(s.BTN_CONTAINER).hide();
+            $(this.$el.find(s.BTN_CONTAINER)).hide();
 
         },
 
@@ -116,11 +112,11 @@ define([
             self.menu.disableItem('add');
         },
 
-        initVariables: function () {
+        _initVariables: function () {
             this.$viewsHolder = this.$el.find(s.HOLDER);
         },
 
-        bindEventListeners: function () {
+        _bindEventListeners: function () {
             log.info("bindEventListeners");
             var self = this;
             // Menu Event Listener
@@ -128,25 +124,57 @@ define([
                 self.goTo("#/"+evt.id);
             });
 
-            // When a resource is loaded
+            // RESOURCES
+            // When a resource is created (new button)
+            this.listenTo(Backbone, "resource:new", function() {
+                log.info("[EVT] resource:new ", RM.resource);
+                Notify['info'](MultiLang[self.lang.toLowerCase()]['resourceNew']);
+                self.menuActivated();
+                self.goTo("#/metadata");
+            });
+
+            // When a resource is deleted (confirm is deletion)
+            this.listenTo(Backbone, "resource:deleted", function() {
+                log.info("[EVT] resource:deleted ", RM.resource);
+                Notify['success'](MultiLang[self.lang.toLowerCase()]['resourceDeleted']);
+                self.menuInitial();
+                self.goTo("#/landing");
+            });
+
+            // When a resource is loading (catalog search selected)
+            this.listenTo(Backbone, "resource:loading", function(res){
+                log.info("[EVT] resource:loading ", res);
+                RM.unloadResource();
+                RM.loadResource(res);
+            });
+
+            // When a resource is in tentative deletion (still there)
+            this.listenTo(Backbone,"resource:delete", function(){
+                log.info("[EVT] resource:delete ", RM.resource);
+                RM.deleteResource();
+            });
+
+            // When a resource is loaded (fully)
             this.listenTo(Backbone,"resource:loaded", function(){
                 log.info("[EVT] resource:loaded ", RM.resource);
-                this.menuActivated();
-                Notify['success'](MultiLang[this.lang.toLowerCase()]['resourceLoaded']);
-                this.goTo("#/home");
+                self.menuActivated();
+                Notify['success'](MultiLang[self.lang.toLowerCase()]['resourceLoaded']);
+                self.goTo("#/home");
             });
             // When a resource is unloaded (search or new is triggered)
             this.listenTo(Backbone,"resource:unloaded", function(){
                 log.info("[EVT] resource:unloaded ", RM.resource);
-                this.menuInitial();
+                self.menuInitial();
 
             });
             // When the save button is clicked
             this.listenTo(Backbone, "resource:updated", function() {
                 log.info("[EVT] resource:updated ", RM.resource);
-                Notify['success'](MultiLang[this.lang.toLowerCase()]['resourceSaved']);
-                this.goTo("#/home");
+                Notify['success'](MultiLang[self.lang.toLowerCase()]['resourceSaved']);
+                self.goTo("#/home");
             });
+
+            // RESOURCES End
 
             this.listenTo(Backbone, "data:loading", function() {
                 log.info("[EVT] data:loading ");
@@ -157,8 +185,23 @@ define([
                 log.info("[EVT] data:loaded ");
                 //TODO: Do some stuff here;
             });
+
+            this.listenTo(Backbone, "data:saving", function(res) {
+                log.info("[EVT] data:saving");
+                RM.setData(res);
+                //TODO: Do some stuff here;
+            });
+
+
+            // METADATA
+
             this.listenTo(Backbone, "meta:loading", function() {
                 log.info("[EVT] meta:loading");
+                //TODO: Do some stuff here;
+            });
+            this.listenTo(Backbone, "meta:saving", function(res) {
+                log.info("[EVT] meta:saving");
+                RM.setMetadata(res);
                 //TODO: Do some stuff here;
             });
 
@@ -166,6 +209,14 @@ define([
                 log.info("[EVT] meta:loaded");
                 //TODO: Do some stuff here;
             });
+
+            // DSD
+
+            this.listenTo(Backbone, "dsd:setcolumns", function(res) {
+                log.info("[EVT] dsd:setcolumns");
+                RM.setDSDColumns(res);
+            });
+
             this.listenTo(Backbone, "dsd:loading", function() {
                 log.info("[EVT] dsd:loading");
                 //TODO: Do some stuff here;
@@ -176,19 +227,11 @@ define([
                 //TODO: Do some stuff here;
             });
 
+            // ERRORS
 
-            this.listenTo(Backbone, "resource:new", function() {
-                log.info("[EVT] resource:new ", RM.resource);
-                Notify['info'](MultiLang[this.lang.toLowerCase()]['resourceNew']);
-                this.menuActivated();
-                this.goTo("#/metadata");
-            });
-
-            this.listenTo(Backbone, "resource:deleted", function() {
-                log.info("[EVT] resource:deleted ", RM.resource);
-                Notify['success'](MultiLang[this.lang.toLowerCase()]['resourceDeleted']);
-                this.menuInitial();
-                this.goTo("#/landing");
+            this.listenTo(Backbone, "error:showerrormsg", function(message){
+                log.info("[EVT] error:showerrormsg ");
+                Notify['error'](message);
             });
 
             this.listenTo(Backbone, "error:showerror", function(code, xhr){
@@ -196,6 +239,48 @@ define([
                 var out = MultiLang[this.lang.toLowerCase()][code] || JSON.stringify(xhr) || "Generic Error";
                 Notify['error'](out);
             });
+
+            this.listenTo(Backbone, "error:showerrorsrv", function(code, xhr){
+                log.info("[EVT] error:showerrorsrv ", code, xhr);
+                var out = MultiLang[this.lang.toLowerCase()][code] || JSON.stringify(xhr.responseText) || "Generic Error";
+                Notify['error'](out);
+            });
+
+            //
+
+            // BUTTONS
+
+            this.listenTo(Backbone, "button:new", function(){
+                log.info("[EVT] button:new ");
+                this.goTo("#/add");
+            });
+
+            this.listenTo(Backbone, "button:search", function(){
+                log.info("[EVT] button:search ");
+                this.goTo("#/search");
+            });
+
+            this.listenTo(Backbone, "button:undo", function(){
+                log.info("[EVT] button:undo ");
+                this.goTo("#/home");
+            });
+
+            this.listenTo(Backbone, "button:metadata", function(){
+                log.info("[EVT] button:metadata ");
+                this.goTo("#/metadata");
+            });
+
+            this.listenTo(Backbone, "button:dsd", function(){
+                log.info("[EVT] button:dsd ");
+                this.goTo("#/dsd");
+            });
+
+            this.listenTo(Backbone, "button:data", function(){
+                log.info("[EVT] button:data ");
+                this.goTo("#/data");
+            });
+
+
 
 
         },
@@ -206,11 +291,11 @@ define([
 
         onLanding: function () {
             log.info("onLanding called.");
+            //log.warn("TODO: Check if this selection is voluntary [if Resource is loaded] or disable");
             this.switchView(LandingView, {
-                el: s.CONTAINER,
+                container: this.container,
                 menu : "landing",
                 lang : this.lang,
-                router: this,
                 environment: this.environment
             });
             this.menuInitial();
@@ -220,12 +305,11 @@ define([
 
         onHome: function () {
             log.info("onHome called.");
-            $(s.BTN_CONTAINER).hide();
+            $(this.$el.find(s.BTN_CONTAINER)).hide();
             this.switchView(HomeView, {
-                el: s.CONTAINER,
+                container: this.container,
                 menu : "home",
                 lang : this.lang,
-                router: this,
                 environment: this.environment
             });
         },
@@ -235,10 +319,11 @@ define([
 
         onSearch: function () {
             log.info("onSearch called.");
-            //log.warn("TODO: Check if this search is voluntary [if Resource is loaded]");
-            $(s.BTN_CONTAINER).hide();
+            //log.warn("TODO: Check if this search is voluntary or disable when res is loaded");
+            RM.unloadResource();
+            $(this.$el.find(s.BTN_CONTAINER)).hide();
             this.switchView(SearchView, {
-                el: s.CONTAINER,
+                container: this.container,
                 menu : "search",
                 lang : this.lang,
                 environment: this.environment,
@@ -250,7 +335,7 @@ define([
 
         onDenied: function () {
             log.info("Denied - Routing to Lading");
-            $(s.BTN_CONTAINER).hide();
+            $(this.$el.find(s.BTN_CONTAINER)).hide();
             this.goTo("#/landing");
         },
 
@@ -266,13 +351,8 @@ define([
 
         onAdd: function () {
             log.info("Add Resource");
-            $(s.BTN_CONTAINER).hide();
-            this.switchView(AddView, {
-                el: s.CONTAINER,
-                lang : this.lang,
-                environment: this.environment,
-                config: this.config
-            });
+            log.warn("Avoid to render the resource and directly cast the event");
+            RM.newResource(this.config);
         },
 
         // Metadata View
@@ -280,13 +360,14 @@ define([
         onMetadata: function () {
             log.info("Metadata View");
             // Init Buttons
-            $(s.BTN_CONTAINER).show();
+            $(this.$el.find(s.BTN_CONTAINER)).show();
             this.switchView(MetadataView, {
-                el: s.CONTAINER,
-                menu : "metadata",
+                container: this.container,
+                menu : "search",
                 lang : this.lang,
-                config: this.metadataEditor,
                 environment: this.environment,
+                config: this.metadataEditor,
+                model: RM.getMetadata(),
                 savebtn : s.BTN_ELEMENT
             });
         },
@@ -296,13 +377,15 @@ define([
         onDSD: function () {
             log.info("DSD View");
             // Init Buttons
-            $(s.BTN_CONTAINER).show();
+            $(this.$el.find(s.BTN_CONTAINER)).show();
             this.switchView(DSDView, {
-                el: s.CONTAINER,
+                container: this.container,
                 menu : "dsd",
                 lang : this.lang,
                 environment: this.environment,
                 config: this.dsdEditor,
+                model: RM.getDSD(),
+                isEditable: RM.isDSDEditable(),
                 savebtn : s.BTN_ELEMENT
             });
         },
@@ -312,11 +395,15 @@ define([
         onData: function () {
             log.info("Data View");
             // Init Buttons
-            $(s.BTN_CONTAINER).show();
+            $(this.$el.find(s.BTN_CONTAINER)).show();
             this.switchView(DataView, {
-                el: s.CONTAINER,
+                container: this.container,
                 menu : "data",
                 lang : this.lang,
+                codelists: RM.getCurrentResourceCodelists(),
+                dsd: RM.getDSD(),
+                data: RM.getData(),
+                generator: RM.generateDSDStructure(),
                 environment: this.environment,
                 savebtn : s.BTN_ELEMENT
             });
@@ -326,12 +413,11 @@ define([
 
         onDelete: function () {
             log.info("Delete Resource");
-            $(s.BTN_CONTAINER).hide();
+            $(this.$el.find(s.BTN_CONTAINER)).hide();
             this.switchView(DeleteView, {
-                el: s.CONTAINER,
+                container: this.container,
                 menu : "delete",
                 lang : this.lang,
-                router : this,
                 environment: this.environment
             });
         },
@@ -340,17 +426,16 @@ define([
 
         onNotFound: function () {
             log.info("Not found");
-            $(s.BTN_CONTAINER).hide();
+            $(this.$el.find(s.BTN_CONTAINER)).hide();
             this.switchView(NotFoundView, {
-                el: s.CONTAINER,
-                lang : this.lang,
-                environment: this.environment
+                container: this.container,
+                lang : this.lang
             });
         },
 
         onDefaultRoute: function () {
             log.info("Default");
-            $(s.BTN_CONTAINER).hide();
+            $(this.$el.find(s.BTN_CONTAINER)).hide();
             this.goTo("#/not-found");
         },
 
@@ -370,7 +455,7 @@ define([
 
             if (typeof candidate.accessControl === "function") {
                 log.info("View has access control");
-                candidate.accessControl().then(
+                candidate.accessControl(RM.resource).then(
                     function () {
                         log.warn("Access control: GRANTED");
                         self.resetView();
@@ -398,12 +483,18 @@ define([
 
         renderView : function (View, o) {
             var candidate = new View(o);
+            var stringTitle = "";
             this.currentView = candidate.render(o);
             this.menu.select(o.menu);
-            $(s.HEADER).html(this.menu.o.active)
-            if ((RM.resource.metadata !== undefined) &&
-                (RM.resource.metadata.title !== undefined) )
-                $(s.RES_TITLE).html(' / '+RM.resource.metadata.title[this.lang]);
+            $(this.$el.find(s.HEADER)).html(this.menu.o.active);
+            if ($.isPlainObject(RM.resource.metadata)) {
+                if (RM.resource.metadata.title) {
+                    stringTitle = ' / '+ RM.resource.metadata.title[this.lang];
+                } else {
+                    stringTitle = ' / '+ MultiLang[this.lang.toLowerCase()]['NoTitle'];
+                }
+            }
+            $(this.$el.find(s.RES_TITLE)).html(stringTitle);
         },
 
         disposeCurrentView: function () {
@@ -416,7 +507,7 @@ define([
         },
 
         addViewContainer: function () {
-            this.$viewsHolder.append('<div id="' + s.CONTAINER.substring(1) + '"></div>');
+            this.$viewsHolder.html('<div id="' + s.CONTAINER.substring(1) + '"></div>');
             log.info("Add view container: success");
         },
 

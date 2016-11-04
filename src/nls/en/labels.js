@@ -89,7 +89,8 @@ define(function () {
         //Descriptions
         "DManIntro" : "Data management is the process of controlling the information generated during a research project. Any research will require some level of data management, and funding agencies are increasingly requiring scholars to plan and execute good data management practices.",
         "CopyMetaRID" : "Resource Identification Code",
-        "CopyMetaVer" : "(EN) Resource Version (if applicable)"
+        "CopyMetaVer" : "Resource Version (if applicable)",
+        "NoTitle": "Untitled"
 
     }
 });

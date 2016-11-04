@@ -3,114 +3,140 @@ define([
     "backbone",
     "loglevel",
     "q",
-    "toastr",
+
     "fenix-ui-DataEditor",
     "../../config/data-editor",
-    "../../config/notify",
-    "../components/resource-manager",
+
     "../components/file-uploader",
     "../../html/file-uploader.hbs",
-    '../../nls/labels'
-],function($, Backbone, log, Q, Notify, Data, Config, NotiConfig, RM, FileUploader, TemplateFU, MultiLang){
+],function($, Backbone, log, Q, Data, Config, FileUploader, TemplateFU){
 
     "use strict";
+
+    var s = {
+        utility: '#fx-data-management-utility-holder',
+        btnFileUploader: "#btnFileUploader",
+        btnDelAllData: "#btnDelAllData",
+        dataFileUpload: "#dataFUpload",
+        csvSeparator: "input[name=csvSeparator]:checked",
+        dataUploadColsMatch: "#DataUploadColsMatch",
+        dataEditorContainer: "#divDataEditor",
+        dataUploadContainer: "#DataUploadContainer",
+        divCsvMatcher: "#divCsvMatcher",
+        btnCsvMatcherOk : "#btnCsvMatcherOk",
+        btnCsvMatcherCancel : "#btnCsvMatcherCancel",
+        btnDataMergeKeepNew: "#btnDataMergeKeepNew",
+        btnDataMergeKeepOld: "#btnDataMergeKeepOld",
+        btnDataMergeCancel: "#btnDataMergeCancel"
+    };
 
     var DataView = Backbone.View.extend({
 
         render: function (o) {
-            $.extend(true, this, o);
+            $.extend(true, this, {initial:o});
 
-            // Buttons
-            this.s = {
-                utility: '#fx-data-management-utility-holder',
-                btnFileUploader: "#btnFileUploader",
-                btnDelAllData: "#btnDelAllData",
-                dataFileUpload: "#dataFUpload",
-                csvSeparator: "input[name=csvSeparator]:checked",
-                dataUploadColsMatch: "#DataUploadColsMatch",
-                dataEditorContainer: "#divDataEditor",
-                dataUploadContainer: "#DataUploadContainer",
-                divCsvMatcher: "#divCsvMatcher",
-                btnCsvMatcherOk : "#btnCsvMatcherOk",
-                btnCsvMatcherCancel : "#btnCsvMatcherCancel",
-                btnDataMergeKeepNew: "#btnDataMergeKeepNew",
-                btnDataMergeKeepOld: "#btnDataMergeKeepOld",
-                btnDataMergeCancel: "#btnDataMergeCancel"
-            };
+            this._parseInput();
 
-            Notify.options = NotiConfig;
+            var valid = this._validateInput();
+            if (valid === true) {
+                log.info("{Data} Rendering View");
+                this._initViews();
+                this._initFileUploader();
+                this._bindEventListeners();
 
-            this.lang = this.lang.toLowerCase();
-            this.cLists = RM.getCurrentResourceCodelists();
-            log.info("{Data} Rendering View");
-            this.initViews();
-            this.initFileUploader();
-            this.bindEventListeners();
+            } else {
+                log.error("Impossible to render Landing");
+                log.error(valid)
+            }
+            log.info("{SOME} Rendering View", this);
+
             return this;
         },
 
-        initViews: function() {
+        _parseInput: function () {
+
+            this.$container = $(this.initial.container);
+            this.environment = this.initial.environment;
+            this.lang = this.initial.lang.toLowerCase();
+            this.cLists = this.initial.codelists;
+            this.dsd = this.initial.dsd;
+            this.data = this.initial.data;
+            this.$savebtn = $(this.initial.savebtn);
+            this.generator = this.initial.generator;
+
+        },
+
+        _validateInput: function () {
+
+            var valid = true,
+                errors = [];
+
+            //Check if $el exist
+            if (this.$container.length === 0) {
+                errors.push({code: ERR.MISSING_CONTAINER});
+                log.warn("Impossible to find container");
+            }
+            //Check if $savebtn is visible
+            if (!this.$savebtn.is(":visible")){
+                errors.push({code: ERR.MISSING_BUTTONS});
+                log.warn("Impossible to find save buttons");
+            }
+
+            return errors.length > 0 ? errors : valid;
+        },
+
+        _initViews: function() {
             log.info("{Data} initViews", Config);
             var config = Config;
+            var self = this;
 
-            var callB = function() {};
+            $(s.utility).html(TemplateFU);
 
-            $(this.s.utility).html(TemplateFU);
-
-            this.$dataUploadColsMatch = $(this.s.dataUploadColsMatch);
-            this.$dataEditorContainer = $(this.s.dataEditorContainer);
-            this.$dataUploadContainer = $(this.s.dataUploadContainer);
+            this.$dataUploadColsMatch = $(this.$container.find(s.dataUploadColsMatch));
+            this.$dataEditorContainer = $(this.$container.find(s.dataEditorContainer));
+            this.$dataUploadContainer = $(this.$container.find(s.dataUploadContainer));
 
             this.columnsMatch = new Data.Columns_Match();
 
-            Data.init(this.$el, config, null);
+            Data.init(this.$container, config, null);
             log.info('{Data} Calling the Codelists');
-            RM.generateDSDStructure().then (function (result) {
-                log.info('{Data} Calling the DSD', result);
-                var dsd = RM.getDSDColumns();
-                log.info('{Data} Setting the DSD...', dsd);
+            this.generator.then (function (result) {
+                log.info('{Data} Calling the DSD');//, result);
+                var dsd = self.dsd.columns;
+                log.info('{Data} Setting the DSD...');//, dsd);
                 Data.setColumns(dsd, result, null);
-                log.info("{Data} DSD Columns Setted.",RM.getData());
-                if (RM.getData() !== undefined) Data.setData(RM.getData());
+                log.info("{Data} DSD Columns Setted.");//, self.data);
+                if (self.data !== undefined) Data.setData(self.data);
             })
 
         },
 
-        initFileUploader: function() {
+        _initFileUploader: function() {
             this.fUpload = new FileUploader({ accept: ['csv'] });
-            this.fUpload.render(this.s.dataFileUpload);
+            this.fUpload.render(this.$container.find(s.dataFileUpload));
         },
 
-        bindEventListeners: function() {
-            log.info('{DATA} bindEventListeners');
+        _bindEventListeners: function() {
+            log.info('{Data} _bindEventListeners');
             var self = this;
-            $(this.s.btnFileUploader).on("click", function(e){
+            $(this.$container.find(s.btnFileUploader)).on("click", function(e){
                 e.stopPropagation();
-                $('.dropdown-menu').toggle();
+                $(s.utility).find('.dropdown-menu').toggle();
             });
-            /*
-            $(this.s.btnDelAllData).on('click', function() {
-                console.log("btnDelAllData");
-                var res = confirm(MultiLang[self.lang.toLowerCase()]['confirmDataRemove']);
-                if (!res) return;
-                Data.removeAllData();
-                //RM.setDataEmpty();
-            });
-            */
-            $(this.savebtn).on("click", function(){
+
+            $(this.$savebtn).on("click", function(){
                 log.info("{DATA} saving", Data.getData());
-                if (Data.getData()){ RM.setData(Data.getData()); }
-                else { Notify["error"](MultiLang[self.lang.toLowerCase()]['invalidData']); }
+                if (Data.getData()) Backbone.trigger("data:saving", Data.getData());
             });
 
             //Data Merge
-            $(this.s.btnDataMergeKeepNew).on('click', function () {
+            $(this.$container.find(s.btnDataMergeKeepNew)).on('click', function () {
                 self._CSVLoadedMergeData('keepNew');
             });
-            $(this.s.btnDataMergeKeepOld).on('click', function () {
+            $(this.$container.find(s.btnDataMergeKeepOld)).on('click', function () {
                 self._CSVLoadedMergeData('keepOld');
             });
-            $(this.s.btnDataMergeCancel).on('click', function () {
+            $(this.$container.find(s.btnDataMergeCancel)).on('click', function () {
                 self.tmpCsvData = null;
                 self.tmpCsvCols = null;
                 self._switchPanelVisibility(self.s.dataEditorContainer);
@@ -119,20 +145,20 @@ define([
 
             this.listenTo(Backbone, "data:uploaded", function(str) {
                 log.info("{DATA}[EVT] data:uploaded ");
-                this.csvLoaded(str);
+                self._csvLoaded(str);
             });
 
 
         },
 
-        unbindEventListeners: function(){
-            $(this.s.btnDataMergeKeepNew).off("click");
-            $(this.s.btnDataMergeKeepOld).off("click");
-            $(this.s.btnDataMergeCancel).off("click");
-            $(this.s.btnDelAllData).off("click");
-            $(this.savebtn).off("click");
-            $(this.s.btnCsvMatcherCancel).off("click");
-            $(this.s.btnCsvMatcherOk).off("click");
+        _removeEventListeners: function(){
+            $(this.$container.find(s.btnDataMergeKeepNew)).off("click");
+            $(this.$container.find(s.btnDataMergeKeepOld)).off("click");
+            $(this.$container.find(s.btnDataMergeCancel)).off("click");
+            $(this.$container.find(s.btnDelAllData)).off("click");
+            $(this.$container.find(s.savebtn)).off("click");
+            $(this.$container.find(s.btnCsvMatcherCancel)).off("click");
+            $(this.$container.find(s.btnCsvMatcherOk)).off("click");
         },
 
         _CSVLoadedCheckDuplicates: function () {
@@ -143,7 +169,7 @@ define([
 
             //this.tmpCsvData = csvData;
             if (keyDuplicates && keyDuplicates.length > 0) {
-                this._switchPanelVisibility(this.s.dataUploadContainer);
+                this._switchPanelVisibility(s.dataUploadContainer);
             } else {
                 this._CSVLoadedMergeData('keepNew');
             }
@@ -163,7 +189,7 @@ define([
             if (valRes && valRes.length > 0) {
                 log.info("valRes got errors");
                 for (var n = 0; n < valRes.length; n++) {
-                    Notify["error"]([valRes[n].type] + " - codelist: " + valRes[n].codelistId + " - codes: " + valRes[n].codes.join(','));
+                    Backbone.trigger("error:showerrormsg", [valRes[n].type] + " - codelist: " + valRes[n].codelistId + " - codes: " + valRes[n].codes.join(','));
                 }
             }
             //Validates the CSV contents
@@ -173,7 +199,7 @@ define([
             if (wrongDatatypes && wrongDatatypes.length > 0) {
                 log.info("wrongDatatypes got errors");
                 for (n = 0; n < wrongDatatypes.length; n++) {
-                    Notify["error"]([wrongDatatypes[n].error] + " - Row: " + wrongDatatypes[n].dataIndex);
+                    Backbone.trigger("error:showerrormsg",[wrongDatatypes[n].error] + " - Row: " + wrongDatatypes[n].dataIndex);
                 }
                 //Don't merge, return.
                 log.info("Don't merge, return.");
@@ -191,35 +217,34 @@ define([
 
         },
 
-        csvLoaded: function (data) {
+        _csvLoaded: function (data) {
             log.info('{DATA} csvLoaded', data);
             this.fUpload.reset();
-            $(this.s.utility).hide();
+            $(s.utility).hide();
             var conf = {};
             var self = this;
-            var conv = new Data.CSV_To_Dataset(conf,$(this.s.csvSeparator).val());
+            var conv = new Data.CSV_To_Dataset(conf,$(s.csvSeparator).val());
             conv.convert(data);
 
             this.tmpCsvCols = conv.getColumns();
             this.tmpCsvData = conv.getData();
 
             var validator = new Data.Validator_CSV();
-            console.log($('div#divCsvMatcher'));
             this.columnsMatch.render($('div#divCsvMatcher'));
 
-            $(this.s.btnCsvMatcherOk).on("click", function() {
+            $(s.btnCsvMatcherOk).on("click", function() {
                 self.tmpCsvCols = self.columnsMatch.getCsvCols();
                 self.tmpCsvData = self.columnsMatch.getCsvData();
                 self._CSVLoadedCheckDuplicates();
 
             });
-            $(this.s.btnCsvMatcherCancel).on("click", function() {
-                $(self.s.btnCsvMatcherCancel).off("click");
-                $(self.s.btnCsvMatcherOk).off("click");
+            $(s.btnCsvMatcherCancel).on("click", function() {
+                $(s.btnCsvMatcherCancel).off("click");
+                $(s.btnCsvMatcherOk).off("click");
                 self.tmpCsvData = null;
                 self.tmpCsvCols = null;
                 self._switchPanelVisibility( self.s.dataEditorContainer );
-                $(self.s.utility).show();
+                $(s.utility).show();
             });
 
 
@@ -229,32 +254,21 @@ define([
             if (valRes && valRes.length > 0) {
                 for (var n = 0; n < valRes.length; n++) {
                     //console.log(MLRes.error, MLRes[valRes[n].type]);
-                    Notify["error"](valRes[n].type);
+                    Backbone.trigger("error:showerrormsg",valRes[n].type);
                 }
                 return;
             }
 
-            this._switchPanelVisibility( this.s.dataUploadColsMatch  )
-            /*
-            console.log("columnsmatch");
-            console.log(JSON.stringify(RM.getDSDColumns()));
-            console.log(JSON.stringify(this.tmpCsvCols));
-            console.log(JSON.stringify(this.tmpCsvData));
-            */
-            this.columnsMatch.setData(RM.getDSD(), this.tmpCsvCols, this.tmpCsvData);
+            this._switchPanelVisibility( s.dataUploadColsMatch  )
+            this.columnsMatch.setData(this.dsd, this.tmpCsvCols, this.tmpCsvData);
 
             //Validates the CSV contents
             var dv = new Data.Data_Validator();
-/*
-            console.log(JSON.stringify(Data.getColumns()));
-            console.log(JSON.stringify(RM.getCurrentResourceCodelists()));
-            console.log(JSON.stringify(this.tmpCsvData));
-*/
             var wrongDatatypes = dv.checkWrongDataTypes(Data.getColumns(), this.cLists, this.tmpCsvData);
 
              if (wrongDatatypes && wrongDatatypes.length > 0) {
                  for (n = 0; n < wrongDatatypes.length; n++) {
-                     Notify["error"]([wrongDatatypes[n].error] + " - Row: " + wrongDatatypes[n].dataIndex);
+                     Backbone.trigger("error:showerrormsg",[wrongDatatypes[n].error] + " - Row: " + wrongDatatypes[n].dataIndex);
                  }
                  return;
              }
@@ -263,16 +277,16 @@ define([
         },
 
         _switchPanelVisibility: function (toShow) {
-            $(this.s.dataUploadColsMatch).hide();
-            $(this.s.dataEditorContainer).hide();
-            $(this.s.dataUploadContainer).hide();
+            $(s.dataUploadColsMatch).hide();
+            $(s.dataEditorContainer).hide();
+            $(s.dataUploadContainer).hide();
             $(toShow).show();
         },
 
-        accessControl: function () {
+        accessControl: function (Resource) {
 
             return new Q.Promise(function (fulfilled, rejected) {
-                if (!$.isEmptyObject(RM.resource)) {
+                if (!$.isEmptyObject(Resource)) {
                     fulfilled();
                 } else {
                     rejected();
@@ -282,9 +296,9 @@ define([
 
         remove: function() {
             log.warn("{DATA} - Remove View");
-            this.unbindEventListeners();
-            $(this.s.utility).html('');
-            $(this.s.utility).show();
+            this._removeEventListeners();
+            $(s.utility).html('');
+            $(s.utility).show();
             Backbone.View.prototype.remove.apply(this, arguments);
         }
     });
