@@ -43,6 +43,7 @@ define(function () {
         "DatalblSeparator": "Séparateur du CSV",
         "DatalblcsvSeparatorSemi": "Point-virgule",
         "DatalblcsvSeparatorComma": "Virgule",
+        "csvLoaded": "CSV chargée",
 
 
         //DataValidator

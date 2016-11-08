@@ -43,6 +43,7 @@ define(function () {
         "DatalblSeparator":"CSV Separator",
         "DatalblcsvSeparatorSemi" : "Semicolon",
         "DatalblcsvSeparatorComma" : "Comma",
+        "csvLoaded": "CSV Loaded",
 
 
         //DataValidator

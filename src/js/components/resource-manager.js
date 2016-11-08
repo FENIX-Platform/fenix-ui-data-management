@@ -101,6 +101,7 @@ define([
 
     ResourceManager.prototype.deleteResource = function() {
         log.info("RM: deleteResource through "+this.url.baseUrl +"resources/uid/" + this.resource.metadata.uid);
+        var self = this;
 
         $.ajax({
             url: this.url.baseUrl +"resources/uid/" + this.resource.metadata.uid,
@@ -110,7 +111,7 @@ define([
             // setting it to json would trigger an error on success
             dataType: 'text',
             success: function () {
-                this.resource = null;
+                self.resource = {};
                 Backbone.trigger("resource:deleted");
             },
             error: function (xhr) {
@@ -262,9 +263,9 @@ define([
             };
             //TODO: REMOVE MOCK!
             if (this.resource.metadata.contacts) this.resource.metadata.contacts.contactInfo =  {
+                "phone": this.resource.metadata.contacts.phone,
                 "address" : this.resource.metadata.contacts.address,
                 "emailAddress" : this.resource.metadata.contacts.emailAddress,
-                "phone": this.resource.metadata.contacts.phone,
                 "hoursOfService" : this.resource.metadata.contacts.hoursOfService,
                 "contactInstruction" : this.resource.metadata.contacts.contactInstruction
             };

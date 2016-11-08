@@ -117,7 +117,7 @@ define([
             var self = this;
             // Menu Event Listener
             this.menu.on("select", function(evt){
-                console.log("select menu is fired", evt);
+                //console.log("select menu is fired", evt);
                 self.goTo("#/"+evt.id);
             });
 
@@ -180,7 +180,7 @@ define([
 
             this.listenTo(Backbone, "data:loaded", function() {
                 log.info("[EVT] data:loaded ");
-                //TODO: Do some stuff here;
+                Notify['success'](MultiLang[self.lang.toLowerCase()]['csvLoaded']);
             });
 
             this.listenTo(Backbone, "data:saving", function(res) {
@@ -287,7 +287,7 @@ define([
         //Landing
 
         onLanding: function () {
-            log.info("onLanding called.");
+            log.info("onLanding called.", RM.resource);
             //log.warn("TODO: Check if this selection is voluntary [if Resource is loaded] or disable");
             if ($.isEmptyObject(RM.resource)) this.menuInitial();
             this.switchView(LandingView, {
@@ -453,7 +453,7 @@ define([
                 candidate = new View(o);
 
             if (typeof candidate.accessControl === "function") {
-                log.info("View has access control");
+                log.info("View has access control", RM.resource);
                 candidate.accessControl(RM.resource).then(
                     function () {
                         log.warn("Access control: GRANTED");

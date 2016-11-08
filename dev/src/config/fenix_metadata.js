@@ -19,8 +19,8 @@ define(
             DisseminationPeriodicy = {uid: 'FAO_Period', version: "1.0"},
             PeriodicityDataCollection = {uid: 'FAO_Period', version: "1.0"},
             UpdatePeriodicity = {uid: 'FAO_Period', version: "1.0"},
-            CoverageSectorDetails = {uid: 'CRS_purpose_codes'},
-            CoverageSector = {uid: 'CRS_purpose_codes'}; // CSTAT_Core
+            CoverageSectorDetails = {uid: 'CSTAT_Core'},
+            CoverageSector = {uid: 'CSTAT_Core'}; // CSTAT_Core
 
         /*
          {

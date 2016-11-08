@@ -13,6 +13,8 @@ define([
 
     "use strict";
 
+    var rowlimit = 50;
+
     var s = {
         utility: '#fx-data-management-utility-holder',
         btnFileUploader: "#btnFileUploader",
@@ -48,7 +50,7 @@ define([
                 log.error("Impossible to render Landing");
                 log.error(valid)
             }
-            log.info("{SOME} Rendering View", this);
+            log.info("{Data} Rendering View", this);
 
             return this;
         },
@@ -96,34 +98,39 @@ define([
             this.$dataEditorContainer = $(this.$container.find(s.dataEditorContainer));
             this.$dataUploadContainer = $(this.$container.find(s.dataUploadContainer));
 
+            this.$dataEditorContainer.hide();
+
             this.columnsMatch = new Data.Columns_Match();
 
             Data.init(this.$container, config, null);
             log.info('{Data} Calling the Codelists');
             this.generator.then (function (result) {
+                Data.isEditable(false);
                 log.info('{Data} Calling the DSD');//, result);
                 var dsd = self.dsd.columns;
                 log.info('{Data} Setting the DSD...');//, dsd);
                 Data.setColumns(dsd, result, null);
                 log.info("{Data} DSD Columns Setted.");//, self.data);
-                if (self.data !== undefined) Data.setData(self.data);
+                if (self.data !== undefined) Data.setData(self.data, rowlimit);
+                log.info("{Data} But not the data!");
             })
 
         },
 
         _initFileUploader: function() {
             this.fUpload = new FileUploader({ accept: ['csv'] });
-            this.fUpload.render(this.$container.find(s.dataFileUpload));
+            this.fUpload.render(s.dataFileUpload);
         },
 
         _bindEventListeners: function() {
             log.info('{Data} _bindEventListeners');
             var self = this;
+            /*
             $(this.$container.find(s.btnFileUploader)).on("click", function(e){
                 e.stopPropagation();
                 $(s.utility).find('.dropdown-menu').toggle();
             });
-
+            */
             $(this.$savebtn).on("click", function(){
                 log.info("{DATA} saving", Data.getData());
                 if (Data.getData()) Backbone.trigger("data:saving", Data.getData());
@@ -169,7 +176,7 @@ define([
 
             //this.tmpCsvData = csvData;
             if (keyDuplicates && keyDuplicates.length > 0) {
-                this._switchPanelVisibility($(this.$container.find(this.s.dataUploadContainer)));
+                this._switchPanelVisibility($(this.$container.find(s.dataUploadContainer)));
             } else {
                 this._CSVLoadedMergeData('keepNew');
             }
@@ -203,14 +210,16 @@ define([
                 }
                 //Don't merge, return.
                 log.info("Don't merge, return.");
-                this._switchPanelVisibility($(this.$container.find(this.s.dataEditorContainer)));
+                this._switchPanelVisibility($(this.$container.find(s.dataEditorContainer)));
                 this.tmpCsvCols = null;
-                this.tmpCsvData = null;
+                this.tmpCsvf= null;
                 return;
             }
             dv.dataMerge(Data.getColumns(), data, this.tmpCsvData, keepOldOrNew);
-            Data.setData(data);
-            this._switchPanelVisibility($(this.$container.find(this.s.dataEditorContainer)));
+            Data.setData(data, rowlimit);
+//            Data.isEditable(false);
+            this._switchPanelVisibility($(this.$container.find(s.dataEditorContainer)));
+            Backbone.trigger("data:loaded");
 
             this.tmpCsvCols = null;
             this.tmpCsvData = null;
@@ -259,7 +268,7 @@ define([
                 return;
             }
 
-            this._switchPanelVisibility($(this.$container.find(this.s.dataUploadColsMatch)));
+            this._switchPanelVisibility($(this.$container.find(s.dataUploadColsMatch)));
 
             this.columnsMatch.setData(this.dsd, this.tmpCsvCols, this.tmpCsvData);
 

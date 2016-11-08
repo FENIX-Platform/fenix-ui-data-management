@@ -16,7 +16,7 @@ define([
         cache = false,
         lang = "EN",
         conf = {
-            "contextSystem":"uneca",
+            "contextSystem":"cstat_cog",
             "datasources":["D3S"]
         },
         environment = "develop"; // develop production [demo is not available]
@@ -26,7 +26,7 @@ define([
         //console.clear();
         this._importThirdPartyCss();
         // trace silent
-        log.setLevel('trace');
+        log.setLevel('silent');
         this.start();
     }
 

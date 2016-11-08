@@ -22,7 +22,9 @@ define([
 
         render: function (o) {
             $.extend(true, this, { initial: o });
-            $.extend(true, CatalogConfig, { initial: o.catalog });
+            $.extend(true, CatalogConfig,  o.catalog );
+
+            console.log(o.catalog);
 
             this._parseInput();
 
@@ -61,9 +63,9 @@ define([
             this.environment = this.initial.environment;
             this.lang = this.initial.lang.toLowerCase();
 
-            CatalogConfig.el =  CatalogConfig.initial.el || s.catalogContainer;
-            CatalogConfig.lang =  CatalogConfig.initial.lang || this.lang;
-            CatalogConfig.environment =  CatalogConfig.initial.environment || this.environment;
+            CatalogConfig.el =  CatalogConfig.el || s.catalogContainer;
+            CatalogConfig.lang =  CatalogConfig.lang || this.lang;
+            CatalogConfig.environment =  CatalogConfig.environment || this.environment;
 
         },
 

@@ -35,6 +35,7 @@ define([
             var me = this;
 
             this.$uploadInput.on('change', function (e) {
+                log.info("{FUH} changed ");
                 if (me.config.accept && me.config.accept.length > 0) {
                     var ext = me.$uploadInput.val().split(".").pop().toLowerCase();
                     if ($.inArray(ext, me.config.accept) == -1) {
@@ -56,6 +57,8 @@ define([
                     var reader = new FileReader();
                     reader.onload = function (e) {
                         var str = e.target.result;
+                        log.info("{FUH} event triggering ");
+                        log.info(widgetName+":"+evtTextFileUploaded);
                         Backbone.trigger(widgetName+":"+evtTextFileUploaded,str);
                     };
                     reader.readAsText(e.target.files.item(0));

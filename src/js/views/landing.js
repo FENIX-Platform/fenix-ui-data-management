@@ -71,7 +71,6 @@ define([
         },
 
         accessControl: function (Resource) {
-            console.log("landing ac", Resource);
             //TODO: Currently, if a resource is present, stay where you are.
             //TODO: I don't know if this is correct, but I would suggest this kind of approach.
             return new Q.Promise(function (fulfilled) {

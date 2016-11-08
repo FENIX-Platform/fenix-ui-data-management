@@ -14,6 +14,7 @@ define([
 
         render: function (o) {
             $.extend(true, this, {initial: o});
+            console.log(this.initial);
 
             this._parseInput();
 
@@ -54,7 +55,7 @@ define([
             this.environment = this.initial.environment;
             this.lang = this.initial.lang.toLowerCase();
             this.model = this.initial.model;
-            this.config = this.initial.metadataEditor;
+            this.config = this.initial.config;
             this.$savebtn = $(this.initial.savebtn);
 
         },
@@ -75,6 +76,7 @@ define([
 
         _initViews: function () {
             log.info("{MDE} initViews");
+            console.log(this.config)
             this.MDE = new MDE({
                 el: this.$container,
                 lang: this.lang,
