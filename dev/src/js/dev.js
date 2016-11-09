@@ -15,10 +15,9 @@ define([
         },
         cache = false,
         lang = "EN",
-        conf = {
-            "contextSystem":"cstat_cog",
-            "datasources":["D3S"]
-        },
+
+
+
         environment = "develop"; // develop production [demo is not available]
 
     function Dev() {
@@ -26,7 +25,7 @@ define([
         //console.clear();
         this._importThirdPartyCss();
         // trace silent
-        log.setLevel('silent');
+        log.setLevel('trace');
         this.start();
     }
 
@@ -44,7 +43,6 @@ define([
             el: s.DATA_MNG,
             cache: cache,
             lang: lang,
-            config: conf,
             dsdEditor: DSDConf,
             metadataEditor: MDConf,
             catalog: CataConf

@@ -146,8 +146,8 @@ define([
             $(this.$container.find(s.btnDataMergeCancel)).on('click', function () {
                 self.tmpCsvData = null;
                 self.tmpCsvCols = null;
-                self._switchPanelVisibility($(self.$container.find(self.s.dataEditorContainer)));
-                $(self.s.utility).show();
+                self._switchPanelVisibility($(self.$container.find(s.dataEditorContainer)));
+                $(s.utility).show();
             });
 
             this.listenTo(Backbone, "data:uploaded", function(str) {
@@ -252,7 +252,7 @@ define([
                 $(s.btnCsvMatcherOk).off("click");
                 self.tmpCsvData = null;
                 self.tmpCsvCols = null;
-                self._switchPanelVisibility($(self.$container.find(self.s.dataEditorContainer)));
+                self._switchPanelVisibility($(self.$container.find(s.dataEditorContainer)));
                 $(s.utility).show();
             });
 

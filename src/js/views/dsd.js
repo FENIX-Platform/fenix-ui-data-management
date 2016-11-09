@@ -67,8 +67,20 @@ define([
             log.info("{DSD} bindEventListeners()");
             var self = this;
             this.$savebtn.on("click", function() {
-                log.info("{DSD} saving", self.dsd.get());
-                Backbone.trigger("dsd:setcolumns", self.dsd.get());
+                var obj = {};
+                obj['columns'] = self.dsd.get();
+                obj['datasources'] = self.config.datasources;
+                obj['contextSystem'] = self.config.contextSystem;
+                if (self.model !== null && self.model.rid !== null && self.model.rid !== undefined) {
+                    log.info('We have rid, update dsd');
+                    obj['rid'] = self.model.rid;
+                    log.info("{DSD} saving", obj);
+                    Backbone.trigger("dsd:saving", obj);
+                } else {
+                    log.info('Not rid? Update the whole metadata...');
+                    log.info("{DSD} saving+META", obj);
+                    Backbone.trigger("dsd:new", obj);
+                }
             });
 
         },
@@ -81,8 +93,8 @@ define([
 
             this.dsd.init(this.$container, cfg, null);
             var col = this.model;
-            log.info('{DSD}', col.columns);
-            if (col.columns !== undefined && col.columns.length) this.dsd.set(col.columns);
+            //log.info('{DSD}', col.columns);
+            if (col !== null && col.columns !== undefined && col.columns.length) this.dsd.set(col.columns);
             log.info('{DSD} is editable', this.isEditable);
             this.dsd.editable(this.isEditable);
 

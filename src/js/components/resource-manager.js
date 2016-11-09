@@ -23,7 +23,6 @@ define([
         this.bridge = new Bridge({
             environment: this.environment
         });
-        log.info("FENIX DM - RM : We'll work on '"+this.environment+"' environment.");
         this.resource = {};
         this.url = url;
         log.info("FENIX DM - Resource Manager completed.",this);
@@ -56,12 +55,23 @@ define([
     };
 
     ResourceManager.prototype.isDSDValid = function(DSDRes) {
-        //TODO: Add message callback
 
-        if (!DSDRes) throw new Error("DSD to update cannot be null");
-        if (!DSDRes.datasources) throw new Error("Datasources cannot be null");
-            else if (DSDRes.datasources.length == 0) throw new Error("Datasources cannot be null");
-        if (!DSDRes.contextSystem) throw new Error("ContextSystem cannot be null");
+        if (!DSDRes) {
+            Backbone.trigger("error:showerrormsg", "DSD to update cannot be null");
+            throw new Error("DSD to update cannot be null");
+        }
+        if (!DSDRes.datasources) {
+            Backbone.trigger("error:showerrormsg", "Datasources cannot be null");
+            throw new Error("Datasources cannot be null");
+        }
+            else if (DSDRes.datasources.length == 0) {
+            Backbone.trigger("error:showerrormsg", "Datasources cannot be null");
+            throw new Error("Datasources cannot be null");
+            }
+        if (!DSDRes.contextSystem) {
+            Backbone.trigger("error:showerrormsg", "ContextSystem cannot be null");
+            throw new Error("ContextSystem cannot be null");
+        }
 
         return true
 
@@ -152,8 +162,9 @@ define([
     ResourceManager.prototype.updateResource = function(res, serv) {
         //console.log("UPD: ",this.resource);
         var self = this;
-        if (self.resource.metadata.uid === undefined) {
-            log.info("RM - Switching to create.")
+        console.log('this.resource.metadata.uid', this.resource.metadata.uid );
+        if (this.resource.metadata.uid == undefined) {
+            log.info("RM - Switching to create.");
             this.createResource(res,serv);
             return;
         }
@@ -224,10 +235,12 @@ define([
 
     // METADATA
 
-    ResourceManager.prototype.getMetadataFromServer = function () {
+    ResourceManager.prototype.getFullMetadataFromServer = function () {
+        console.log('getting full metadata')
         this.bridge.getMetadata({
             body: [],
-            uid: this.resource.metadata.uid
+            uid: this.resource.metadata.uid,
+            params: {dsd: true, full: true}
         }).then(
             _.bind(this._onGetMetadataSuccess, this),
             _.bind(this._onGetMetadataError, this)
@@ -241,8 +254,9 @@ define([
 
     ResourceManager.prototype._onGetMetadataSuccess = function (resource) {
         log.info("_onGetMetadataSuccess");
+        this.metadata = resource;
         log.info(resource);
-        return resource;
+        //return resource;
 
     };
 
@@ -256,8 +270,11 @@ define([
         log.info("setMetadata Called.");
         if (this.isMetaValid(resource)) {
             var temp = this.resource.metadata.dsd;
+            var uid = this.resource.metadata.uid;
+            console.log('current dsd', temp);
             this.resource.metadata = resource;
             this.resource.metadata.dsd = temp;
+            this.resource.metadata.uid = uid;
             this.resource.metadata.meContent = {
                 "resourceRepresentationType": "dataset"
             };
@@ -269,7 +286,7 @@ define([
                 "hoursOfService" : this.resource.metadata.contacts.hoursOfService,
                 "contactInstruction" : this.resource.metadata.contacts.contactInstruction
             };
-
+            console.log('updating all', this.resource.metadata);
             this.updateMeta(this.resource.metadata);
         }
     };
@@ -287,6 +304,7 @@ define([
         if (this.resource.metadata.dsd === undefined) return null;
         log.info("getDSD Called.",this.resource.metadata.dsd);
         return this.resource.metadata.dsd;
+
     };
 
     ResourceManager.prototype.getDSDColumns = function () {
@@ -304,9 +322,20 @@ define([
         this.updateDSD(this.resource.metadata.dsd);
     };
 
+    ResourceManager.prototype.setDSDwithMeta = function (candidate) {
+        var toval = candidate;
+        //toval['columns'] = candidate;
+        log.info("setDSDwithMeta Called.", toval, this.resource);
+
+        if (this.isDSDValid(toval)) {
+            this.resource.metadata.dsd = toval;
+            this.setMetadata(this.resource.metadata);
+        }
+
+    };
+
     ResourceManager.prototype.setDSD = function (candidate) {
-        var toval = this.resource.metadata.dsd;
-        toval['columns'] = candidate;
+        var toval = candidate;
         log.info("setDSD Called.", toval);
         if (this.isDSDValid(toval)) {
             this.resource.metadata.dsd = toval;

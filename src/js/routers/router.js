@@ -167,6 +167,8 @@ define([
             // When the save button is clicked
             this.listenTo(Backbone, "resource:updated", function() {
                 log.info("[EVT] resource:updated ", RM.resource);
+                log.info("Load again because...");
+                RM.getFullMetadataFromServer();
                 Notify['success'](MultiLang[self.lang.toLowerCase()]['resourceSaved']);
                 self.goTo("#/home");
             });
@@ -208,6 +210,16 @@ define([
             });
 
             // DSD
+            this.listenTo(Backbone, "dsd:new", function(res) {
+                log.info("[EVT] dsd:new", res);
+                RM.setDSDwithMeta(res);
+            });
+
+
+            this.listenTo(Backbone, "dsd:saving", function(res) {
+                log.info("[EVT] dsd:saving");
+                RM.setDSD(res);
+            });
 
             this.listenTo(Backbone, "dsd:setcolumns", function(res) {
                 log.info("[EVT] dsd:setcolumns");
@@ -216,7 +228,7 @@ define([
 
             this.listenTo(Backbone, "dsd:loading", function() {
                 log.info("[EVT] dsd:loading");
-                //TODO: Do some stuff here;
+
             });
 
             this.listenTo(Backbone, "dsd:loaded", function() {
@@ -239,7 +251,7 @@ define([
 
             this.listenTo(Backbone, "error:showerrorsrv", function(code, xhr){
                 log.info("[EVT] error:showerrorsrv ", code, xhr);
-                var out = MultiLang[this.lang.toLowerCase()][code] || JSON.stringify(xhr.responseText) || "Generic Error";
+                var out = MultiLang[this.lang.toLowerCase()][code] || "Server: "+JSON.stringify(xhr.responseJSON) || "Generic Error";
                 Notify['error'](out);
             });
 
