@@ -5,6 +5,13 @@ define(function() {
 
         return {
 
+            "contextSystem":"fenix_deveopment",
+            "datasources":["D3S"],
+            "lang" : "EN",
+            "dsdEditor": "",
+            "metadataEditor": "",
+            "catalog": ""
+
         }
     }
 );

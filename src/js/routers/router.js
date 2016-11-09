@@ -374,7 +374,7 @@ define([
             $(this.$el.find(s.BTN_CONTAINER)).show();
             this.switchView(MetadataView, {
                 container: this.container,
-                menu : "search",
+                menu : "metadata",
                 lang : this.lang,
                 environment: this.environment,
                 config: this.metadataEditor,

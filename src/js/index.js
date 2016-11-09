@@ -60,7 +60,9 @@ define([
         this.environment = this.initial.environment;
         this.lang = this.initial.lang || Config.lang;
 
-        this.config = this.initial.config || Config.config;
+        this.config = this.initial.config || Config;
+        this.config.contextSystem = this.initial.dsdEditor.contextSystem || Config.contextSystem;
+        this.config.datasources =  this.initial.dsdEditor.datasources || Config.datasources;
 
         this.dsdEditor = this.initial.dsdEditor || Config.dsdEditor;
         this.catalog = this.initial.catalog || Config.catalog;
