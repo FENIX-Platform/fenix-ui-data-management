@@ -13,7 +13,7 @@ define([
 
     "use strict";
 
-    var rowlimit = 50;
+    var rowlimit = null;
 
     var s = {
         utility: '#fx-data-management-utility-holder',
@@ -105,7 +105,7 @@ define([
             Data.init(this.$container, config, null);
             log.info('{Data} Calling the Codelists');
             this.generator.then (function (result) {
-                Data.isEditable(false);
+                //Data.isEditable(false);
                 log.info('{Data} Calling the DSD');//, result);
                 var dsd = self.dsd.columns;
                 log.info('{Data} Setting the DSD...');//, dsd);

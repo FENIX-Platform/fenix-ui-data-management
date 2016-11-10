@@ -24,7 +24,7 @@ define([
             $.extend(true, this, { initial: o });
             $.extend(true, CatalogConfig,  o.catalog );
 
-            console.log();
+            console.log(o.catalog);
 
             this._parseInput();
 
