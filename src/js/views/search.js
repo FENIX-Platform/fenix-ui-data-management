@@ -7,33 +7,33 @@ define([
     "../../config/catalog",
     "fenix-ui-bridge",
     "../../config/errors",
-    "../../html/search.hbs",
-
-],function($, Backbone, log, Q, Catalog, CatalogConfig, Bridge, ERR, Template){
-
+    "../../html/search.hbs"
+], function ($, Backbone, log, Q, Catalog, CatalogConfig, Bridge, ERR, Template) {
     "use strict";
 
     var s = {
-        catalogContainer : "#catalog-container"
+        CATALOG: "#catalog-container"
     };
 
     var SearchView = Backbone.View.extend({
 
-
         render: function (o) {
-            $.extend(true, this, { initial: o });
-            $.extend(true, CatalogConfig,  o.catalog );
-
-            console.log(o.catalog);
+            console.log(o)
+            $.extend(true, this, {initial: o});
 
             this._parseInput();
 
             var valid = this._validateInput();
+
             if (valid === true) {
                 log.info("Rendering View - Search", this);
-                this.$container.html(Template);
-                this.catalog = new Catalog(CatalogConfig);
+
+                this._attach();
+
+                this._initCatalog();
+
                 this._bindEventListeners();
+
                 return this;
             } else {
                 log.error("Impossible to render Search");
@@ -47,47 +47,57 @@ define([
             var valid = true,
                 errors = [];
 
-            //Check if $el exist
-            if (this.$container.length === 0) {
-                errors.push({code: ERR.MISSING_CONTAINER});
-                log.warn("Impossible to find container");
-            }
-
             return errors.length > 0 ? errors : valid;
         },
 
         _parseInput: function () {
 
-            this.$container = $(this.initial.container);
+            this.$el = $(this.initial.el);
+
             this.cache = this.initial.cache;
             this.environment = this.initial.environment;
             this.lang = this.initial.lang.toLowerCase();
 
-            CatalogConfig.el =  CatalogConfig.el || s.catalogContainer;
-            CatalogConfig.lang =  CatalogConfig.lang || this.lang;
-            CatalogConfig.environment =  CatalogConfig.environment || this.environment;
+            $.extend(true, CatalogConfig, this.initial.catalog);
 
         },
 
+        _attach: function () {
+
+            this.$el.html(Template);
+        },
+
+        _initCatalog: function () {
+
+            console.log(this.$el.find(s.CATALOG));
+
+            var model = $.extend(true, {
+                el: this.$el.find(s.CATALOG),
+                cache: this.cache,
+                lang: this.lang,
+                environment: this.environment
+            }, this.catalogConfig);
+
+            console.log(model)
+
+            this.catalog = new Catalog(model);
+        },
 
         _bindEventListeners: function () {
+
             log.info("{SEARCH} bindEventListeners()");
-            this.catalog.on('select', function(ret){
+
+            this.catalog.on('select', function (ret) {
+
                 log.info("*select* triggered");
-                Backbone.trigger("resource:loading",ret);
+
+                Backbone.trigger("resource:loading", ret);
             });
         },
 
-        accessControl: function (Resource) {
-            //TODO: Currently, if a resource is present, stay where you are.
-            //TODO: I don't know if this is correct, but I would suggest this kind of approach.
-            return new Q.Promise(function (fulfilled) {
-                if ($.isEmptyObject(Resource)) fulfilled();
-            });
-        },
-
-        remove: function() {
+        remove: function () {
             this.catalog.dispose();
+
             Backbone.View.prototype.remove.apply(this, arguments);
         }
 

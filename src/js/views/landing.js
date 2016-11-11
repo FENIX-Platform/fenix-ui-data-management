@@ -5,13 +5,13 @@ define([
     "q",
     '../../nls/labels',
     "../../html/landing.hbs",
-    '../../config/errors',
-],function( $, Backbone, log, Q, MultiLang, Template, ERR){
+    '../../config/errors'
+], function ($, Backbone, log, Q, MultiLang, Template, ERR) {
 
     "use strict";
     var s = {
-        btnSearch : "#btnSearch",
-        btnAdd : "#btnAdd"
+        btnSearch: "#btnSearch",
+        btnAdd: "#btnAdd"
     };
 
     var LandingView = Backbone.View.extend({
@@ -22,15 +22,23 @@ define([
             this._parseInput();
 
             var valid = this._validateInput();
+
             if (valid === true) {
                 log.info("Rendering View - Landing", this);
-                this.$container.html(Template);
+
+                this._attach();
+
                 this._bindEventListeners();
+
                 return this;
             } else {
                 log.error("Impossible to render Landing");
                 log.error(valid)
             }
+        },
+
+        _attach: function () {
+            this.$el.html(Template);
         },
 
         _validateInput: function () {
@@ -39,7 +47,7 @@ define([
                 errors = [];
 
             //Check if $el exist
-            if (this.$container.length === 0) {
+            if (this.$el.length === 0) {
                 errors.push({code: ERR.MISSING_CONTAINER});
                 log.warn("Impossible to find container");
             }
@@ -49,38 +57,31 @@ define([
 
         _parseInput: function () {
 
-            this.$container = $(this.initial.container);
             this.cache = this.initial.cache;
-            this.environment = this.initial.environment;
-            this.lang = this.initial.lang.toLowerCase();
 
+            this.environment = this.initial.environment;
+
+            this.lang = this.initial.lang.toLowerCase();
         },
 
-        _bindEventListeners: function() {
-            $(s.btnSearch).on("click", function() {
+        _bindEventListeners: function () {
+
+            this.$el.find(s.btnSearch).on("click", function () {
                 Backbone.trigger("button:search");
             });
-            $(s.btnAdd).on("click", function() {
+
+            this.$el.find(s.btnAdd).on("click", function () {
                 Backbone.trigger("button:new");
             });
         },
 
-        _removeEventListeners: function() {
-            $(s.btnSearch).off("click");
-            $(s.btnAdd).off("click");
+        _unbindEventListeners: function () {
+            this.$el.find(s.btnSearch).off();
+            this.$el.find(s.btnAdd).off();
         },
 
-        accessControl: function (Resource) {
-            //TODO: Currently, if a resource is present, stay where you are.
-            //TODO: I don't know if this is correct, but I would suggest this kind of approach.
-            return new Q.Promise(function (fulfilled) {
-                if ($.isEmptyObject(Resource)) fulfilled();
-            });
-        },
-
-
-        remove: function() {
-            this._removeEventListeners();
+        remove: function () {
+            this._unbindEventListeners();
             Backbone.View.prototype.remove.apply(this, arguments);
         }
     });

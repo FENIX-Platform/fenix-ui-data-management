@@ -3,15 +3,13 @@ define(function() {
 
         'use strict';
 
-        return {
+       return {
+           lang : "EN",
 
-            "contextSystem":"fenix_deveopment",
-            "datasources":["D3S"],
-            "lang" : "EN",
-            "dsdEditor": "",
-            "metadataEditor": "",
-            "catalog": ""
+           menuItems : ['home', 'landing', 'search', 'add', 'metadata', 'dsd', 'data', 'delete', 'close'],
+           menuItemsEnabledOnStart : ['add', 'search', 'landing'],
+           menuItemsEnableOnValidResource : ['delete', 'metadata', 'dsd', 'data', 'home', 'close']
+       };
 
-        }
     }
 );

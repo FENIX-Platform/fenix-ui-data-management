@@ -5,34 +5,34 @@ define([
     "./routers/router",
     "../html/main.hbs",
     "../config/config",
-    "../config/errors",
-    "./components/resource-manager"
-], function (log, $, Router, Template, Config, ERR, RM) {
+    "../config/errors"
+], function (log, $, Router, Template, C, ERR) {
 
     "use strict";
 
     function DataManagement(o) {
         log.info("FENIX Data Management", o);
+
         $.extend(true, this, {initial: o});
+
+        require("../css/fenix-ui-data-managment.css");
 
         this._parseInput();
 
         var valid = this._validateInput();
 
         if (valid === true) {
-            log.info("DM: Config is valid");
-            require("../css/fenix-ui-data-managment.css");
+
             log.info('Init Resource Manager Environment');
-            RM.setEnvironment(this.environment);
+
             this._attach();
+
             this._start();
 
         } else {
             log.error("Impossible to create Data Management");
             log.error(valid)
         }
-
-
     }
 
     DataManagement.prototype._validateInput = function () {
@@ -56,17 +56,13 @@ define([
     DataManagement.prototype._parseInput = function () {
 
         this.$el = $(this.initial.el);
-        this.cache = typeof this.initial.cache === "boolean" ? this.initial.cache : Config.cache;
+        this.cache = typeof this.initial.cache === "boolean" ? this.initial.cache : C.cache;
         this.environment = this.initial.environment;
-        this.lang = this.initial.lang || Config.lang;
+        this.lang = this.initial.lang || C.lang;
 
-        this.config = this.initial.config || Config;
-        this.config.contextSystem = this.initial.dsdEditor.contextSystem || Config.contextSystem;
-        this.config.datasources =  this.initial.dsdEditor.datasources || Config.datasources;
-
-        this.dsdEditor = this.initial.dsdEditor || Config.dsdEditor;
-        this.catalog = this.initial.catalog || Config.catalog;
-        this.metadataEditor = this.initial.metadataEditor || Config.metadataEditor;
+        this.dsdEditor = this.initial.dsdEditor || C.dsdEditor;
+        this.catalog = this.initial.catalog || C.catalog;
+        this.metadataEditor = this.initial.metadataEditor || C.metadataEditor;
 
     };
 
@@ -77,10 +73,9 @@ define([
             cache: this.cache,
             environment: this.environment,
             lang : this.lang,
-            dsdEditor : this.dsdEditor,
             catalog: this.catalog,
-            config: this.config,
-            metadataEditor: this.metadataEditor
+            metadataEditor: this.metadataEditor,
+            dsdEditor : this.dsdEditor
         });
 
     };

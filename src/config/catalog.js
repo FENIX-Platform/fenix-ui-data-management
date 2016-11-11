@@ -1,36 +1,37 @@
-define(function(){
+define(function () {
 
     'use strict';
 
     return {
-        defaultSelectors: ['resourceType', 'contextSystem'],
-        hideCloseButton : true,
-        pluginRegistry : {
-        contextSystem : {
-            selector : {
-                id : "dropdown",
-                    source : [
-                    {value : "uneca", label : "UNECA"},
-                    {value : "cstat_training", label : "CountrySTAT Training"}
-                ],
-            default : ["uneca"],
-                    hideSummary : true,
-                    config : {
-                    plugins: ['remove_button'],
+
+        defaultSelectors: ['freeText', 'resourceType', 'contextSystem'],
+        hideCloseButton: true,
+        pluginRegistry: {
+            contextSystem: {
+                selector: {
+                    id: "dropdown",
+                    source: [
+                        {value: "uneca", label: "UNECA"},
+                        {value: "cstat_training", label: "CountrySTAT Training"}
+                    ],
+                    default: ["uneca"],
+                    hideSummary: true,
+                    config: {
+                        plugins: ['remove_button'],
                         mode: 'multi'
-                }
-            },
+                    }
+                },
 
-            template : {
-                hideRemoveButton : false
-            },
+                template: {
+                    hideRemoveButton: false
+                },
 
-            format : {
-                output : "enumeration",
+                format: {
+                    output: "enumeration",
                     metadataAttribute: "dsd.contextSystem"
+                }
             }
         }
-     }
 
     }
 });

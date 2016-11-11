@@ -22,7 +22,7 @@
     "fenix-ui-DSDEditor": "^2.0.0-beta.16",
     "fenix-ui-DataEditor": "^2.0.0-beta.40",
     "fenix-ui-bridge": "^1.0.0-beta.7",
-    "fenix-ui-catalog": "^2.0.0-beta.14",
+    "fenix-ui-catalog": "^2.0.0-beta.18",
     "fenix-ui-menu": "^3.0.0-beta.4",
     "fenix-ui-metadata-editor": "^2.0.0-beta.13",
     "jquery": "^3.1.0",
@@ -67,6 +67,6 @@
     "style-loader": "^0.13.1",
     "url-loader": "^0.5.7",
     "webpack": "^1.13.3",
-    "webpack-dev-server": "^1.15.1"
+    "webpack-dev-server": "^1.16.2"
   }
 }

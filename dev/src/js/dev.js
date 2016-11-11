@@ -15,17 +15,17 @@ define([
         },
         cache = false,
         lang = "EN",
-
-
-
         environment = "develop"; // develop production [demo is not available]
 
     function Dev() {
 
-        //console.clear();
+        console.clear();
+
         this._importThirdPartyCss();
+
         // trace silent
-        log.setLevel('trace');
+        log.setLevel('silent');
+
         this.start();
     }
 
