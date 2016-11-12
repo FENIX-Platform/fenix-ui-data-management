@@ -5,29 +5,35 @@ define([
     "q",
     '../../nls/labels',
     "../../html/home.hbs",
-    "../../config/errors",
-],function($, Backbone,log, Q, MultiLang, Template, ERR){
+    "../../config/events"
+], function ($, Backbone, log, Q, labels, template, EVT) {
 
     "use strict";
 
     var s = {
-        btnMeta : "#btnMeta",
-        btnDSD : "#btnDSD",
-        btnData : "#btnData"
+        btnMeta: "#btnMeta",
+        btnDSD: "#btnDSD",
+        btnData: "#btnData"
     };
 
     var HomeView = Backbone.View.extend({
 
         render: function (o) {
+
             $.extend(true, this, {initial: o});
 
             this._parseInput();
 
             var valid = this._validateInput();
+
             if (valid === true) {
+
                 log.info("Rendering View - Home", this);
-                this.$container.html(Template);
+
+                this._attach();
+
                 this._bindEventListeners();
+
                 return this;
             } else {
                 log.error("Impossible to render Home");
@@ -39,43 +45,39 @@ define([
 
             var valid = true,
                 errors = [];
-
-            //Check if $el exist
-            if (this.$container.length === 0) {
-                errors.push({code: ERR.MISSING_CONTAINER});
-                log.warn("Impossible to find container");
-            }
-
+            
             return errors.length > 0 ? errors : valid;
         },
 
         _parseInput: function () {
 
-            this.$container = $(this.initial.container);
             this.cache = this.initial.cache;
             this.environment = this.initial.environment;
             this.lang = this.initial.lang.toLowerCase();
+        },
+
+        _attach: function () {
+            this.$el.html(template(labels)); //TODO i18n
+        },
+
+        _bindEventListeners: function () {
+
+            this.$el.find(s.btnMeta).on("click", function () {
+                Backbone.trigger(EVT.SHOW_METADATA);
+            });
+            this.$el.find(s.btnDSD).on("click", function () {
+                Backbone.trigger(EVT.SHOW_DSD);
+            });
+            this.$el.find(s.btnData).on("click", function () {
+                Backbone.trigger(EVT.SHOW_DATA);
+            });
 
         },
 
-
-        _bindEventListeners: function() {
-            $(this.$container.find(s.btnMeta)).on("click",function(){
-                Backbone.trigger("button:metadata");
-            });
-            $(this.$container.find(s.btnDSD)).on("click",function(){
-                Backbone.trigger("button:dsd");
-            });
-            $(this.$container.find(s.btnData)).on("click",function(){
-                Backbone.trigger("button:data");
-            });
-
-        },
-
-        _removeEventListener: function() {
-            $(this.$container.find(s.btnMeta)).off("click");
-            $(this.$container.find(s.btnDSD)).off("click");
-            $(this.$container.find(s.btnData)).off("click");
+        _unbindEventListeners: function () {
+            this.$el.find(s.btnMeta).off();
+            this.$el.find(s.btnDSD).off();
+            this.$el.find(s.btnData).off();
         },
 
         accessControl: function (Resource) {
@@ -89,8 +91,8 @@ define([
             });
         },
 
-        remove: function() {
-            this._removeEventListener();
+        remove: function () {
+            this._unbindEventListeners();
             Backbone.View.prototype.remove.apply(this, arguments);
         }
     });

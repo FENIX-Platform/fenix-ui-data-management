@@ -1,28 +1,43 @@
 define([
     "jquery",
     "backbone",
+    "underscore",
     "loglevel",
     "q",
     "fenix-ui-DSDEditor",
-    "../../config/errors",
-
-
-],function($, Backbone, log, Q, DSD, ERR){
+    "../../html/dsd.hbs",
+    "../../config/events"
+], function ($, Backbone, _, log, Q, DsdEditor, template, EVT) {
 
     "use strict";
+
+    var s = {
+        SAVE_BUTTON: '[data-role="save"]',
+        DSD_EL: '[data-role="dsd"]'
+    };
 
     var DSDView = Backbone.View.extend({
 
         render: function (o) {
+
             $.extend(true, this, {initial: o});
 
             this._parseInput();
 
             var valid = this._validateInput();
+
             if (valid === true) {
+
                 log.info("Rendering View - DSD", this);
-                this._initViews();
+
+                this._attach();
+
+                this._initVariables();
+
+                this._initDsdEditor();
+
                 this._bindEventListeners();
+
                 return this;
             } else {
                 log.error("Impossible to render DSD");
@@ -30,77 +45,69 @@ define([
             }
         },
 
+        _attach: function () {
+            this.$el.html(template());
+        },
+
+        _initVariables: function () {
+
+            this.$savebtn = this.$el.find(s.SAVE_BUTTON);
+        },
+
         _validateInput: function () {
 
             var valid = true,
                 errors = [];
-
-            //Check if $el exist
-            if (this.$container.length === 0) {
-                errors.push({code: ERR.MISSING_CONTAINER});
-                log.warn("Impossible to find container");
-            }
-
-            //Check if $savebtn is visible
-            if (!this.$savebtn.is(":visible")){
-                errors.push({code: ERR.MISSING_BUTTONS});
-                log.warn("Impossible to find save buttons");
-            }
-
 
             return errors.length > 0 ? errors : valid;
         },
 
         _parseInput: function () {
 
-            this.$container = $(this.initial.container);
             this.environment = this.initial.environment;
             this.lang = this.initial.lang.toLowerCase();
             this.config = this.initial.config;
-            this.$savebtn = $(this.initial.savebtn);
             this.model = this.initial.model;
             this.isEditable = this.initial.isEditable;
+        },
+
+        _initDsdEditor: function () {
+            log.info("{DSD} initViews");
+
+            this.dsd = DsdEditor;
+
+            this.dsd.init(this.$el.find(s.DSD_EL), this.config, null);
+
+            if (this.model && Array.isArray(this.model.columns) && this.model.columns.length > 0) {
+                this.dsd.set(this.model.columns);
+            }
+
+            log.info('{DSD} is editable', this.isEditable);
+
+            this.dsd.editable(this.isEditable);
 
         },
 
         _bindEventListeners: function () {
             log.info("{DSD} bindEventListeners()");
-            var self = this;
-            this.$savebtn.on("click", function() {
-                var obj = {};
-                obj['columns'] = self.dsd.get();
-                obj['datasources'] = self.config.datasources;
-                obj['contextSystem'] = self.config.contextSystem;
-                if (self.model !== null && self.model.rid !== null && self.model.rid !== undefined) {
-                    log.info('We have rid, update dsd');
-                    obj['rid'] = self.model.rid;
-                    log.info("{DSD} saving", obj);
-                    Backbone.trigger("dsd:saving", obj);
-                } else {
-                    log.info('Not rid? Update the whole metadata...');
-                    log.info("{DSD} saving+META", obj);
-                    Backbone.trigger("dsd:new", obj);
-                }
-            });
 
+            this.$savebtn.on("click", _.bind(this._onSaveClick, this));
         },
 
-        _initViews: function() {
+        _onSaveClick: function () {
 
-            log.info("{DSD} initViews");
-            var cfg = this.config;
-            this.dsd = DSD;
+            var obj = {
+                columns: this.dsd.get(),
+                datasources: this.config.datasources,
+                contextSystem: this.config.contextSystem
+            };
 
-            this.dsd.init(this.$container, cfg, null);
-            var col = this.model;
-            //log.info('{DSD}', col.columns);
-            if (col !== null && col.columns !== undefined && col.columns.length) this.dsd.set(col.columns);
-            log.info('{DSD} is editable', this.isEditable);
-            this.dsd.editable(this.isEditable);
+            log.info("{DSD} saving", obj);
 
+            Backbone.trigger(EVT.DSD_SAVE, obj);
         },
 
-        _removeEventListeners : function () {
+        _unbindEventListeners: function () {
             this.$savebtn.off("click");
         },
 
@@ -115,9 +122,11 @@ define([
             });
         },
 
-        remove: function() {
+        remove: function () {
             log.info("{DSD} remove");
-            this._removeEventListeners();
+
+            this._unbindEventListeners();
+
             this.dsd.destroy();
             Backbone.View.prototype.remove.apply(this, arguments);
         }

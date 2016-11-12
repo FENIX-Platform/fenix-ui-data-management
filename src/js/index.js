@@ -23,8 +23,6 @@ define([
 
         if (valid === true) {
 
-            log.info('Init Resource Manager Environment');
-
             this._attach();
 
             this._start();
@@ -51,6 +49,8 @@ define([
 
     DataManagement.prototype._attach = function () {
         this.$el.html(Template);
+
+        log.info("Template attach : success");
     };
 
     DataManagement.prototype._parseInput = function () {
@@ -68,7 +68,7 @@ define([
 
     DataManagement.prototype._start = function () {
 
-        this.router = new Router({
+        var model = {
             $el: this.$el,
             cache: this.cache,
             environment: this.environment,
@@ -76,8 +76,14 @@ define([
             catalog: this.catalog,
             metadataEditor: this.metadataEditor,
             dsdEditor : this.dsdEditor
-        });
+        };
 
+        log.info("Router config:");
+        log.info(model);
+
+        this.router = new Router(model);
+
+        log.info("Router start: success");
     };
 
     return DataManagement;

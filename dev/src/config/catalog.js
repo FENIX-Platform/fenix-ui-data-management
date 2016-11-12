@@ -4,10 +4,6 @@ define(function(){
 
     return {
 
-        el: "",
-        lang : "",
-        environment: "",
-
         defaultSelectors: ['freeText', 'resourceType', 'contextSystem'],
         hideCloseButton: true,
         pluginRegistry: {
@@ -15,10 +11,11 @@ define(function(){
                 selector: {
                     id: "dropdown",
                     source: [
+                        {value: "fenix_develop", label: "FENIX develop"},
                         {value: "uneca", label: "UNECA"},
                         {value: "cstat_training", label: "CountrySTAT Training"}
                     ],
-                    default: ["uneca"],
+                    default: ["fenix_develop"],
                     hideSummary: true,
                     config: {
                         plugins: ['remove_button'],

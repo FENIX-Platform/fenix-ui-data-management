@@ -4,15 +4,14 @@ define([
     'loglevel',
     "q",
     'fenix-ui-bridge',
-    'backbone'
-],function($, _, log, Q, Bridge, Backbone){
+    'backbone',
+    "../../config/events",
+    "../../config/config",
+], function ($, _, log, Q, Bridge, Backbone, EVT, C) {
 
     "use strict";
 
     var url = {
-        baseUrl: "http://fenix.fao.org/d3s_dev/msd/", // dev as default
-        develop: "http://fenix.fao.org/d3s_dev/msd/",
-        production: "http://fenixservices.fao.org/d3s/msd/",
         saveMetadata: "resources/metadata",
         saveDSD: "resources/dsd",
         saveData: "resources"
@@ -25,36 +24,37 @@ define([
         });
         this.resource = {};
         this.url = url;
-        log.info("FENIX DM - Resource Manager completed.",this);
-    };
+        log.info("FENIX DM - Resource Manager completed.", this);
+    }
 
-    ResourceManager.prototype.setEnvironment = function (env) {
-        this.environment = env;
+    ResourceManager.prototype.init = function (opts) {
+        log.info("Resource manager config:");
+        log.info(opts);
+
         this.bridge = new Bridge({
-            environment: env
+            environment: opts.environment,
+            cache: opts.cache
         });
-        this.url.baseUrl = url[env];
-        log.info("FENIX DM - Current Environment: "+ env + " ["+this.url.baseUrl+"]");
     };
 
     ResourceManager.prototype.getEnvironment = function () {
-        log.info("FENIX DM - Current Environment: "+ this.environment);
-        log.info("FENIX DM - Current Bridge Environment: "+ this.bridge.environment);
+        log.info("FENIX DM - Current Environment: " + this.environment);
+        log.info("FENIX DM - Current Bridge Environment: " + this.bridge.environment);
         return this.environment;
     };
 
 
     // Validation
 
-    ResourceManager.prototype.isResourceValid = function(Res) {
+    ResourceManager.prototype.isResourceValid = function (Res) {
         return (
-            (this.isMetaValid(Res.metadata)) &&
+            (this.isValidMetadata(Res.metadata)) &&
             (this.isDSDValid(Res.metadata.dsd)) &&
             (this.isDataValid(Res.data))
         );
     };
 
-    ResourceManager.prototype.isDSDValid = function(DSDRes) {
+    ResourceManager.prototype.isDSDValid = function (DSDRes) {
 
         if (!DSDRes) {
             Backbone.trigger("error:showerrormsg", "DSD to update cannot be null");
@@ -64,25 +64,24 @@ define([
             Backbone.trigger("error:showerrormsg", "Datasources cannot be null");
             throw new Error("Datasources cannot be null");
         }
-            else if (DSDRes.datasources.length == 0) {
+        else if (DSDRes.datasources.length == 0) {
             Backbone.trigger("error:showerrormsg", "Datasources cannot be null");
             throw new Error("Datasources cannot be null");
-            }
+        }
         if (!DSDRes.contextSystem) {
             Backbone.trigger("error:showerrormsg", "ContextSystem cannot be null");
             throw new Error("ContextSystem cannot be null");
         }
 
         return true
-
     };
 
-    ResourceManager.prototype.isDataValid = function(DataRes) {
+    ResourceManager.prototype.isDataValid = function (DataRes) {
         //TODO: There's no logic here with the current form of the Data Editor
         return true
     };
 
-    ResourceManager.prototype.isMetaValid = function(MetaRes) {
+    ResourceManager.prototype.isValidMetadata = function (MetaRes) {
         //TODO: There's no logic here with the current form of the MetaData Editor
         return true
     };
@@ -90,7 +89,7 @@ define([
     // Controls
 
     ResourceManager.prototype.isDSDEmpty = function () {
-        return ((this.resource.metadata.dsd.columns === undefined )) ;
+        return ((this.resource.metadata.dsd.columns === undefined ));
     };
 
     ResourceManager.prototype.isDSDEditable = function () {
@@ -100,156 +99,126 @@ define([
 
     // Resource
 
-    ResourceManager.prototype.newResource = function(res, silent) {
-        log.info("RM: new Resource", res);
-        this.resource = {};
-        this.resource.metadata = {};
-        this.resource.metadata.dsd = res;
-        if (!silent) Backbone.trigger("resource:new");
+    ResourceManager.prototype.createResource = function (opts) {
 
-    };
-
-    ResourceManager.prototype.deleteResource = function() {
-        log.info("RM: deleteResource through "+this.url.baseUrl +"resources/uid/" + this.resource.metadata.uid);
-        var self = this;
-
-        $.ajax({
-            url: this.url.baseUrl +"resources/uid/" + this.resource.metadata.uid,
-            type: 'DELETE',
-            crossDomain: true,
-            // Datatype changed to text as the server returns an empty response,
-            // setting it to json would trigger an error on success
-            dataType: 'text',
-            success: function () {
-                self.resource = {};
-                Backbone.trigger("resource:deleted");
-            },
-            error: function (xhr) {
-                Backbone.trigger("error:showerrorsrv", null, xhr);
-            }
-        });
-
-    };
-
-    ResourceManager.prototype.unloadResource = function() {
-        log.info("RM - unloadResource");
-        this.resource = {};
-        Backbone.trigger("resource:unloaded");
-    };
-
-    ResourceManager.prototype.createResource = function(resource, serv) {
-        var self = this;
-        log.info("[createResource] I'm trying to upload this: ",JSON.stringify(resource));
-        $.ajax({
-            contentType: "application/json",
-            url: this.url.baseUrl + serv,
-            dataType: 'json',
-            type: 'POST',
-            data: JSON.stringify(resource),
-            crossDomain: true,
-            success: function (data) {
-                self.resource.metadata = data; //create always return the metadata;
-                Backbone.trigger("resource:updated");
-            },
-            error: function (xhr) {
-                Backbone.trigger("error:showerrorsrv", null, xhr);
-                //console.log("Error on createResource", xhr)
-            }
-        });
-
-    }
-
-    ResourceManager.prototype.updateResource = function(res, serv) {
-        //console.log("UPD: ",this.resource);
-        var self = this;
-        console.log('this.resource.metadata.uid', this.resource.metadata.uid );
-        if (this.resource.metadata.uid == undefined) {
-            log.info("RM - Switching to create.");
-            this.createResource(res,serv);
-            return;
-        }
-        log.info("[updateResource] I'm trying to upload this: ",JSON.stringify(res));
-            $.ajax({
-                contentType: "application/json",
-                url: this.url.baseUrl + serv,
-                dataType: 'json',
-                type: 'PUT',
-                data: JSON.stringify(res),
-                crossDomain: true,
-                success: function (data) {
-                    //console.log(data);
-                    Backbone.trigger("resource:updated");
+        this.bridge.saveMetadata({
+            body: {
+                dsd: {
+                    contextSystem: opts.contextSystem,
+                    datasources: opts.datasources
                 },
-                error: function (xhr, textstatus) {
-                    Backbone.trigger("error:showerrorsrv", null, xhr);
-                    //console.log("Error on updateResource", xhr, textstatus)
+                meContent: {
+                    resourceRepresentationType: opts.resourceRepresentationType
                 }
-            });
+            }
+        }).then(_.bind(function (resource) {
+                log.info("Resource crated");
 
-    }
+                this.resource = {metadata: resource};
 
-    ResourceManager.prototype.getCodelist = function(codelistUID) {
+                Backbone.trigger(EVT.RESOURCE_CREATED);
+
+            }, this), function (xhr, textstatus) {
+
+                log.error("Error metadata update");
+                log.error(xhr);
+                log.error(textstatus);
+                Backbone.trigger("error:showerrorsrv", null, xhr);
+            }
+        );
+
+    };
+
+    ResourceManager.prototype.deleteResource = function () {
+
+        this.bridge.deleteResource({
+            uid: this.resource.metadata.uid,
+            version: this.resource.metadata.version
+        }).then(
+            _.bind(function () {
+                this.resource = {};
+                Backbone.trigger(EVT.RESOURCE_DELETED);
+            }, this),
+            _.bind(function () {
+                Backbone.trigger("error:showerrorsrv", null, xhr);
+            }, this)
+        );
+
+    };
+
+    ResourceManager.prototype.unloadResource = function () {
+        log.info("RM - unloadResource");
+        Backbone.trigger(EVT.RESOURCE_UNLOADED);
+    };
+
+    ResourceManager.prototype.getCodelist = function (codelistUID) {
         log.info('getCodelist called ', codelistUID);
         var requ = {
             uid: codelistUID
         };
         if (codelistUID.indexOf("|") != -1) {
-            requ['version'] = codelistUID.substr(codelistUID.indexOf("|")+1, codelistUID.length);
+            requ['version'] = codelistUID.substr(codelistUID.indexOf("|") + 1, codelistUID.length);
             requ['uid'] = codelistUID.substr(0, codelistUID.indexOf("|"));
         }
-        log.info('>bridge.getResource',requ);
+        log.info('>bridge.getResource', requ);
         return this.bridge.getResource(requ).then(
-                function(resource) {
-                    log.info('<bridge.getResource',resource);
-                    return resource;
-                }
-            );
+            function (resource) {
+                log.info('<bridge.getResource', resource);
+                return resource;
+            }
+        );
     };
 
-
     ResourceManager.prototype.loadResource = function (resource) {
-        log.info("Load resource", resource);
-        log.info("Loading: "+resource.model.uid);
-        //console.log(this.bridge);
+        log.info("Load resource");
+        log.info(resource);
+
         this.bridge.getResource({
-                uid: resource.model.uid,
-                params: {dsd: true, full: true}
+            uid: resource.model.uid,
+            version: resource.model.version,
+            params: {dsd: true, full: true, export: true, perPage: 1}
         }).then(
-            _.bind(this._onLoadResourceSuccess, this),
+            _.bind(this._onLoadResourceSuccess, this, resource),
             _.bind(this._onLoadResourceError, this)
         );
     };
 
-    ResourceManager.prototype._onLoadResourceSuccess = function (resource) {
+    ResourceManager.prototype._onLoadResourceSuccess = function (catalogModel, resource) {
+
         log.info("Load resource success", resource);
-        this.resource = resource;
-        log.info("navigate to home");
-        Backbone.trigger("resource:loaded");
+
+        if (!resource) {
+            log.error("Resource is empty");
+            Backbone.trigger("error:showerrormsg", "Resource is empty");
+        }
+
+        this.assign(resource, "metadata.uid", this.getNestedProperty("uid", catalogModel.model));
+
+        this.assign(resource, "metadata.version", this.getNestedProperty("version", catalogModel.model));
+
+        this.assign(resource, "metadata.dsd.rid", this.getNestedProperty("dsd.rid", catalogModel.model));
+
+        this.assign(resource, "metadata.meMaintenance.seUpdate.updateDate", this.getNestedProperty("meMaintenance.seUpdate.updateDate", catalogModel.model));
+
+        this.assign(resource, "metadata.creationDate", this.getNestedProperty("creationDate", catalogModel.model));
+
+        this._setResource(resource);
+
+        Backbone.trigger(EVT.RESOURCE_LOADED);
     };
 
     ResourceManager.prototype._onLoadResourceError = function (e) {
         log.error("Load resource error", e);
         log.error(e);
-
+        Backbone.trigger("error:showerrormsg", "Connection error");
     };
 
     // METADATA
 
-    ResourceManager.prototype.getFullMetadataFromServer = function () {
-        console.log('getting full metadata')
-        this.bridge.getMetadata({
-            body: [],
-            uid: this.resource.metadata.uid,
-            params: {dsd: true, full: true}
-        }).then(
-            _.bind(this._onGetMetadataSuccess, this),
-            _.bind(this._onGetMetadataError, this)
-        );
-    };
-
     ResourceManager.prototype.getMetadata = function () {
-        log.info("getMetadata",this.resource.metadata);
-        return (this.isMetaValid(this.resource.metadata)) ? this.resource.metadata : {};
+        log.info("Get Metadata", this.resource.metadata);
+
+        return (this.isValidMetadata(this.resource.metadata)) ? this.resource.metadata : {};
     };
 
     ResourceManager.prototype._onGetMetadataSuccess = function (resource) {
@@ -263,37 +232,82 @@ define([
     ResourceManager.prototype._onGetMetadataError = function (e) {
         log.error("_onGetMetadataError");
         log.error(e);
+        Backbone.trigger("error:showerrormsg", "Connection error");
         return false;
     };
 
-    ResourceManager.prototype.setMetadata = function(resource) {
-        log.info("setMetadata Called.");
-        if (this.isMetaValid(resource)) {
-            var temp = this.resource.metadata.dsd;
-            var uid = this.resource.metadata.uid;
-            console.log('current dsd', temp);
-            this.resource.metadata = resource;
-            this.resource.metadata.dsd = temp;
-            this.resource.metadata.uid = uid;
-            this.resource.metadata.meContent = {
-                "resourceRepresentationType": "dataset"
-            };
-            //TODO: REMOVE MOCK!
-            if (this.resource.metadata.contacts) this.resource.metadata.contacts.contactInfo =  {
-                "phone": this.resource.metadata.contacts.phone,
-                "address" : this.resource.metadata.contacts.address,
-                "emailAddress" : this.resource.metadata.contacts.emailAddress,
-                "hoursOfService" : this.resource.metadata.contacts.hoursOfService,
-                "contactInstruction" : this.resource.metadata.contacts.contactInstruction
-            };
-            console.log('updating all', this.resource.metadata);
-            this.updateMeta(this.resource.metadata);
-        }
+    ResourceManager.prototype.saveMetadata = function () {
+        log.info("saveMetadata Called.");
+
+        this.bridge.updateMetadata({
+            body: this.resource.metadata,
+            dsdRid: this.getNestedProperty("metadata.dsd.rid", this.resource)
+        }).then(
+                _.bind(function (data) {
+
+                    log.info("Success metadata update");
+                    log.info(data);
+
+                    Backbone.trigger(EVT.RESOURCE_UPDATED);
+
+                }, this),
+                _.bind(function (xhr, textstatus) {
+                    log.error("Error metadata update");
+                    log.error(xhr);
+                    log.error(textstatus);
+                    Backbone.trigger("error:showerrorsrv", null, xhr);
+                }, this));
     };
 
-    ResourceManager.prototype.updateMeta = function (resource) {
-        log.info("updateMeta called", resource);
-        this.updateResource(resource, this.url.saveMetadata);
+    ResourceManager.prototype._setResource = function (resource) {
+        this.resource = resource;
+    };
+
+    ResourceManager.prototype.updateMetadata = function (metadata) {
+
+        var metadataEntities = [
+                "meIdentification",
+                "meDocuments",
+                "meInstitutionalMandate",
+                "meAccessibility",
+                "meContent",
+                "meDataQuality",
+                "meMaintenance",
+                "meReferenceSystem",
+                "meResourceStructure",
+                "meSpatialRepresentation",
+                "meStatisticalProcessing"
+            ],
+            fields = [
+                "language",
+                "languageDetails",
+                "title",
+                "creationDate",
+                "characterSet",
+                "metadataStandardName",
+                "metadataStandardVersion",
+                "metadataLanguage",
+                "contacts",
+                "noDataValue",
+                "additions"
+            ],
+            resourceRepresentationType = this.getNestedProperty("metadata.meContent.resourceRepresentationType", this.resource) || C.config.resourceRepresentationType;
+
+        _.each(fields, _.bind(function (f) {
+            this.assign(this.resource, "metadata." + f, metadata[f]);
+        }, this));
+
+        _.each(metadataEntities, _.bind(function (m) {
+
+            if (metadata[m]) {
+                this.assign(this.resource, "metadata." + m, metadata[m]);
+            }
+
+        }, this));
+
+        //force resourceRepresentationType
+        this.assign(this.resource, "metadata.meContent.resourceRepresentationType", resourceRepresentationType);
+
     };
 
     // DSD
@@ -302,67 +316,98 @@ define([
         if (this.resource === undefined) return null;
         if (this.resource.metadata === undefined) return null;
         if (this.resource.metadata.dsd === undefined) return null;
-        log.info("getDSD Called.",this.resource.metadata.dsd);
+        log.info("getDSD Called.", this.resource.metadata.dsd);
         return this.resource.metadata.dsd;
 
     };
+    /*
+     ResourceManager.prototype.getDSDColumns = function () {
+     if (this.resource === undefined) return null;
+     if (this.resource.metadata === undefined) return null;
+     if (this.resource.metadata.dsd === undefined) return null;
+     if (this.resource.metadata.dsd.columns === undefined) return null;
+     log.info("getDSDColumns Called.", this.resource.metadata.dsd.columns);
+     return this.resource.metadata.dsd.columns;
+     };
 
-    ResourceManager.prototype.getDSDColumns = function () {
-        if (this.resource === undefined) return null;
-        if (this.resource.metadata === undefined) return null;
-        if (this.resource.metadata.dsd === undefined) return null;
-        if (this.resource.metadata.dsd.columns === undefined) return null;
-        log.info("getDSDColumns Called.",this.resource.metadata.dsd.columns);
-        return this.resource.metadata.dsd.columns;
-    };
 
+     ResourceManager.prototype.setDSDColumns = function (cols) {
+     this.resource.metadata.dsd.columns = cols;
+     this.updateDSD(this.resource.metadata.dsd);
+     };
 
-    ResourceManager.prototype.setDSDColumns = function (cols) {
-        this.resource.metadata.dsd.columns = cols;
-        this.updateDSD(this.resource.metadata.dsd);
-    };
+     ResourceManager.prototype.setDSDwithMeta = function (candidate) {
+     var toval = candidate;
+     //toval['columns'] = candidate;
+     log.info("setDSDwithMeta Called.", toval, this.resource);
 
-    ResourceManager.prototype.setDSDwithMeta = function (candidate) {
-        var toval = candidate;
-        //toval['columns'] = candidate;
-        log.info("setDSDwithMeta Called.", toval, this.resource);
+     if (this.isDSDValid(toval)) {
+     this.resource.metadata.dsd = toval;
+     this.setMetadata(this.resource.metadata);
+     }
 
-        if (this.isDSDValid(toval)) {
-            this.resource.metadata.dsd = toval;
-            this.setMetadata(this.resource.metadata);
+     };
+
+     ResourceManager.prototype.setDSD = function (candidate) {
+     var toval = candidate;
+     log.info("setDSD Called.", toval);
+     if (this.isDSDValid(toval)) {
+     this.resource.metadata.dsd = toval;
+     this.updateDSD(this.resource.metadata.dsd);
+     }
+     };
+     */
+
+    ResourceManager.prototype.updateDsd = function (dsd) {
+
+        var dsdRid = this.getNestedProperty("metadata.dsd.rid", this.resource);
+
+        dsd.rid = dsdRid;
+
+        if (!dsd.rid) {
+            log.warn("DSD rid not found");
+            log.warn(this.resource);
         }
 
+        this.assign(this.resource, "metadata.dsd", dsd);
     };
 
-    ResourceManager.prototype.setDSD = function (candidate) {
-        var toval = candidate;
-        log.info("setDSD Called.", toval);
-        if (this.isDSDValid(toval)) {
-            this.resource.metadata.dsd = toval;
-            this.updateDSD(this.resource.metadata.dsd);
-        }
+    ResourceManager.prototype.saveDsd = function () {
+
+        this.bridge.updateDSD({
+            body: this.resource.metadata.dsd
+        }).then(
+            _.bind(function (data) {
+                log.info("Success dsd update");
+                log.info(data);
+
+                Backbone.trigger(EVT.RESOURCE_UPDATED);
+
+            }, this),
+            _.bind(function (xhr, textstatus) {
+                log.error("Error dsd update");
+                log.error(xhr);
+                log.error(textstatus);
+                Backbone.trigger("error:showerrorsrv", null, xhr);
+            }, this));
     };
 
-    ResourceManager.prototype.updateDSD = function (resource) {
-        log.info("updateDSD called", resource);
-        this.updateResource(resource, this.url.saveDSD);
-    };
 
     // Data
 
     ResourceManager.prototype.getData = function () {
-        log.info("getData called.",this.resource.data);
+        log.info("getData called.", this.resource.data);
         return this.resource.data;
     };
 
-    ResourceManager.prototype.setDataEmpty = function() {
+    ResourceManager.prototype.setDataEmpty = function () {
         log.info("setDataEmpty called.");
         this.resource.data = {};
     };
 
     ResourceManager.prototype.setData = function (resource) {
-        log.info("setData called.",resource);
-        if (this.isDataValid(resource)){
+        log.info("setData called.", resource);
+        if (this.isDataValid(resource)) {
             this.resource.data = resource;
             // Data needs the whole package.
             this.updateData(this.resource);
@@ -377,7 +422,7 @@ define([
 
     // Utils
 
-    ResourceManager.prototype.getCurrentResourceCodelists = function() {
+    ResourceManager.prototype.getCurrentResourceCodelists = function () {
         log.info("getCurrentResourceCodelists called.")
         if (this.resource.metadata === undefined) return null;
         if (this.resource.metadata.dsd === undefined) return null;
@@ -396,19 +441,21 @@ define([
         return _.unique(codelists);
     };
 
-    ResourceManager.prototype.generateDSDStructure = function() {
+    ResourceManager.prototype.generateDSDStructure = function () {
         log.info("generateDSDStructure called.")
         var self = this;
         var codelists = self.getCurrentResourceCodelists();
         var ps = [];
 
-        $.each(codelists, function (index, object) { ps.push(self.getCodelist(object)); } );
+        $.each(codelists, function (index, object) {
+            ps.push(self.getCodelist(object));
+        });
 
-        return Q.all(ps).then(function(result){
+        return Q.all(ps).then(function (result) {
             var structure = {};
             $.each(result, function (index, object) {
                 if (object.metadata.version) {
-                    structure[object.metadata.uid+"|"+object.metadata.version] = object;
+                    structure[object.metadata.uid + "|" + object.metadata.version] = object;
                 } else {
                     structure[object.metadata.uid] = object;
                 }
@@ -417,8 +464,36 @@ define([
         });
     };
 
+    //Utils
+
+    ResourceManager.prototype.assign = function (obj, prop, value) {
+        if (typeof prop === "string")
+            prop = prop.split(".");
+
+        if (prop.length > 1) {
+            var e = prop.shift();
+            this.assign(obj[e] =
+                    Object.prototype.toString.call(obj[e]) === "[object Object]"
+                        ? obj[e]
+                        : {},
+                prop,
+                value);
+        } else {
+            obj[prop[0]] = value;
+        }
+    };
+
+    ResourceManager.prototype.getNestedProperty = function (path, obj) {
+
+        var obj = $.extend(true, {}, obj),
+            arr = path.split(".");
+
+        while (arr.length && (obj = obj[arr.shift()]));
+
+        return obj;
+
+    };
 
     return new ResourceManager();
-
 
 });

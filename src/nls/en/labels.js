@@ -11,6 +11,8 @@ define(function () {
         "resourceLoaded": "Resource loaded",
         "resourceCopied": "Resource copied",
 
+        "alreadyLoading" : "Please be patient. Resource is loading...",
+
         // Errors
         "error": "Error",
         "errorMetaMinimum" : "Please fill the minimum set of metadata in the \"Identification\" and \"Contacts\" sections",

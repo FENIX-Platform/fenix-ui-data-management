@@ -2,11 +2,11 @@ define([
     "jquery",
     "backbone",
     "loglevel",
-    "q",
     '../../nls/labels',
     "../../html/landing.hbs",
-    '../../config/errors'
-], function ($, Backbone, log, Q, MultiLang, Template, ERR) {
+    '../../config/errors',
+    '../../config/events',
+], function ($, Backbone, log, labels, Template, ERR, EVT) {
 
     "use strict";
     var s = {
@@ -67,21 +67,25 @@ define([
         _bindEventListeners: function () {
 
             this.$el.find(s.btnSearch).on("click", function () {
-                Backbone.trigger("button:search");
+                Backbone.trigger(EVT.SHOW_SEARCH);
             });
 
             this.$el.find(s.btnAdd).on("click", function () {
-                Backbone.trigger("button:new");
+                Backbone.trigger(EVT.SHOW_ADD);
             });
         },
 
         _unbindEventListeners: function () {
+
             this.$el.find(s.btnSearch).off();
+
             this.$el.find(s.btnAdd).off();
         },
 
         remove: function () {
+
             this._unbindEventListeners();
+
             Backbone.View.prototype.remove.apply(this, arguments);
         }
     });

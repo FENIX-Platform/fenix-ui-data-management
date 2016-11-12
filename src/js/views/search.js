@@ -2,13 +2,13 @@ define([
     "jquery",
     "backbone",
     "loglevel",
-    "q",
     "fenix-ui-catalog",
     "../../config/catalog",
     "fenix-ui-bridge",
     "../../config/errors",
+    "../../config/events",
     "../../html/search.hbs"
-], function ($, Backbone, log, Q, Catalog, CatalogConfig, Bridge, ERR, Template) {
+], function ($, Backbone, log, Catalog, CatalogConfig, Bridge, ERR, EVT, template) {
     "use strict";
 
     var s = {
@@ -18,7 +18,6 @@ define([
     var SearchView = Backbone.View.extend({
 
         render: function (o) {
-            console.log(o)
             $.extend(true, this, {initial: o});
 
             this._parseInput();
@@ -39,7 +38,6 @@ define([
                 log.error("Impossible to render Search");
                 log.error(valid)
             }
-
         },
 
         _validateInput: function () {
@@ -52,24 +50,19 @@ define([
 
         _parseInput: function () {
 
-            this.$el = $(this.initial.el);
-
             this.cache = this.initial.cache;
             this.environment = this.initial.environment;
             this.lang = this.initial.lang.toLowerCase();
 
-            $.extend(true, CatalogConfig, this.initial.catalog);
-
+            this.catalogConfig = $.extend(true, CatalogConfig, this.initial.catalog);
         },
 
         _attach: function () {
 
-            this.$el.html(Template);
+            this.$el.html(template);
         },
 
         _initCatalog: function () {
-
-            console.log(this.$el.find(s.CATALOG));
 
             var model = $.extend(true, {
                 el: this.$el.find(s.CATALOG),
@@ -78,20 +71,17 @@ define([
                 environment: this.environment
             }, this.catalogConfig);
 
-            console.log(model)
-
             this.catalog = new Catalog(model);
         },
 
         _bindEventListeners: function () {
-
             log.info("{SEARCH} bindEventListeners()");
 
-            this.catalog.on('select', function (ret) {
+            this.catalog.on('select', function (payload) {
 
                 log.info("*select* triggered");
 
-                Backbone.trigger("resource:loading", ret);
+                Backbone.trigger(EVT.RESOURCE_LOAD, payload);
             });
         },
 

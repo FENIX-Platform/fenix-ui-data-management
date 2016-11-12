@@ -1,4 +1,4 @@
- define(function(){
+define(function () {
 
     'use strict';
 
@@ -8,10 +8,7 @@
         MLEditor: {
             langs: ["EN", "FR"]
         },
-            "contextSystem":"uneca",
-            "datasources":["D3S"],
-        D3SConnector: {
-        },
+        D3SConnector: {},
         lang: "EN",
         DSD_EDITOR_CODELISTS: [
             {

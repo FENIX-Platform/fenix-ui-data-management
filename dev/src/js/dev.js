@@ -4,8 +4,7 @@ define([
     '../../../src/js/index',
     '../config/dsd',
     '../config/fenix_metadata',
-    '../config/catalog',
-
+    '../config/catalog'
 ], function (log, $, DataManagement, DSDConf, MDConf, CataConf) {
 
     'use strict';
@@ -24,6 +23,9 @@ define([
         this._importThirdPartyCss();
 
         // trace silent
+
+        log.setLevel('trace');
+
         log.setLevel('silent');
 
         this.start();
@@ -73,8 +75,6 @@ define([
         require("../../../node_modules/fenix-ui-DataEditor/dist/fenix-ui-DataEditor.min.css");
         require("../../../node_modules/fenix-ui-DSDEditor/dist/fenix-ui-DSDEditor.min.css");
         require("../../../node_modules/toastr/build/toastr.min.css");
-
-
 
     };
 

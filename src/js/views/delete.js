@@ -5,36 +5,42 @@ define([
     "q",
     '../../nls/labels',
     "../../html/delete.hbs",
-    "../../config/errors",
-],function($, Backbone, log, Q, MultiLang, Template, ERR){
+    "../../config/events"
+], function ($, Backbone, log, Q, labels, template, EVT) {
 
     "use strict";
 
     var s = {
-        HEADER : "#DeleteHeader",
-        BTN_CONFIRM : "#btnDeleteConfirm",
-        BTN_UNDO : "#btnDeleteUndo"
-    }
+        HEADER: "#DeleteHeader",
+        BTN_CONFIRM: "#btnDeleteConfirm",
+        BTN_UNDO: "#btnDeleteUndo"
+    };
 
     var DeleteView = Backbone.View.extend({
 
         render: function (o) {
-            $.extend(true, this, {initial: o})
+
+            $.extend(true, this, {initial: o});
 
             this._parseInput();
 
             var valid = this._validateInput();
+
             if (valid === true) {
-                log.info("Rendering View - Delete",o);
-                this._initViews();
+
+                log.info("Rendering View - Delete", o);
+
+                this._attach();
+
+                this._initVariables();
+
                 this._bindEventListeners();
+
                 return this;
             } else {
                 log.error("Impossible to render Landing");
                 log.error(valid)
             }
-
-
         },
 
         _validateInput: function () {
@@ -42,43 +48,39 @@ define([
             var valid = true,
                 errors = [];
 
-            //Check if $el exist
-            if (this.$container.length === 0) {
-                errors.push({code: ERR.MISSING_CONTAINER});
-                log.warn("Impossible to find container");
-            }
-
             return errors.length > 0 ? errors : valid;
         },
 
         _parseInput: function () {
-
-            this.$container = $(this.initial.container);
-            this.cache = this.initial.cache;
-            this.environment = this.initial.environment;
             this.lang = this.initial.lang.toLowerCase();
-
         },
 
-        _initViews: function () {
-            this.$container.html(Template);
-            $(this.$container.find(s.HEADER)).html(MultiLang[this.lang]['DeleteHeader']);
+        _attach: function () {
+            this.$el.html(template({header: labels[this.lang]['DeleteHeader']}));
+        },
+
+        _initVariables: function () {
+
+            this.$confirmButton = this.$el.find(s.BTN_CONFIRM);
+            this.$undoButton = this.$el.find(s.BTN_UNDO);
+
         },
 
         _bindEventListeners: function () {
             log.info("{DELETE} bindEventListeners()");
-            $(this.$container.find(s.BTN_CONFIRM)).on("click", function(){
-                Backbone.trigger("resource:delete");
+
+            this.$confirmButton.on("click", function () {
+                Backbone.trigger(EVT.RESOURCE_DELETE);
             });
-            $(this.$container.find(s.BTN_UNDO)).on("click", function(){
-                Backbone.trigger("button:undo");
+            this.$undoButton.on("click", function () {
+                Backbone.trigger(EVT.RESOURCE_DELETE_UNDO);
             });
 
         },
 
-        _removeEventListeners: function () {
-            $(this.$container.find(s.BTN_CONFIRM)).off("click");
-            $(this.$container.find(s.BTN_UNDO)).off("click");
+        _unbindEventListeners: function () {
+            this.$confirmButton.off();
+            this.$undoButton.off();
         },
 
         accessControl: function (Resource) {
@@ -92,12 +94,11 @@ define([
             });
         },
 
-        remove: function() {
-            this._removeEventListeners();
+        remove: function () {
+            this._unbindEventListeners();
             Backbone.View.prototype.remove.apply(this, arguments);
         }
     });
 
     return DeleteView;
-
 });

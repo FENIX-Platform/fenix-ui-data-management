@@ -8,6 +8,7 @@ define([
     "../../config/notify",
     "../../config/routes",
     "../../config/config",
+    "../../config/events",
     'fenix-ui-menu',
     '../../config/menu',
     '../views/landing',
@@ -20,29 +21,29 @@ define([
     '../views/home',
     '../components/resource-manager',
     '../../nls/labels'
-], function ($, Backbone, _, log, Notify, ConfigNotify, Routes, C, Menu, ConfigMenu,
+], function ($, Backbone, _, log, Notify, NotifyConfig, Routes, C, EVT, Menu, ConfigMenu,
              LandingView, SearchView, NotFoundView, DeleteView, MetadataView, DSDView, DataView, HomeView,
              RM,
-             MultiLang) {
+             labels) {
 
     'use strict';
 
     var s = {
-            MENU: '#fx-data-management-menu',
-            CONTAINER: '#fx-data-management-content',
-            HOLDER: "#fx-data-management-content-holder",
-            BTN_CONTAINER: "#fx-data-managment-update-model-holder",
-            BTN_ELEMENT: "#fx-data-managment-update-button",
-            HEADER: "#fx-data-managment-header-title",
-            RES_TITLE: "#fx-data-managment-resource-title"
-        };
+        MENU: '#fx-data-management-menu',
+        CONTAINER: '#fx-data-management-content',
+        HOLDER: "#fx-data-management-content-holder",
+        BTN_CONTAINER: "#fx-data-managment-update-model-holder",
+        BTN_ELEMENT: "#fx-data-managment-update-button",
+        HEADER: "#fx-data-managment-header-title",
+        RES_TITLE: "#fx-data-managment-resource-title"
+    };
 
     return Backbone.Router.extend({
 
         // The Router constructor
         initialize: function (o) {
-
-            log.info("Data Management - Router", o);
+            log.info("Router params:");
+            log.info(o);
 
             $.extend(true, this, {initial: o});
 
@@ -55,6 +56,7 @@ define([
             this._bindEventListeners();
 
             Backbone.history.start();
+            log.info("Backbone.history.start() success");
         },
 
         routes: Routes,
@@ -65,26 +67,36 @@ define([
             this.container = this.initial.container || s.CONTAINER;
             this.cache = this.initial.cache;
             this.environment = this.initial.environment;
-            this.lang = this.initial.lang ||C.lang ;
+            this.lang = this.initial.lang || C.lang;
+            this.lang = this.lang.toLowerCase();
 
-            this.config = this.initial.config;
+            this.config = $.extend(true, {}, C.config, this.initial.config);
 
             this.dsdEditor = this.initial.dsdEditor;
             this.catalog = this.initial.catalog;
             this.metadataEditor = this.initial.metadataEditor;
-
         },
 
         _initVariables: function () {
+
             this.$viewsHolder = this.$el.find(s.HOLDER);
+            this.$header = this.$el.find(s.HEADER);
+            this.$pageTitle = this.$el.find(s.RES_TITLE);
         },
 
         _initComponents: function () {
             log.info("Render common views");
 
-            Notify.options = ConfigNotify;
+            Notify.options = NotifyConfig;
+
+            RM.init({
+                environment: this.environment,
+                cache: this.cache
+            });
 
             this._initMenu();
+
+            log.info("Router components init: success");
         },
 
         _initMenu: function () {
@@ -96,82 +108,100 @@ define([
                 container: s.MENU
             });
 
-            this._activateIntialMenuItems();
+            this._activateInitialMenuItems();
         },
 
-        _activateIntialMenuItems: function () {
-
+        _activateInitialMenuItems: function () {
             this.menu.disable(C.menuItems);
             this.menu.activate(C.menuItemsEnabledOnStart);
+
+            log.info("Activate menu initial items: success");
         },
 
         _activateValidResourceMenuItems: function () {
+
             this.menu.disable(C.menuItems);
             this.menu.activate(C.menuItemsEnableOnValidResource);
+
+            log.info("Activate valid resource menu items: success");
+
         },
 
         _bindEventListeners: function () {
-            log.info("bindEventListeners");
+
             var self = this;
 
-            // Menu Event Listener
             this.menu.on("select", function (evt) {
-                //console.log("select menu is fired", evt);
+                log.info("Listen to menu event: " + evt.id);
                 self.goTo("#/" + evt.id);
             });
 
             // RESOURCES
 
             // When a resource is created (new button)
-            this.listenTo(Backbone, "resource:new", function () {
-                log.info("[EVT] resource:new ", RM.resource);
-                Notify['info'](MultiLang[self.lang.toLowerCase()]['resourceNew']);
-                self.menuActivated();
+            this.listenTo(Backbone, EVT.RESOURCE_CREATED, function () {
+                log.info("[EVT] resource:new");
+                Notify['info'](labels[self.lang]['resourceNew']);
+                self._activateValidResourceMenuItems();
                 self.goTo("#/metadata");
             });
 
             // When a resource is deleted (confirm is deletion)
-            this.listenTo(Backbone, "resource:deleted", function () {
+            this.listenTo(Backbone, EVT.RESOURCE_DELETED, function () {
                 log.info("[EVT] resource:deleted ", RM.resource);
-                Notify['success'](MultiLang[self.lang.toLowerCase()]['resourceDeleted']);
-                self.menuInitial();
+                Notify['success'](labels[self.lang]['resourceDeleted']);
+                self._activateInitialMenuItems();
                 self.goTo("#/landing");
             });
 
-            // When a resource is loading (catalog search selected)
-            this.listenTo(Backbone, "resource:loading", function (res) {
+            this.listenTo(Backbone, EVT.RESOURCE_LOAD, function (res) {
                 log.info("[EVT] resource:loading ", res);
+
+                if (this.waiting === true) {
+                    log.warn("Abort loading resource because another one is already loading");
+
+                    Notify['info'](labels[self.lang]['alreadyLoading']);
+
+                    return;
+                }
+
+                this.waiting = true;
+
                 RM.unloadResource();
+
                 RM.loadResource(res);
             });
 
             // When a resource is in tentative deletion (still there)
-            this.listenTo(Backbone, "resource:delete", function () {
-                log.info("[EVT] resource:delete ", RM.resource);
+            this.listenTo(Backbone, EVT.RESOURCE_DELETE, function () {
+                log.info("[EVT] resource:delete ");
                 RM.deleteResource();
             });
 
             // When a resource is loaded (fully)
-            this.listenTo(Backbone, "resource:loaded", function () {
-                log.info("[EVT] resource:loaded ", RM.resource);
-                self.menuActivated();
-                Notify['success'](MultiLang[self.lang.toLowerCase()]['resourceLoaded']);
+            this.listenTo(Backbone, EVT.RESOURCE_LOADED, function () {
+                log.info("[EVT] resource:loaded ");
+
+                this.waiting = false;
+
+                self._activateValidResourceMenuItems();
+
+                Notify['success'](labels[self.lang]['resourceLoaded']);
+
                 self.goTo("#/home");
             });
 
             // When a resource is unloaded (search or new is triggered)
-            this.listenTo(Backbone, "resource:unloaded", function () {
+            this.listenTo(Backbone, EVT.RESOURCE_UNLOADED, function () {
                 log.info("[EVT] resource:unloaded ", RM.resource);
-                self.menuInitial();
+                self._activateInitialMenuItems();
 
             });
 
             // When the save button is clicked
-            this.listenTo(Backbone, "resource:updated", function () {
+            this.listenTo(Backbone, EVT.RESOURCE_UPDATED, function () {
                 log.info("[EVT] resource:updated ", RM.resource);
-                log.info("Load again because...");
-                RM.getFullMetadataFromServer();
-                Notify['success'](MultiLang[self.lang.toLowerCase()]['resourceSaved']);
+                Notify['success'](labels[self.lang]['resourceSaved']);
                 self.goTo("#/home");
             });
 
@@ -184,7 +214,7 @@ define([
 
             this.listenTo(Backbone, "data:loaded", function () {
                 log.info("[EVT] data:loaded ");
-                Notify['success'](MultiLang[self.lang.toLowerCase()]['csvLoaded']);
+                Notify['success'](labels[self.lang]['csvLoaded']);
             });
 
             this.listenTo(Backbone, "data:saving", function (res) {
@@ -195,45 +225,23 @@ define([
 
             // METADATA
 
-            this.listenTo(Backbone, "meta:loading", function () {
-                log.info("[EVT] meta:loading");
-                //TODO: Do some stuff here;
-            });
+            this.listenTo(Backbone, EVT.METADATA_SAVE, function (res) {
 
-            this.listenTo(Backbone, "meta:saving", function (res) {
                 log.info("[EVT] meta:saving");
-                RM.setMetadata(res);
-                //TODO: Do some stuff here;
+
+                RM.updateMetadata(res);
+
+                RM.saveMetadata();
+
             });
 
-            this.listenTo(Backbone, "meta:loaded", function () {
-                log.info("[EVT] meta:loaded");
-                //TODO: Do some stuff here;
-            });
+            //DSD
 
-            // DSD
-            this.listenTo(Backbone, "dsd:new", function (res) {
-                log.info("[EVT] dsd:new", res);
-                RM.setDSDwithMeta(res);
-            });
-
-            this.listenTo(Backbone, "dsd:saving", function (res) {
+            this.listenTo(Backbone, EVT.DSD_SAVE, function (dsd) {
                 log.info("[EVT] dsd:saving");
-                RM.setDSD(res);
-            });
+                RM.updateDsd(dsd);
 
-            this.listenTo(Backbone, "dsd:setcolumns", function (res) {
-                log.info("[EVT] dsd:setcolumns");
-                RM.setDSDColumns(res);
-            });
-
-            this.listenTo(Backbone, "dsd:loading", function () {
-                log.info("[EVT] dsd:loading");
-            });
-
-            this.listenTo(Backbone, "dsd:loaded", function () {
-                log.info("[EVT] dsd:loaded ");
-                //TODO: Do some stuff here;
+                RM.saveDsd();
             });
 
             // ERRORS
@@ -241,55 +249,58 @@ define([
             this.listenTo(Backbone, "error:showerrormsg", function (message) {
                 log.info("[EVT] error:showerrormsg ");
                 Notify['error'](message);
+
+                self.waiting = false;
             });
 
             this.listenTo(Backbone, "error:showerror", function (code, xhr) {
                 log.info("[EVT] error:showerror ", code, xhr);
-                var out = MultiLang[this.lang.toLowerCase()][code] || JSON.stringify(xhr) || "Generic Error";
+                var out = labels[this.lang][code] || JSON.stringify(xhr) || "Generic Error";
                 Notify['error'](out);
             });
 
             this.listenTo(Backbone, "error:showerrorsrv", function (code, xhr) {
                 log.info("[EVT] error:showerrorsrv ", code, xhr);
-                var out = MultiLang[this.lang.toLowerCase()][code] || "Server: " + JSON.stringify(xhr.responseJSON) || "Generic Error";
+                var out = labels[this.lang][code] || "Server: " + JSON.stringify(xhr.responseJSON) || "Generic Error";
                 Notify['error'](out);
             });
 
             // BUTTONS
 
-            this.listenTo(Backbone, "button:new", function () {
+            this.listenTo(Backbone, EVT.SHOW_ADD, function () {
                 log.info("[EVT] button:new ");
                 this.goTo("#/add");
             });
 
-            this.listenTo(Backbone, "button:search", function () {
+            this.listenTo(Backbone, EVT.SHOW_SEARCH, function () {
                 log.info("[EVT] button:search ");
                 this.goTo("#/search");
             });
 
-            this.listenTo(Backbone, "button:undo", function () {
+            this.listenTo(Backbone, EVT.RESOURCE_DELETE_UNDO, function () {
                 log.info("[EVT] button:undo ");
                 this.goTo("#/home");
             });
 
-            this.listenTo(Backbone, "button:metadata", function () {
+            this.listenTo(Backbone, EVT.SHOW_METADATA, function () {
                 log.info("[EVT] button:metadata ");
                 this.goTo("#/metadata");
             });
 
-            this.listenTo(Backbone, "button:dsd", function () {
+            this.listenTo(Backbone, EVT.SHOW_DSD, function () {
                 log.info("[EVT] button:dsd ");
                 this.goTo("#/dsd");
             });
 
-            this.listenTo(Backbone, "button:data", function () {
+            this.listenTo(Backbone, EVT.SHOW_DATA, function () {
                 log.info("[EVT] button:data ");
                 this.goTo("#/data");
             });
 
+            log.info("Router events binding: success");
         },
 
-        //  Views
+        //  ================================= ROUTING
 
         //Landing
 
@@ -297,11 +308,10 @@ define([
             log.info("onLanding called.");
 
             this.switchView(LandingView, {
-                el :this.container,
+                el: this.container,
                 menu: "landing",
                 lang: this.lang
             });
-
         },
 
         //Home
@@ -310,7 +320,7 @@ define([
             log.info("onHome called.");
 
             this.switchView(HomeView, {
-                el :this.container,
+                el: this.container,
                 menu: "home",
                 lang: this.lang,
                 environment: this.environment
@@ -323,7 +333,7 @@ define([
             log.info("onSearch called.");
 
             this.switchView(SearchView, {
-                el :this.container,
+                el: this.container,
                 menu: "search",
                 lang: this.lang,
                 cache: this.cache,
@@ -336,16 +346,18 @@ define([
 
         onDenied: function () {
             log.info("Denied - Routing to Lading");
-            $(this.$el.find(s.BTN_CONTAINER)).hide();
+
             this.goTo("#/landing");
         },
 
         onClose: function () {
             log.info("Close - Routing to Landing");
+
             if (!$.isEmptyObject(RM.resource)) {
                 RM.unloadResource();
-                Notify['success'](MultiLang[this.lang.toLowerCase()]['CloseHeader']);
+                Notify['success'](labels[this.lang]['CloseHeader']);
             }
+
             this.goTo("#/landing");
         },
 
@@ -353,42 +365,47 @@ define([
 
         onAdd: function () {
             log.info("Add Resource");
-            log.warn("Avoid to render the resource and directly cast the event");
-            if ($.isEmptyObject(RM.resource)) RM.newResource(this.config);
+
+            RM.unloadResource();
+
+            RM.createResource(this.config)
+
         },
 
         // Metadata View
 
         onMetadata: function () {
             log.info("Metadata View");
+
             // Init Buttons
-            $(this.$el.find(s.BTN_CONTAINER)).show();
             this.switchView(MetadataView, {
-                el :this.container,
+                el: this.container,
                 menu: "metadata",
                 lang: this.lang,
                 environment: this.environment,
                 config: this.metadataEditor,
-                model: RM.getMetadata(),
-                savebtn: s.BTN_ELEMENT
+                model: RM.getMetadata()
             });
         },
 
         // DSD View
 
         onDSD: function () {
+
             log.info("DSD View");
+
             // Init Buttons
-            $(this.$el.find(s.BTN_CONTAINER)).show();
             this.switchView(DSDView, {
-                el :this.container,
+                el: this.container,
                 menu: "dsd",
                 lang: this.lang,
                 environment: this.environment,
-                config: this.dsdEditor,
+                config: $.extend(true, this.dsdEditor, {
+                    contextSystem: this.config.contextSystem,
+                    datasources: this.config.datasources
+                }),
                 model: RM.getDSD(),
-                isEditable: RM.isDSDEditable(),
-                savebtn: s.BTN_ELEMENT
+                isEditable: RM.isDSDEditable()
             });
         },
 
@@ -396,10 +413,9 @@ define([
 
         onData: function () {
             log.info("Data View");
-            // Init Buttons
-            $(this.$el.find(s.BTN_CONTAINER)).show();
+
             this.switchView(DataView, {
-                el :this.container,
+                el: this.container,
                 menu: "data",
                 lang: this.lang,
                 codelists: RM.getCurrentResourceCodelists(),
@@ -415,9 +431,8 @@ define([
 
         onDelete: function () {
             log.info("Delete Resource");
-            $(this.$el.find(s.BTN_CONTAINER)).hide();
             this.switchView(DeleteView, {
-                el :this.container,
+                el: this.container,
                 menu: "delete",
                 lang: this.lang,
                 environment: this.environment
@@ -427,17 +442,18 @@ define([
         //Not found
 
         onNotFound: function () {
+
             log.info("Not found");
-            $(this.$el.find(s.BTN_CONTAINER)).hide();
+
             this.switchView(NotFoundView, {
-                el :this.container,
+                el: this.container,
                 lang: this.lang
             });
         },
 
         onDefaultRoute: function () {
             log.info("Default");
-            $(this.$el.find(s.BTN_CONTAINER)).hide();
+
             this.goTo("#/not-found");
         },
 
@@ -455,6 +471,8 @@ define([
 
             var self = this,
                 candidate = new View(o);
+
+            this._updatePageTitle();
 
             if (typeof candidate.accessControl === "function") {
                 log.info("View has access control", RM.resource);
@@ -485,30 +503,40 @@ define([
         },
 
         renderView: function (View, o) {
-            var candidate = new View(o);
 
-
-            //update title
-            var stringTitle = "";
-            this.currentView = candidate.render(o);
             this.menu.select(o.menu);
-            $(this.$el.find(s.HEADER)).html(this.menu.o.active);
+
+            this.currentView = new View(o).render(o);
+
+        },
+
+        _updatePageTitle: function () {
+
+            var stringTitle = "";
+            this.$header.html(this.menu.o.active);
+
             if ($.isPlainObject(RM.resource.metadata)) {
                 if (RM.resource.metadata.title) {
-                    stringTitle = ' / ' + RM.resource.metadata.title[this.lang];
+                    stringTitle = ' / ' + RM.resource.metadata.title[this.lang.toUpperCase()];
                 } else {
-                    stringTitle = ' / ' + MultiLang[this.lang.toLowerCase()]['NoTitle'];
+                    stringTitle = ' / ' + labels[this.lang.toLowerCase()]['NoTitle'];
                 }
             }
-            $(this.$el.find(s.RES_TITLE)).html(stringTitle);
+            this.$pageTitle.html(stringTitle);
+
         },
 
         disposeCurrentView: function () {
+
             if (this.currentView && this.currentView.remove) {
+
                 this.currentView.remove();
+
                 delete this.currentView;
+
                 log.info("Removed current view");
             }
+
             log.info("Dispose current view: success");
         },
 
