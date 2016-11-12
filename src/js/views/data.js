@@ -75,6 +75,9 @@ define([
             this.dsd = this.initial.dsd;
             this.data = this.initial.data;
             this.generator = this.initial.generator;
+
+            console.log(this.generator);
+
         },
 
         _validateInput: function () {
@@ -119,7 +122,6 @@ define([
             //this.dataEditor = DataEditor;
             DataEditor.init(this.$el.find(s.DATA_EL), config, null);
 
-            console.log(DataEditor);
 /*
             this.dataEditor.on("error:showerrormsg", function(a,b){
                 console.log(' qui ',a,b);
@@ -133,10 +135,12 @@ define([
 
             this.generator.then(function (result) {
                 //Data.isEditable(false);
+                console.log('risyu',result);
                 self.cLists = result;
                 log.info('{Data} Calling the DSD');//, result);
                 var dsd = self.dsd.columns;
                 log.info('{Data} Setting the DSD...');//, dsd);
+                console.log(dsd,self.cLists);
                 DataEditor.setColumns(dsd, self.cLists, null);
                 log.info("{Data} DSD Columns Setted.");//, self.data);
                 if (self.data !== undefined) {

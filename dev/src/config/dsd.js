@@ -12,6 +12,30 @@ define(function () {
         lang: "EN",
         DSD_EDITOR_CODELISTS: [
             {
+                "value": "HS|2012",
+                "text": {
+                    "EN": "HS",
+                    "FR": "HS FR"
+                },
+                "subject": "item"
+            },
+            {
+                "value": "CountrySTAT_Indicators",
+                "text": {
+                    "EN": "CountrySTAT_Indicators",
+                    "FR": "CountrySTAT_Indicators FR"
+                },
+                "subject": "indicator"
+            },
+            {
+                "value": "CountrySTAT_UM",
+                "text": {
+                    "EN": "CountrySTAT_UM",
+                    "FR": "CountrySTAT_UM FR"
+                },
+                "subject": "um"
+            },
+            {
                 "value": "UNECA_ISO3",
                 "text": {
                     "EN": "UNECA_ISO3",
