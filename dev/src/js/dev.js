@@ -26,7 +26,7 @@ define([
 
         log.setLevel('trace');
 
-        log.setLevel('silent');
+        //log.setLevel('silent');
 
         this.start();
     }

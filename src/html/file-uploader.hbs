@@ -1,24 +1,22 @@
-<div class="row">
-    <div class="col-xs-12">
-        <div id="btnUploadGroup" class="form-group pull-right">
-            <table>
-                <thead>
-                <tr>
-                    <td width="100px"><label id="lblUpload" for="dataFUpload">Upload</label></td>
-                    <td width="100px"><label id="lblSeparator" for="csvSeparator">CSV Separator</label></td>
-                </tr>
-                </thead>
-                <tr>
-                    <td>
-                        <input type="file" name="filename" id="dataFUpload" />
-                    </td>
-                    <td>
-                        <input type="radio" id="csvSeparatorComma" name="csvSeparator" value="," checked><label id="DatalblcsvSeparatorComma" class="filter-enabled-label" for="csvSeparatorComma">Comma</label>
-                        <br>
-                        <input type="radio" id="csvSeparatorSemi" name="csvSeparator" value=";"><label id="DatalblcsvSeparatorSemi" class="filter-enabled-label" for="csvSeparatorSemi">Semicolon</label>
-                    </td>
-                </tr>
-            </table>
-        </div>
-    </div>
+<div data-role="menu" class="dropdown">
+    <button id="btnFileUploader" class="btn btn-floating fx-background-color-primary-color" type="button" data-toggle="dropdown" aria-expanded="true">
+        <span class="icojam_cloud_upload"></span>
+    </button>
+    <ul class="dropdown-menu json-menu">
+        <li class="js-menu dropdown-submenu">
+            <label id="lblUpload" for="dataFUpload">Upload</label>
+            <br>
+            <input type="file" name="filename" id="dataFUpload" />
+            <br>
+        </li>
+        <li class="js-menu dropdown-submenu">
+            <label id="lblSeparator" for="csvSeparator">CSV Separator</label>
+            <br>
+            <input type="radio" id="csvSeparatorComma" name="csvSeparator" value="," checked>
+                <label id="DatalblcsvSeparatorComma" class="filter-enabled-label" for="csvSeparatorComma">Comma</label>
+            <br>
+            <input type="radio" id="csvSeparatorSemi" name="csvSeparator" value=";">
+                <label id="DatalblcsvSeparatorSemi" class="filter-enabled-label" for="csvSeparatorSemi">Semicolon</label>
+        </li>
+    </ul>
 </div>
