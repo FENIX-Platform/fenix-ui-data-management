@@ -75,6 +75,8 @@ define([
             this.dsdEditor = this.initial.dsdEditor;
             this.catalog = this.initial.catalog;
             this.metadataEditor = this.initial.metadataEditor;
+
+            console.log(this.config);
         },
 
         _initVariables: function () {

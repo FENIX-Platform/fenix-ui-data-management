@@ -56,7 +56,7 @@ define([
 
                 this._bindEventListeners();
 
-                console.log(this.$el);
+                //console.log(this.$el);
 
             } else {
                 log.error("Impossible to render Data");
@@ -76,7 +76,7 @@ define([
             this.data = this.initial.data;
             this.generator = this.initial.generator;
 
-            console.log(this.generator);
+            //console.log(this.generator);
 
         },
 
@@ -133,12 +133,12 @@ define([
 
             this.generator.then(function (result) {
                 //Data.isEditable(false);
-                console.log('risyu',result);
+                //console.log('risyu',result);
                 self.cLists = result;
                 log.info('{Data} Calling the DSD');//, result);
                 var dsd = self.dsd.columns;
                 log.info('{Data} Setting the DSD...');//, dsd);
-                console.log(dsd,self.cLists);
+                //console.log(dsd,self.cLists);
                 DataEditor.setColumns(dsd, self.cLists, null);
                 log.info("{Data} DSD Columns Setted.");//, self.data);
                 if (self.data !== undefined) {
@@ -175,13 +175,14 @@ define([
         _removeEventListeners: function () {
 
             this.$savebtn.off();
+            /*
             this.$keepNewDataButton.off();
             this.$keepOldDataButton.off();
             this.$abortMergeButton.off();
 
             this.$csvMatcherOkButton.off();
             this.$csvMatcherCancelButton.off();
-
+            */
         },
 
 

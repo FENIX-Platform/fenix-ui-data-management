@@ -47,7 +47,12 @@ define([
             lang: lang,
             dsdEditor: DSDConf,
            // metadataEditor: MDConf,
-            catalog: CataConf
+            catalog: CataConf,
+            config: {
+                contextSystem :"cstat_cog",
+                datasources : ["D3S"],
+                resourceRepresentationType: "dataset"
+            }
         });
 
     };

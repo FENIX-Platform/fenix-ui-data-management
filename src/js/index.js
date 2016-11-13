@@ -63,6 +63,7 @@ define([
         this.dsdEditor = this.initial.dsdEditor || C.dsdEditor;
         this.catalog = this.initial.catalog || C.catalog;
         this.metadataEditor = this.initial.metadataEditor || C.metadataEditor;
+        this.config = this.initial.config || C.config;
 
     };
 
@@ -75,7 +76,8 @@ define([
             lang : this.lang,
             catalog: this.catalog,
             metadataEditor: this.metadataEditor,
-            dsdEditor : this.dsdEditor
+            dsdEditor : this.dsdEditor,
+            config: this.config
         };
 
         log.info("Router config:");
