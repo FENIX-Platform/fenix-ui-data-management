@@ -346,7 +346,7 @@ define([
                 lang: this.lang,
                 cache: this.cache,
                 environment: this.environment,
-                catalog: this.catalog
+                catalog: this.catalogConfig
             });
         },
 
@@ -481,8 +481,6 @@ define([
             var self = this,
                 candidate = new View(o);
 
-            this._updatePageTitle();
-
             if (typeof candidate.accessControl === "function") {
                 log.info("View has access control", RM.resource);
                 candidate.accessControl(RM.resource).then(
@@ -503,6 +501,8 @@ define([
                 this.resetView();
                 this.renderView(View, o)
             }
+
+            this._updatePageTitle();
 
         },
 
@@ -531,6 +531,8 @@ define([
                     stringTitle = ' / ' + labels[this.lang.toLowerCase()]['NoTitle'];
                 }
             }
+
+            console.log(stringTitle)
             this.$pageTitle.html(stringTitle);
 
         },

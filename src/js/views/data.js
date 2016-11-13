@@ -29,7 +29,7 @@ define([
         btnFileUploader: "#btnFileUploader",
         btnDelAllData: "#btnDelAllData",
         dataFileUpload: "#dataFUpload",
-        csvSeparator: "input[name=csvSeparator]:checked",
+        csvSeparator: "input[name=csvSeparator]:checked"
     };
 
     var DataView = Backbone.View.extend({
@@ -49,9 +49,9 @@ define([
 
                 this._initVariables();
 
-                this._initViews();
-
                 this._initFileUploader();
+
+                this._initViews();
 
                 this._bindEventListeners();
 
@@ -85,25 +85,23 @@ define([
 
         _attach: function () {
             this.$el.html(template(labels)); //TODO i18n
+
         },
 
         _initVariables: function () {
 
             this.$savebtn = this.$el.find(s.SAVE_BUTTON);
 
-            this.$utility = this.$el.find(s.utility);
-
             this.$dataEditorEl = this.$el.find(s.DATA_EL);
 
-            this.$csvSeparator = this.$el.find(s.csvSeparator);
+            this.$utility = this.$el.find(s.utility);
+
         },
 
         _initViews: function () {
             log.info("{Data} initViews");
 
             var self = this;
-
-            this.$utility.html(templateFileUploader);
 
             DataEditor.init(this.$dataEditorEl, null, null);
 
@@ -137,9 +135,16 @@ define([
         },
 
         _initFileUploader: function () {
+
+
+            this.$utility.html(templateFileUploader);
+
+            this.$csvSeparator = this.$el.find(s.csvSeparator);
+
             log.info(' init file uploader');
             this.fUpload = new FileUploader({accept: ['csv']});
             this.fUpload.render(s.dataFileUpload);
+
         },
 
         _bindEventListeners: function () {

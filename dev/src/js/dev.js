@@ -45,14 +45,14 @@ define([
             el: s.DATA_MNG,
             cache: cache,
             lang: lang,
-            //dsdEditor: DSDConf,
-            // metadataEditor: MDConf,
-            //catalog: CataConf,
-            /*config: {
-                contextSystem :"cstat_cog",
+            dsdEditor: DSDConf,
+            metadataEditor: MDConf,
+            catalog: CataConf,
+            config: {
+                contextSystem :"fenix_develop",
                 datasources : ["D3S"],
                 resourceRepresentationType: "dataset"
-            }*/
+            }
         });
 
     };
