@@ -10,7 +10,7 @@ define([
     "../config/dsd-editor",
     "../config/data-editor",
     "../config/metadata-editor"
-], function (log, $, Router, Template, C, ERR, CatalogConfig, DsdEditorConfig, DataEditorConfig, MetadataEditor) {
+], function (log, $, Router, Template, C, ERR, CatalogConfig, DsdEditorConfig, DataEditorConfig, MetadataEditorConfig) {
 
     "use strict";
 
@@ -67,7 +67,7 @@ define([
         this.catalogConfig = this.initial.catalog || CatalogConfig;
         this.dsdEditorConfig = this.initial.dsdEditor || DsdEditorConfig;
         this.dataEditorConfig = this.initial.dataEditor || DataEditorConfig;
-        this.metadataEditorConfig = this.initial.metadataEditor || MetadataEditor;
+        this.metadataEditorConfig = this.initial.metadataEditor || MetadataEditorConfig;
         this.config = this.initial.config || C.config;
     };
 

@@ -77,7 +77,11 @@ define([
                 log.info("Metadata values:");
                 log.info(values);
 
-                Backbone.trigger(EVT.METADATA_SAVE, values);
+                if (!values.hasOwnProperty("valid")) {
+                    Backbone.trigger(EVT.METADATA_SAVE, values);
+                } else {
+                    Backbone.trigger(EVT.METADATA_INFO, "metadataValidationWarning");
+                }
             });
 
         },
@@ -85,14 +89,19 @@ define([
         _initMetadataEditor: function () {
             log.info("{MDE} initViews");
 
-            this.MDE = new MDE({
+            var model = {
                 el: s.METADATA,
                 lang: this.lang,
                 config: this.config,
                 cache: this.cache,
                 environment: this.environment,
                 model: this.model
-            });
+            };
+
+            log.info("Metadata editor model:");
+            log.info(model);
+
+            this.MDE = new MDE(model);
 
         },
 

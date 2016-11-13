@@ -90,6 +90,8 @@ define(function () {
         "DManIntro": "La gestion des données est le processus de contrôle des informations générées lors d'un projet de recherche. Toutes les recherches nécessiteront d'un certain niveau de gestion des données, et les organismes de financement sont de plus en plus exigeant que les chercheurs planifient et exécutent des bonnes pratiques de gestion des données.",
         "CopyMetaRID": "Code d'identification de la Ressource",
         "CopyMetaVer": "Version de la Ressource (si applicable)",
-        "NoTitle": "Sans Titre"
+        "NoTitle": "Sans Titre",
+
+        metadataValidationWarning : "Veuillez remplir les champs obligatoires"
     }
 });

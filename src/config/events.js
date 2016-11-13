@@ -20,6 +20,7 @@ define(function(){
         SHOW_ADD: "SHOW_ADD",
 
         METADATA_SAVE : "METADATA_SAVE",
+        METADATA_INFO : "METADATA_INFO",
 
         DSD_SAVE : "DSD_SAVE"
 

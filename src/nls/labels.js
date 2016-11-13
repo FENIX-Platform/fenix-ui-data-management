@@ -1,11 +1,8 @@
-if (typeof define !== 'function') {
-    var define = require('amdefine')(module);
-}
 define([
         "./en/labels",
         "./fr/labels"
     ],
-    function (i18nEn,i18nFr) {
+    function (i18nEn, i18nFr) {
 
         'use strict';
 

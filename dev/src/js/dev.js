@@ -24,7 +24,7 @@ define([
 
         // trace silent
 
-        log.setLevel('trace');
+        log.setLevel('silent');
 
         //log.setLevel('silent');
 
@@ -45,14 +45,14 @@ define([
             el: s.DATA_MNG,
             cache: cache,
             lang: lang,
-            dsdEditor: DSDConf,
+            //dsdEditor: DSDConf,
             // metadataEditor: MDConf,
-            catalog: CataConf,
-            config: {
+            //catalog: CataConf,
+            /*config: {
                 contextSystem :"cstat_cog",
                 datasources : ["D3S"],
                 resourceRepresentationType: "dataset"
-            }
+            }*/
         });
 
     };

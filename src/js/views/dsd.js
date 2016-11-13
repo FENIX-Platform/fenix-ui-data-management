@@ -71,8 +71,6 @@ define([
             this.model = this.initial.model;
             this.isEditable = this.initial.isEditable;
 
-            console.log(this.config)
-
         },
 
         _initDsdEditor: function () {

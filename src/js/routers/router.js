@@ -267,6 +267,12 @@ define([
                 Notify['error'](out);
             });
 
+            this.listenTo(Backbone, EVT.METADATA_INFO, function (code, xhr) {
+                log.info("[EVT] error:showerrorsrv ", code, xhr);
+                var out = labels[this.lang][code] || "Server: " + JSON.stringify(xhr.responseJSON) || "Generic Error";
+                Notify['info'](out);
+            });
+
             // BUTTONS
 
             this.listenTo(Backbone, EVT.SHOW_ADD, function () {

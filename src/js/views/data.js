@@ -90,27 +90,22 @@ define([
         _initVariables: function () {
 
             this.$savebtn = this.$el.find(s.SAVE_BUTTON);
-            this.$csvMatcherOkButton = this.$el.find(s.btnCsvMatcherOk);
-            this.$csvMatcherCancelButton = this.$el.find(s.btnCsvMatcherCancel);
+
+            this.$utility = this.$el.find(s.utility);
+
+            this.$dataEditorEl = this.$el.find(s.DATA_EL);
+
+            this.$csvSeparator = this.$el.find(s.csvSeparator);
         },
 
         _initViews: function () {
-            log.info("{Data} initViews", Config);
+            log.info("{Data} initViews");
 
-            var config = Config,
-                self = this;
+            var self = this;
 
-            $(s.utility).html(templateFileUploader);
-            /*
-             this.$dataUploadColsMatch = $(this.$el.find(s.dataUploadColsMatch));
-             this.$dataEditorContainer = $(this.$el.find(s.dataEditorContainer));
-             this.$dataUploadContainer = $(this.$el.find(s.dataUploadContainer));
+            this.$utility.html(templateFileUploader);
 
-             this.$dataEditorContainer.hide();
-             */
-            //this.dataEditor = DataEditor;
-            DataEditor.init(this.$el.find(s.DATA_EL), config, null);
-
+            DataEditor.init(this.$dataEditorEl, null, null);
 
             DataEditor.on("error:showerrormsg", function (msg) {
                 Backbone.trigger("error:showerrormsg", msg);
@@ -142,7 +137,7 @@ define([
         },
 
         _initFileUploader: function () {
-            console.log(' init file uploader');
+            log.info(' init file uploader');
             this.fUpload = new FileUploader({accept: ['csv']});
             this.fUpload.render(s.dataFileUpload);
         },
@@ -166,34 +161,14 @@ define([
         _removeEventListeners: function () {
 
             this.$savebtn.off();
-            /*
-             this.$keepNewDataButton.off();
-             this.$keepOldDataButton.off();
-             this.$abortMergeButton.off();
-
-             this.$csvMatcherOkButton.off();
-             this.$csvMatcherCancelButton.off();
-             */
         },
-
 
         _csvLoaded: function (data) {
             log.info(' csv loaded ');
-            var conf = {};
+
             this.fUpload.reset();
-            $(s.utility).hide();
-            //console.log(data, conf, $(s.csvSeparator).val());
-            DataEditor.csvLoaded(data, conf, $(s.csvSeparator).val());
-
-        },
-
-        _switchPanelVisibility: function (toShow) {
-            /*
-             $(this.$el.find(s.dataUploadColsMatch)).hide();
-             $(this.$el.find(s.dataEditorContainer)).hide();
-             $(this.$el.find(s.dataUploadContainer)).hide();
-             toShow.show();
-             */
+            this.$utility.hide();
+            DataEditor.csvLoaded(data, {}, this.$csvSeparator.val());
         },
 
         accessControl: function (Resource) {
@@ -210,8 +185,8 @@ define([
         remove: function () {
             log.warn("{DATA} - Remove View");
             this._removeEventListeners();
-            $(s.utility).html('');
-            $(s.utility).show();
+            this.$utility.html('');
+            this.$utility.show();
             Backbone.View.prototype.remove.apply(this, arguments);
         }
     });
