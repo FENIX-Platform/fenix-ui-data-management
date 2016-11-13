@@ -110,27 +110,25 @@ define([
 
 
             $(s.utility).html(templateFileUploader);
-
-            console.log($(s.utility), templateFileUploader);
-
+/*
             this.$dataUploadColsMatch = $(this.$el.find(s.dataUploadColsMatch));
             this.$dataEditorContainer = $(this.$el.find(s.dataEditorContainer));
             this.$dataUploadContainer = $(this.$el.find(s.dataUploadContainer));
 
             this.$dataEditorContainer.hide();
-
+*/
             //this.dataEditor = DataEditor;
             DataEditor.init(this.$el.find(s.DATA_EL), config, null);
 
-/*
-            this.dataEditor.on("error:showerrormsg", function(a,b){
-                console.log(' qui ',a,b);
+
+            DataEditor.on("error:showerrormsg", function(msg){
+                Backbone.trigger("error:showerrormsg", msg);
             });
 
-            this.dataEditor.on("data:loaded", function(){
-                console.log(' data loaded ');
+            DataEditor.on("data:loaded", function(){
+                Backbone.trigger("data:loaded");
             });
-*/
+
             log.info('{Data} Calling the Codelists');
 
             this.generator.then(function (result) {
@@ -164,7 +162,8 @@ define([
 
             this.$savebtn.on("click", function () {
                 log.info("{DATA} saving", DataEditor.getData());
-                if (DataEditor.getData()) Backbone.trigger("data:saving", Data.getData());
+                var exist = DataEditor.getData().length;
+                if (exist) Backbone.trigger("data:saving", DataEditor.getData());
             });
 
             this.listenTo(Backbone, "data:uploaded", function (str) {

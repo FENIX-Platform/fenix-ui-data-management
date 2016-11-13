@@ -410,13 +410,39 @@ define([
         if (this.isDataValid(resource)) {
             this.resource.data = resource;
             // Data needs the whole package.
-            this.updateData(this.resource);
+            this.updateData(this.resource.data);
         }
     };
 
     ResourceManager.prototype.updateData = function (resource) {
+        log.info("updateData Called.", resource);
+
+        this.bridge.updateData({
+            body: {
+                "metadata": {
+                    uid: this.resource.metadata.uid
+                },
+                "data": resource
+            }
+        }).then(
+            _.bind(function (data) {
+
+                log.info("Success data update");
+                log.info(data);
+
+                Backbone.trigger(EVT.RESOURCE_UPDATED);
+
+            }, this),
+            _.bind(function (xhr, textstatus) {
+                log.error("Error data update");
+                log.error(xhr);
+                log.error(textstatus);
+                Backbone.trigger("error:showerrorsrv", null, xhr);
+            }, this));
+        /*
         log.info("updateData called", resource);
         this.updateResource(resource, this.url.saveData);
+        */
     }
 
 

@@ -46,7 +46,7 @@ define([
             cache: cache,
             lang: lang,
             dsdEditor: DSDConf,
-            metadataEditor: MDConf,
+           // metadataEditor: MDConf,
             catalog: CataConf
         });
 

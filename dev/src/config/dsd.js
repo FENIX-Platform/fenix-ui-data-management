@@ -20,6 +20,14 @@ define(function () {
                 "subject": "item"
             },
             {
+                "value": "CPC|2.1",
+                "text": {
+                    "EN": "CPC",
+                    "FR": "CPC FR"
+                },
+                "subject": "item"
+            },
+            {
                 "value": "CountrySTAT_Indicators",
                 "text": {
                     "EN": "CountrySTAT_Indicators",
