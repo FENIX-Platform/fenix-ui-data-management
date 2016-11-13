@@ -77,12 +77,12 @@ define([
             $el: this.$el,
             cache: this.cache,
             environment: this.environment,
-            lang : this.lang,
+            lang: this.lang,
             config: this.config,
             catalogConfig: this.catalogConfig,
             metadataEditorConfig: this.metadataEditorConfig,
-            dsdEditorConfig : this.dsdEditorConfig,
-            dataEditorConfig : this.dataEditorConfig
+            dsdEditorConfig: this.dsdEditorConfig,
+            dataEditorConfig: this.dataEditorConfig
         };
 
         log.info("Router config:");

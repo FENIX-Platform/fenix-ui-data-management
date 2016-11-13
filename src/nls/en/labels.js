@@ -96,7 +96,12 @@ define(function () {
         "NoTitle": "Untitled",
 
         //metadata validation
-        metadataValidationWarning : "Please fill the mandatory fields"
+        metadataValidationWarning : "Please fill the mandatory fields",
+
+        //DSD
+        DSD_COPY_SUCCESS : "DSD copied successfully",
+        DSD_COPY_EMPTY_RESOURCE : "Resource does not contains columns"
+
 
     }
 });

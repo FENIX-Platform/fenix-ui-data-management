@@ -1,6 +1,6 @@
 {
   "name": "fenix-ui-data-management",
-  "version": "2.0.0-beta.47",
+  "version": "2.0.0-beta.49",
   "description": "FENIX Data Management component",
   "homepage": "https://github.com/FENIX-Platform/fenix-ui-data-management",
   "author": "FENIX team (http://fenix.fao.org/)",
@@ -23,6 +23,7 @@
     "fenix-ui-DataEditor": "^2.0.0-beta.48",
     "fenix-ui-bridge": "^1.0.0-beta.9",
     "fenix-ui-catalog": "^2.0.0-beta.18",
+    "fenix-ui-filter": "^3.0.0-beta.34",
     "fenix-ui-menu": "^3.0.0-beta.4",
     "fenix-ui-metadata-editor": "^2.0.0-beta.28",
     "jquery": "^3.1.0",

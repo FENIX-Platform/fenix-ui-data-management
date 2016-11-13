@@ -5511,4 +5511,14 @@ input[type="radio"]:disabled + label {
 .datamng-container {
   padding: 0; }
 
+.fx-padding {
+  padding: 15px; }
+
+/*
+.fx-selector.hideRemoveButton.hideSwitch.hideHeaderIcon{
+  [data-selector-header] {
+    display: none;
+  }
+}*/
+
 /*# sourceMappingURL=fenix-ui-data-managment.css.map */

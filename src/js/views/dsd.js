@@ -5,15 +5,19 @@ define([
     "loglevel",
     "q",
     "fenix-ui-DSDEditor",
+    "fenix-ui-filter",
+    "fenix-ui-bridge",
     "../../html/dsd.hbs",
     "../../config/events"
-], function ($, Backbone, _, log, Q, DsdEditor, template, EVT) {
+], function ($, Backbone, _, log, Q, DsdEditor, Filter, Bridge, template, EVT) {
 
     "use strict";
 
     var s = {
         SAVE_BUTTON: '[data-role="save"]',
-        DSD_EL: '[data-role="dsd"]'
+        DSD_EL: '[data-role="dsd"]',
+        COPY_FORM: "[data-role='form']",
+        COPY_BUTTON: "[data-role='copy']"
     };
 
     var DSDView = Backbone.View.extend({
@@ -34,7 +38,7 @@ define([
 
                 this._initVariables();
 
-                this._initDsdEditor();
+                this._initComponents();
 
                 this._bindEventListeners();
 
@@ -46,12 +50,29 @@ define([
         },
 
         _attach: function () {
-            this.$el.html(template());
+            this.$el.html(template({
+                isEditable: this.isEditable,
+                copyTitle: "Copy DSD from:"
+            }));
         },
 
+        _initComponents: function () {
+
+            this.bridge = new Bridge({
+                cache: this.cache,
+                environment: this.environment
+            });
+
+            this._initDsdEditor();
+
+            this._initCopyDsd();
+
+        },
         _initVariables: function () {
 
-            this.$savebtn = this.$el.find(s.SAVE_BUTTON);
+            this.$saveButton = this.$el.find(s.SAVE_BUTTON);
+
+            this.$copyButton = this.$el.find(s.COPY_BUTTON);
         },
 
         _validateInput: function () {
@@ -63,14 +84,11 @@ define([
         },
 
         _parseInput: function () {
-
-
             this.environment = this.initial.environment;
             this.lang = this.initial.lang.toLowerCase();
             this.config = this.initial.config;
             this.model = this.initial.model;
             this.isEditable = this.initial.isEditable;
-
         },
 
         _initDsdEditor: function () {
@@ -90,10 +108,79 @@ define([
 
         },
 
+        _initCopyDsd: function () {
+
+            this.copyForm = new Filter({
+                el: this.$el.find(s.COPY_FORM),
+                selectors: {
+                    uid: {
+                        selector: {
+                            id: "input",
+                            type: "text",
+                            source: [{label: "Uid"}]
+                        },
+                        constraints: {
+                            presence: true
+                        }
+                    },
+                    version: {
+                        selector: {
+                            id: "input",
+                            type: "text",
+                            source: [{label: "Version"}]
+                        }
+                    }
+                }
+            })
+
+        },
+
         _bindEventListeners: function () {
             log.info("{DSD} bindEventListeners()");
 
-            this.$savebtn.on("click", _.bind(this._onSaveClick, this));
+            this.$saveButton.on("click", _.bind(this._onSaveClick, this));
+
+            this.$copyButton.on("click", _.bind(this._onCopyClick, this));
+        },
+
+        _onCopyClick: function (e) {
+            e.stopPropagation();
+
+            var values = this.copyForm.getValues(),
+                uid = values.values.uid[0],
+                version = values.values.version[0];
+
+            if (values.valid === true) {
+
+                this.bridge.getResource({
+                    uid: uid,
+                    version: version,
+                    params: {
+                        dsd: true,
+                        export: true
+                    }
+                }).then(
+                    _.bind(function (resource) {
+
+                        var metadata = resource.metadata || {},
+                            dsd = metadata.dsd || {},
+                            columns = dsd.columns || [];
+
+                        if (columns.length > 0) {
+                            this.dsd.set(columns);
+                            Backbone.trigger(EVT.DSD_COPY_SUCCESS);
+                        } else {
+                            Backbone.trigger(EVT.DSD_COPY_EMPTY_RESOURCE);
+                        }
+
+                    }, this),
+                    _.bind(function (msg) {
+                        Backbone.trigger("error:showerrormsg", msg);
+
+                    }, this)
+                );
+            }
+
         },
 
         _onSaveClick: function () {
@@ -110,7 +197,7 @@ define([
         },
 
         _unbindEventListeners: function () {
-            this.$savebtn.off("click");
+            this.$saveButton.off("click");
         },
 
         accessControl: function (Resource) {

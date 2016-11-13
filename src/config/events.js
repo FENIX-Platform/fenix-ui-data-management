@@ -22,7 +22,9 @@ define(function(){
         METADATA_SAVE : "METADATA_SAVE",
         METADATA_INFO : "METADATA_INFO",
 
-        DSD_SAVE : "DSD_SAVE"
+        DSD_SAVE : "DSD_SAVE",
+        DSD_COPY_EMPTY_RESOURCE : "DSD_COPY_EMPTY_RESOURCE",
+        DSD_COPY_SUCCESS : "DSD_COPY_SUCCESS"
 
     }
 });

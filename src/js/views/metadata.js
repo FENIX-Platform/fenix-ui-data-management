@@ -1,18 +1,23 @@
 define([
     "jquery",
     "backbone",
+    "underscore",
     "loglevel",
     "q",
     "fenix-ui-metadata-editor",
+    "fenix-ui-filter",
+    "fenix-ui-bridge",
     "../../html/metadata.hbs",
     "../../config/events"
-], function ($, Backbone, log, Q, MDE, template, EVT) {
+], function ($, Backbone, _, log, Q, MDE, Filter, Bridge, template, EVT) {
 
     "use strict";
 
     var s = {
         SAVE_BUTTON: '[data-role="save"]',
-        METADATA: '[data-role="metadata"]'
+        METADATA: '[data-role="metadata"]',
+        COPY_FORM: "[data-role='form']",
+        COPY_BUTTON: "[data-role='copy']"
     };
 
     var MetadataView = Backbone.View.extend({
@@ -32,7 +37,7 @@ define([
 
                 this._initVariables();
 
-                this._initMetadataEditor();
+                this._initComponents();
 
                 this._bindEventListeners();
 
@@ -41,6 +46,19 @@ define([
                 log.error("Impossible to render Metadata");
                 log.error(valid)
             }
+        },
+
+        _initComponents : function() {
+
+            this.bridge = new Bridge({
+                cache: this.cache,
+                environment: this.environment
+            });
+
+            this._initMetadataEditor();
+
+            this._initCopyMetadata();
+
         },
 
         _validateInput: function () {
@@ -60,29 +78,113 @@ define([
         },
 
         _attach: function () {
-            this.$el.html(template()); //TODO i18n
+            this.$el.html(template({
+                copyTitle: "Copy Metadata from:"
+            })); //TODO i18n
         },
 
         _initVariables: function () {
             this.$savebtn = this.$el.find(s.SAVE_BUTTON);
+
+            this.$copyButton = this.$el.find(s.COPY_BUTTON);
         },
 
         _bindEventListeners: function () {
 
-            var self = this;
+            this.$savebtn.on("click", _.bind(this._onSaveClick, this));
 
-            this.$savebtn.on("click", function () {
+            this.$copyButton.on("click", _.bind(this._onCopyClick, this));
 
-                var values = self.MDE.getValues();
-                log.info("Metadata values:");
-                log.info(values);
+        },
 
-                if (!values.hasOwnProperty("valid")) {
-                    Backbone.trigger(EVT.METADATA_SAVE, values);
-                } else {
-                    Backbone.trigger(EVT.METADATA_INFO, "metadataValidationWarning");
+        _onSaveClick : function () {
+
+            var values = this.MDE.getValues();
+            log.info("Metadata values:");
+            log.info(values);
+
+            if (!values.hasOwnProperty("valid")) {
+                Backbone.trigger(EVT.METADATA_SAVE, values);
+            } else {
+                Backbone.trigger(EVT.METADATA_INFO, "metadataValidationWarning");
+            }
+
+        },
+
+        _onCopyClick: function (e) {
+            e.stopPropagation();
+
+            var values = this.copyForm.getValues(),
+                uid = values.values.uid[0],
+                version = values.values.version[0];
+
+            if (values.valid === true) {
+
+                this.bridge.getResource({
+                    uid: uid,
+                    version: version,
+                    params: {
+                        full: true,
+                        dsd: true,
+                        export: true
+                    }
+                }).then(
+                    _.bind(function (resource) {
+
+
+
+                        console.log(resource)
+
+                        return;
+
+                        if (!resource) {
+                            Backbone.trigger(EVT.DSD_COPY_EMPTY_RESOURCE);
+                        } else {
+
+                            var metadata = resource.metadata || {},
+                                dsd = metadata.dsd || {};
+
+                            if (dsd && Array.isArray(dsd.columns) && dsd.columns.length > 0) {
+                                this.dsd.set(dsd.columns);
+                            }
+
+                            Backbone.trigger(EVT.DSD_COPY_SUCCESS);
+                        }
+
+                    }, this),
+                    _.bind(function (msg) {
+                        Backbone.trigger("error:showerrormsg", msg);
+
+                    }, this)
+                );
+            }
+
+        },
+
+        _initCopyMetadata: function () {
+
+            this.copyForm = new Filter({
+                el: this.$el.find(s.COPY_FORM),
+                selectors: {
+                    uid: {
+                        selector: {
+                            id: "input",
+                            type: "text",
+                            source: [{label: "Uid"}]
+                        },
+                        constraints: {
+                            presence: true
+                        }
+                    },
+                    version: {
+                        selector: {
+                            id: "input",
+                            type: "text",
+                            source: [{label: "Version"}]
+                        }
+                    }
                 }
-            });
+            })
 
         },
 

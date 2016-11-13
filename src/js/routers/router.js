@@ -197,7 +197,6 @@ define([
             this.listenTo(Backbone, EVT.RESOURCE_UNLOADED, function () {
                 log.info("[EVT] resource:unloaded ", RM.resource);
                 self._activateInitialMenuItems();
-
             });
 
             // When the save button is clicked
@@ -234,7 +233,6 @@ define([
                 RM.updateMetadata(res);
 
                 RM.saveMetadata();
-
             });
 
             //DSD
@@ -244,6 +242,15 @@ define([
                 RM.updateDsd(dsd);
 
                 RM.saveDsd();
+            });
+
+            this.listenTo(Backbone, EVT.DSD_COPY_EMPTY_RESOURCE, function (dsd) {
+                Notify['warning'](labels[this.lang][EVT.DSD_COPY_EMPTY_RESOURCE]);
+
+            });
+
+            this.listenTo(Backbone, EVT.DSD_COPY_SUCCESS, function (dsd) {
+                Notify['success'](labels[this.lang][EVT.DSD_COPY_SUCCESS]);
             });
 
             // ERRORS
@@ -532,7 +539,6 @@ define([
                 }
             }
 
-            console.log(stringTitle)
             this.$pageTitle.html(stringTitle);
 
         },

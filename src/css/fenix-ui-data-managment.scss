@@ -170,3 +170,17 @@ $fx-secondary-color: desaturate( $fx-cool-blue, 50% );
 .datamng-container{
   padding: 0;
 }
+
+
+
+//Move me to base
+.fx-padding {
+  padding: 15px;
+}
+
+/*
+.fx-selector.hideRemoveButton.hideSwitch.hideHeaderIcon{
+  [data-selector-header] {
+    display: none;
+  }
+}*/

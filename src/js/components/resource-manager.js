@@ -6,25 +6,17 @@ define([
     'fenix-ui-bridge',
     'backbone',
     "../../config/events",
-    "../../config/config",
+    "../../config/config"
 ], function ($, _, log, Q, Bridge, Backbone, EVT, C) {
 
     "use strict";
 
-    var url = {
-        saveMetadata: "resources/metadata",
-        saveDSD: "resources/dsd",
-        saveData: "resources"
-    };
-
     function ResourceManager() {
         log.info("FENIX DM - Resource Manager");
-        this.bridge = new Bridge({
-            environment: this.environment
-        });
+
         this.resource = {};
-        this.url = url;
-        log.info("FENIX DM - Resource Manager completed.", this);
+
+        log.info("FENIX DM - Resource Manager completed.");
     }
 
     ResourceManager.prototype.init = function (opts) {
@@ -101,6 +93,24 @@ define([
 
     ResourceManager.prototype.createResource = function (opts) {
 
+        if (!opts.contextSystem) {
+            log.error("Impossible to find context system");
+            alert("Impossible to find context system");
+            return;
+        }
+
+        if (!opts.resourceRepresentationType) {
+            log.error("Impossible to find resourceRepresentationType");
+            alert("Impossible to find resourceRepresentationType");
+            return;
+        }
+
+        if (Array.isArray(opts.datasources) && opts.datasources.length === 0) {
+            log.error("Data Sources can not be null");
+            alert("Data Sources can not be null");
+            return;
+        }
+
         this.bridge.saveMetadata({
             body: {
                 dsd: {
@@ -140,7 +150,7 @@ define([
                 Backbone.trigger(EVT.RESOURCE_DELETED);
             }, this),
             _.bind(function () {
-                Backbone.trigger("error:showerrorsrv", null, xhr);
+                Backbone.trigger("error:showerrorsrv", null);
             }, this)
         );
 
@@ -202,7 +212,7 @@ define([
 
         this.assign(resource, "metadata.creationDate", this.getNestedProperty("creationDate", catalogModel.model));
 
-        this._setResource(resource);
+        this.setResource(resource);
 
         Backbone.trigger(EVT.RESOURCE_LOADED);
     };
@@ -217,16 +227,12 @@ define([
 
     ResourceManager.prototype.getMetadata = function () {
         log.info("Get Metadata", this.resource.metadata);
-
         return (this.isValidMetadata(this.resource.metadata)) ? this.resource.metadata : {};
     };
 
     ResourceManager.prototype._onGetMetadataSuccess = function (resource) {
         log.info("_onGetMetadataSuccess");
-        this.metadata = resource;
         log.info(resource);
-        //return resource;
-
     };
 
     ResourceManager.prototype._onGetMetadataError = function (e) {
@@ -240,26 +246,25 @@ define([
         log.info("saveMetadata Called.");
 
         this.bridge.updateMetadata({
-            body: this.resource.metadata,
+            body: $.extend(true, {}, this.resource.metadata),
             dsdRid: this.getNestedProperty("metadata.dsd.rid", this.resource)
         }).then(
-                _.bind(function (data) {
+            _.bind(function (data) {
+                log.info("Success metadata update");
+                log.info(data);
 
-                    log.info("Success metadata update");
-                    log.info(data);
+                Backbone.trigger(EVT.RESOURCE_UPDATED);
 
-                    Backbone.trigger(EVT.RESOURCE_UPDATED);
-
-                }, this),
-                _.bind(function (xhr, textstatus) {
-                    log.error("Error metadata update");
-                    log.error(xhr);
-                    log.error(textstatus);
-                    Backbone.trigger("error:showerrorsrv", null, xhr);
-                }, this));
+            }, this),
+            _.bind(function (xhr, textstatus) {
+                log.error("Error metadata update");
+                log.error(xhr);
+                log.error(textstatus);
+                Backbone.trigger("error:showerrorsrv", null, xhr);
+            }, this));
     };
 
-    ResourceManager.prototype._setResource = function (resource) {
+    ResourceManager.prototype.setResource = function (resource) {
         this.resource = resource;
     };
 
@@ -313,50 +318,9 @@ define([
     // DSD
 
     ResourceManager.prototype.getDSD = function () {
-        if (this.resource === undefined) return null;
-        if (this.resource.metadata === undefined) return null;
-        if (this.resource.metadata.dsd === undefined) return null;
-        log.info("getDSD Called.", this.resource.metadata.dsd);
-        return this.resource.metadata.dsd;
 
+        return this.resource && this.resource.metadata ? $.extend(true, {}, this.resource.metadata.dsd) : undefined;
     };
-    /*
-     ResourceManager.prototype.getDSDColumns = function () {
-     if (this.resource === undefined) return null;
-     if (this.resource.metadata === undefined) return null;
-     if (this.resource.metadata.dsd === undefined) return null;
-     if (this.resource.metadata.dsd.columns === undefined) return null;
-     log.info("getDSDColumns Called.", this.resource.metadata.dsd.columns);
-     return this.resource.metadata.dsd.columns;
-     };
-
-
-     ResourceManager.prototype.setDSDColumns = function (cols) {
-     this.resource.metadata.dsd.columns = cols;
-     this.updateDSD(this.resource.metadata.dsd);
-     };
-
-     ResourceManager.prototype.setDSDwithMeta = function (candidate) {
-     var toval = candidate;
-     //toval['columns'] = candidate;
-     log.info("setDSDwithMeta Called.", toval, this.resource);
-
-     if (this.isDSDValid(toval)) {
-     this.resource.metadata.dsd = toval;
-     this.setMetadata(this.resource.metadata);
-     }
-
-     };
-
-     ResourceManager.prototype.setDSD = function (candidate) {
-     var toval = candidate;
-     log.info("setDSD Called.", toval);
-     if (this.isDSDValid(toval)) {
-     this.resource.metadata.dsd = toval;
-     this.updateDSD(this.resource.metadata.dsd);
-     }
-     };
-     */
 
     ResourceManager.prototype.updateDsd = function (dsd) {
 
@@ -370,6 +334,7 @@ define([
         }
 
         this.assign(this.resource, "metadata.dsd", dsd);
+
     };
 
     ResourceManager.prototype.saveDsd = function () {
@@ -385,13 +350,15 @@ define([
 
             }, this),
             _.bind(function (xhr, textstatus) {
+
                 log.error("Error dsd update");
                 log.error(xhr);
                 log.error(textstatus);
+
                 Backbone.trigger("error:showerrorsrv", null, xhr);
+
             }, this));
     };
-
 
     // Data
 
@@ -439,12 +406,8 @@ define([
                 log.error(textstatus);
                 Backbone.trigger("error:showerrorsrv", null, xhr);
             }, this));
-        /*
-        log.info("updateData called", resource);
-        this.updateResource(resource, this.url.saveData);
-        */
-    }
 
+    };
 
     // Utils
 

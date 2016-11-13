@@ -92,6 +92,10 @@ define(function () {
         "CopyMetaVer": "Version de la Ressource (si applicable)",
         "NoTitle": "Sans Titre",
 
-        metadataValidationWarning : "Veuillez remplir les champs obligatoires"
+        metadataValidationWarning : "Veuillez remplir les champs obligatoires",
+
+        //DSD
+        DSD_COPY_SUCCESS : "DSD copié avec succès",
+        DSD_COPY_EMPTY_RESOURCE : "Ressource ne contient pas de colonnes"
     }
 });
