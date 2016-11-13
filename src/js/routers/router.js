@@ -67,16 +67,16 @@ define([
             this.container = this.initial.container || s.CONTAINER;
             this.cache = this.initial.cache;
             this.environment = this.initial.environment;
-            this.lang = this.initial.lang || C.lang;
+            this.lang = this.initial.lang;
             this.lang = this.lang.toLowerCase();
 
-            this.config = $.extend(true, {}, C.config, this.initial.config);
+            this.config = this.initial.config;
 
-            this.dsdEditor = this.initial.dsdEditor;
-            this.catalog = this.initial.catalog;
-            this.metadataEditor = this.initial.metadataEditor;
+            this.dsdEditorConfig = this.initial.dsdEditorConfig || {};
+            this.catalogConfig = this.initial.catalogConfig || {};
+            this.metadataEditorConfig = this.initial.metadataEditorConfig || {};
+            this.dataEditorConfig = this.initial.dataEditorConfig || {};
 
-            console.log(this.config);
         },
 
         _initVariables: function () {
@@ -385,7 +385,7 @@ define([
                 menu: "metadata",
                 lang: this.lang,
                 environment: this.environment,
-                config: this.metadataEditor,
+                config: this.metadataEditorConfig,
                 model: RM.getMetadata()
             });
         },
@@ -402,7 +402,8 @@ define([
                 menu: "dsd",
                 lang: this.lang,
                 environment: this.environment,
-                config: $.extend(true, this.dsdEditor, {
+                config: $.extend(true, this.dsdEditorConfig, {
+                    lang : this.lang,
                     contextSystem: this.config.contextSystem,
                     datasources: this.config.datasources
                 }),
@@ -419,13 +420,13 @@ define([
             this.switchView(DataView, {
                 el: this.container,
                 menu: "data",
+                config : this.dataEditorConfig,
                 lang: this.lang,
                 codelists: RM.getCurrentResourceCodelists(),
                 dsd: RM.getDSD(),
                 data: RM.getData(),
                 generator: RM.generateDSDStructure(),
-                environment: this.environment,
-                savebtn: s.BTN_ELEMENT
+                environment: this.environment
             });
         },
 

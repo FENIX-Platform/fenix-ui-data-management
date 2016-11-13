@@ -5,8 +5,12 @@ define([
     "./routers/router",
     "../html/main.hbs",
     "../config/config",
-    "../config/errors"
-], function (log, $, Router, Template, C, ERR) {
+    "../config/errors",
+    "../config/catalog",
+    "../config/dsd-editor",
+    "../config/data-editor",
+    "../config/metadata-editor"
+], function (log, $, Router, Template, C, ERR, CatalogConfig, DsdEditorConfig, DataEditorConfig, MetadataEditor) {
 
     "use strict";
 
@@ -60,11 +64,11 @@ define([
         this.environment = this.initial.environment;
         this.lang = this.initial.lang || C.lang;
 
-        this.dsdEditor = this.initial.dsdEditor || C.dsdEditor;
-        this.catalog = this.initial.catalog || C.catalog;
-        this.metadataEditor = this.initial.metadataEditor || C.metadataEditor;
+        this.catalogConfig = this.initial.catalog || CatalogConfig;
+        this.dsdEditorConfig = this.initial.dsdEditor || DsdEditorConfig;
+        this.dataEditorConfig = this.initial.dataEditor || DataEditorConfig;
+        this.metadataEditorConfig = this.initial.metadataEditor || MetadataEditor;
         this.config = this.initial.config || C.config;
-
     };
 
     DataManagement.prototype._start = function () {
@@ -74,10 +78,11 @@ define([
             cache: this.cache,
             environment: this.environment,
             lang : this.lang,
-            catalog: this.catalog,
-            metadataEditor: this.metadataEditor,
-            dsdEditor : this.dsdEditor,
-            config: this.config
+            config: this.config,
+            catalogConfig: this.catalogConfig,
+            metadataEditorConfig: this.metadataEditorConfig,
+            dsdEditorConfig : this.dsdEditorConfig,
+            dataEditorConfig : this.dataEditorConfig
         };
 
         log.info("Router config:");

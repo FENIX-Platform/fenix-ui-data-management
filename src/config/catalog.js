@@ -5,7 +5,9 @@ define(function () {
     return {
 
         defaultSelectors: ['freeText', 'resourceType', 'contextSystem'],
+
         hideCloseButton: true,
+
         pluginRegistry: {
             contextSystem: {
                 selector: {

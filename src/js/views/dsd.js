@@ -64,11 +64,15 @@ define([
 
         _parseInput: function () {
 
+
             this.environment = this.initial.environment;
             this.lang = this.initial.lang.toLowerCase();
             this.config = this.initial.config;
             this.model = this.initial.model;
             this.isEditable = this.initial.isEditable;
+
+            console.log(this.config)
+
         },
 
         _initDsdEditor: function () {

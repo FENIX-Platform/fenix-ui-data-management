@@ -4,12 +4,11 @@ define([
     "loglevel",
     "q",
     "fenix-ui-DataEditor",
-    "../../config/data-editor",
     "../components/file-uploader",
     '../../nls/labels',
     "../../html/data.hbs",
     "../../html/file-uploader.hbs"
-], function ($, Backbone, log, Q, DataEditor, Config, FileUploader, labels, template, templateFileUploader) {
+], function ($, Backbone, log, Q, DataEditor, FileUploader, labels, template, templateFileUploader) {
 
     "use strict";
 
@@ -56,12 +55,11 @@ define([
 
                 this._bindEventListeners();
 
-                //console.log(this.$el);
-
             } else {
                 log.error("Impossible to render Data");
                 log.error(valid)
             }
+
             log.info("{Data} Rendering View", this);
 
             return this;
@@ -75,9 +73,6 @@ define([
             this.dsd = this.initial.dsd;
             this.data = this.initial.data;
             this.generator = this.initial.generator;
-
-            //console.log(this.generator);
-
         },
 
         _validateInput: function () {
@@ -95,9 +90,6 @@ define([
         _initVariables: function () {
 
             this.$savebtn = this.$el.find(s.SAVE_BUTTON);
-            this.$keepNewDataButton = this.$el.find(s.KEEP_NEW_DATA_BUTTON);
-            this.$keepOldDataButton = this.$el.find(s.KEEP_OLD_DATA_BUTTON);
-            this.$abortMergeButton = this.$el.find(s.ABORT_MERGE_BUTTON);
             this.$csvMatcherOkButton = this.$el.find(s.btnCsvMatcherOk);
             this.$csvMatcherCancelButton = this.$el.find(s.btnCsvMatcherCancel);
         },
@@ -108,24 +100,23 @@ define([
             var config = Config,
                 self = this;
 
-
             $(s.utility).html(templateFileUploader);
-/*
-            this.$dataUploadColsMatch = $(this.$el.find(s.dataUploadColsMatch));
-            this.$dataEditorContainer = $(this.$el.find(s.dataEditorContainer));
-            this.$dataUploadContainer = $(this.$el.find(s.dataUploadContainer));
+            /*
+             this.$dataUploadColsMatch = $(this.$el.find(s.dataUploadColsMatch));
+             this.$dataEditorContainer = $(this.$el.find(s.dataEditorContainer));
+             this.$dataUploadContainer = $(this.$el.find(s.dataUploadContainer));
 
-            this.$dataEditorContainer.hide();
-*/
+             this.$dataEditorContainer.hide();
+             */
             //this.dataEditor = DataEditor;
             DataEditor.init(this.$el.find(s.DATA_EL), config, null);
 
 
-            DataEditor.on("error:showerrormsg", function(msg){
+            DataEditor.on("error:showerrormsg", function (msg) {
                 Backbone.trigger("error:showerrormsg", msg);
             });
 
-            DataEditor.on("data:loaded", function(){
+            DataEditor.on("data:loaded", function () {
                 Backbone.trigger("data:loaded");
             });
 
@@ -133,12 +124,12 @@ define([
 
             this.generator.then(function (result) {
                 //Data.isEditable(false);
-                //console.log('risyu',result);
+
                 self.cLists = result;
                 log.info('{Data} Calling the DSD');//, result);
                 var dsd = self.dsd.columns;
                 log.info('{Data} Setting the DSD...');//, dsd);
-                //console.log(dsd,self.cLists);
+
                 DataEditor.setColumns(dsd, self.cLists, null);
                 log.info("{Data} DSD Columns Setted.");//, self.data);
                 if (self.data !== undefined) {
@@ -176,15 +167,14 @@ define([
 
             this.$savebtn.off();
             /*
-            this.$keepNewDataButton.off();
-            this.$keepOldDataButton.off();
-            this.$abortMergeButton.off();
+             this.$keepNewDataButton.off();
+             this.$keepOldDataButton.off();
+             this.$abortMergeButton.off();
 
-            this.$csvMatcherOkButton.off();
-            this.$csvMatcherCancelButton.off();
-            */
+             this.$csvMatcherOkButton.off();
+             this.$csvMatcherCancelButton.off();
+             */
         },
-
 
 
         _csvLoaded: function (data) {
@@ -199,11 +189,11 @@ define([
 
         _switchPanelVisibility: function (toShow) {
             /*
-            $(this.$el.find(s.dataUploadColsMatch)).hide();
-            $(this.$el.find(s.dataEditorContainer)).hide();
-            $(this.$el.find(s.dataUploadContainer)).hide();
-            toShow.show();
-            */
+             $(this.$el.find(s.dataUploadColsMatch)).hide();
+             $(this.$el.find(s.dataEditorContainer)).hide();
+             $(this.$el.find(s.dataUploadContainer)).hide();
+             toShow.show();
+             */
         },
 
         accessControl: function (Resource) {
