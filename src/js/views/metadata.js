@@ -132,9 +132,6 @@ define([
                     _.bind(function (resource) {
 
 
-
-                        console.log(resource)
-
                         return;
 
                         if (!resource) {
