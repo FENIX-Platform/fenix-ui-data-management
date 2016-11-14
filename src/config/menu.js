@@ -10,7 +10,7 @@ define(function () {
                 },
                 "label": {
                     "EN": "Data Management",
-                    "FR": "Data Management FR"
+                    "FR": "Gestion des Données"
                 }
             },
             {
@@ -82,7 +82,7 @@ define(function () {
                 },
                 "label": {
                     "EN": "Close",
-                    "FR": "Annuller"
+                    "FR": "Terminer"
                 }
             }
         ],

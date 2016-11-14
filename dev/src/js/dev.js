@@ -13,7 +13,7 @@ define([
             DATA_MNG: "#data-mng"
         },
         cache = false,
-        lang = "EN",
+        lang = "FR",
         environment = "production"; // develop production [demo is not available]
 
     function Dev() {

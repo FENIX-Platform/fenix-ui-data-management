@@ -13,7 +13,8 @@ define([
     var s = {
         btnMeta: "#btnMeta",
         btnDSD: "#btnDSD",
-        btnData: "#btnData"
+        btnData: "#btnData",
+        DManResHeader: "#DManResHeader"
     };
 
     var HomeView = Backbone.View.extend({
@@ -57,7 +58,12 @@ define([
         },
 
         _attach: function () {
-            this.$el.html(template(labels)); //TODO i18n
+            this.$el.html(template(labels));
+            //i18n
+            this.$el.find(s.btnMeta).html(labels[this.lang]['btnMetadata']);
+            this.$el.find(s.btnDSD).html(labels[this.lang]['btnDSD']);
+            this.$el.find(s.btnData).html(labels[this.lang]['btnData']);
+            this.$el.find(s.DManResHeader).html(labels[this.lang]['DManResHeader']);
         },
 
         _bindEventListeners: function () {

@@ -7,11 +7,12 @@ define([
     '../../config/errors',
     '../../config/events',
 ], function ($, Backbone, log, labels, Template, ERR, EVT) {
-
     "use strict";
     var s = {
         btnSearch: "#btnSearch",
-        btnAdd: "#btnAdd"
+        btnAdd: "#btnAdd",
+        DManHeader: "#DManHeader",
+        DManIntro: "#DManIntro"
     };
 
     var LandingView = Backbone.View.extend({
@@ -39,6 +40,11 @@ define([
 
         _attach: function () {
             this.$el.html(Template);
+            //i18n
+            this.$el.find(s.btnSearch).html(labels[this.lang]['btnSearch']);
+            this.$el.find(s.btnAdd).html(labels[this.lang]['btnAdd']);
+            this.$el.find(s.DManHeader).html(labels[this.lang]['DManHeader']);
+            this.$el.find(s.DManIntro).html(labels[this.lang]['DManIntro']);
         },
 
         _validateInput: function () {

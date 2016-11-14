@@ -32,6 +32,13 @@ define([
         csvSeparator: "#csvSeparator"
     };
 
+    var p = {
+        lblUpload : "#lblUpload",
+        lblSeparator : "#lblSeparator",
+        csvSeparatorComma : "#csvSeparatorComma",
+        csvSeparatorSemi : "#csvSeparatorSemi"
+    };
+
     var DataView = Backbone.View.extend({
 
         render: function (o) {
@@ -149,6 +156,12 @@ define([
             log.info(' init file uploader');
             this.fUpload = new FileUploader({accept: ['csv']});
             this.fUpload.render(s.dataFileUpload);
+
+            //i18n
+            this.$utility.find(p.lblUpload).html(labels[this.lang]['DatalblUpload']);
+            this.$utility.find(p.lblSeparator).html(labels[this.lang]['DatalblSeparator']);
+            this.$utility.find(p.csvSeparatorComma).html(labels[this.lang]['DatalblcsvSeparatorComma']);
+            this.$utility.find(p.csvSeparatorSemi).html(labels[this.lang]['DatalblcsvSeparatorSemi']);
 
         },
 
