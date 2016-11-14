@@ -186,7 +186,7 @@ define([
         this.bridge.getResource({
             uid: resource.model.uid,
             version: resource.model.version,
-            params: {dsd: true, full: true, export: true, perPage: 1}
+            params: {dsd: true, full: true, export: true}
         }).then(
             _.bind(this._onLoadResourceSuccess, this, resource),
             _.bind(this._onLoadResourceError, this)

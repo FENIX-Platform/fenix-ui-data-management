@@ -157,10 +157,13 @@ define([
             var self = this;
 
             this.$savebtn.on("click", function () {
-                log.info("{DATA} saving", DataEditor.getData());
-                var exist = DataEditor.getData().length;
-                if (exist) { Backbone.trigger("data:saving", DataEditor.getData()); }
-                else { Backbone.trigger("data:saving", []); }
+                var exist = DataEditor.getData();
+                log.info("{DATA} saving", exist);
+                if (!!exist) {
+                    Backbone.trigger("data:saving",exist);
+                } else {
+                    Backbone.trigger("error:showerror", "invalidData");
+                }
             });
 
             this.listenTo(Backbone, "data:uploaded", function (str) {

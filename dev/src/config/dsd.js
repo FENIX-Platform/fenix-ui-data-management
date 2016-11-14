@@ -76,6 +76,14 @@ define(function () {
                 "subject": "gender"
             },
             {
+                "value": "CountrySTAT_Residence",
+                "text": {
+                    "EN": "Residence",
+                    "FR": "Residence FR"
+                },
+                "subject": "residence"
+            },
+            {
                 "value": "UNECA_Energy",
                 "text": {
                     "EN": "UNECA_Energy",

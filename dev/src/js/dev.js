@@ -14,7 +14,7 @@ define([
         },
         cache = false,
         lang = "EN",
-        environment = "develop"; // develop production [demo is not available]
+        environment = "production"; // develop production [demo is not available]
 
     function Dev() {
 
@@ -24,7 +24,7 @@ define([
 
         // trace silent
 
-        log.setLevel('silent');
+        log.setLevel('trace');
 
         //log.setLevel('silent');
 
