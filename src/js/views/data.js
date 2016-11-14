@@ -29,7 +29,7 @@ define([
         btnFileUploader: "#btnFileUploader",
         btnDelAllData: "#btnDelAllData",
         dataFileUpload: "#dataFUpload",
-        csvSeparator: "input[name=csvSeparator]:checked"
+        csvSeparator: "#csvSeparator"
     };
 
     var DataView = Backbone.View.extend({
@@ -122,7 +122,8 @@ define([
                 log.info('{Data} Calling the DSD');//, result);
                 var dsd = self.dsd.columns;
                 log.info('{Data} Setting the DSD...');//, dsd);
-
+                log.warn(JSON.stringify(dsd));
+                log.warn(JSON.stringify(self.cLists));
                 DataEditor.setColumns(dsd, self.cLists, null);
                 log.info("{Data} DSD Columns Setted.");//, self.data);
                 if (self.data !== undefined) {
@@ -140,6 +141,10 @@ define([
             this.$utility.html(templateFileUploader);
 
             this.$csvSeparator = this.$el.find(s.csvSeparator);
+
+            this.$csvSeparator.on("click", function(e){
+                e.stopPropagation();
+            });
 
             log.info(' init file uploader');
             this.fUpload = new FileUploader({accept: ['csv']});
@@ -171,7 +176,6 @@ define([
 
         _csvLoaded: function (data) {
             log.info(' csv loaded ');
-
             this.fUpload.reset();
             this.$utility.hide();
             DataEditor.csvLoaded(data, {}, this.$csvSeparator.val());
