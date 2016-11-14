@@ -103,7 +103,7 @@ define([
 
             var self = this;
 
-            DataEditor.init(this.$dataEditorEl, null, null);
+            DataEditor.init(this.$dataEditorEl, { lang:this.lang }, null);
 
             DataEditor.on("error:showerrormsg", function (msg) {
                 Backbone.trigger("error:showerrormsg", msg);
@@ -154,7 +154,8 @@ define([
             this.$savebtn.on("click", function () {
                 log.info("{DATA} saving", DataEditor.getData());
                 var exist = DataEditor.getData().length;
-                if (exist) Backbone.trigger("data:saving", DataEditor.getData());
+                if (exist) { Backbone.trigger("data:saving", DataEditor.getData()); }
+                else { Backbone.trigger("data:saving", []); }
             });
 
             this.listenTo(Backbone, "data:uploaded", function (str) {
