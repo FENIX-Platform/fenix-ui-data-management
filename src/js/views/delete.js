@@ -56,7 +56,11 @@ define([
         },
 
         _attach: function () {
-            this.$el.html(template({header: labels[this.lang]['DeleteHeader']}));
+            this.$el.html(template({
+                header: labels[this.lang]['DeleteHeader'],
+                confirm: labels[this.lang]['btnDeleteConfirm'],
+                undo: labels[this.lang]['btnDeleteUndo']
+            }));
         },
 
         _initVariables: function () {

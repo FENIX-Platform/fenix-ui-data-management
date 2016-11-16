@@ -24,7 +24,7 @@ define([
 
         // trace silent
 
-        log.setLevel('trace');
+        log.setLevel('silent');
 
         //log.setLevel('silent');
 

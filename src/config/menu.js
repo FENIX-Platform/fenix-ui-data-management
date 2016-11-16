@@ -19,7 +19,7 @@ define(function () {
                 },
                 "label": {
                     "EN": "Search",
-                    "FR": "Rchercher"
+                    "FR": "Rechercher"
                 }
             },
             {

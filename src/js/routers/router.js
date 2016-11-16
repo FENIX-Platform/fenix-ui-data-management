@@ -508,7 +508,6 @@ define([
                 this.resetView();
                 this.renderView(View, o)
             }
-
             this._updatePageTitle();
 
         },
@@ -528,8 +527,15 @@ define([
 
         _updatePageTitle: function () {
 
-            var stringTitle = "";
-            this.$header.html(this.menu.o.active);
+            var stringTitle = "",
+                self = this,
+                head = "";
+
+            $.each(this.menu.o.conf.items, function(index,object){
+                if (object.attrs.id == self.menu.o.active) head = object.label[self.lang.toUpperCase()];
+            });
+
+            this.$header.html(head);
 
             if ($.isPlainObject(RM.resource.metadata)) {
                 if (RM.resource.metadata.title) {

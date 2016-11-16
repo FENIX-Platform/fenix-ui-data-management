@@ -55,7 +55,7 @@ define(function () {
         "invalidBool": "Valeur booléenne non valide",
 
         //Buttons
-        "btnSearch": "RCHERCHER",
+        "btnSearch": "RECHERCHER",
         "btnAdd": "AJOUTER",
         "btnMetadata": "MÉTADONNÉES",
         "btnDSD": "DSD",
