@@ -112,6 +112,10 @@ define([
 
             DataEditor.init(this.$dataEditorEl, { lang:this.lang }, null);
 
+            DataEditor.on("data:restoreupload", function(){
+                self.$utility.show();
+            });
+
             DataEditor.on("error:showerrormsg", function (msg) {
                 Backbone.trigger("error:showerrormsg", msg);
             });

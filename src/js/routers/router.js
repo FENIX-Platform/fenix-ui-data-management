@@ -539,7 +539,8 @@ define([
 
             if ($.isPlainObject(RM.resource.metadata)) {
                 if (RM.resource.metadata.title) {
-                    stringTitle = ' / ' + RM.resource.metadata.title[this.lang.toUpperCase()];
+                    log.info(RM.resource.metadata.title);
+                    stringTitle = ' / ' + (RM.resource.metadata.title[this.lang.toUpperCase()] || RM.resource.metadata.title['EN']);
                 } else {
                     stringTitle = ' / ' + labels[this.lang.toLowerCase()]['NoTitle'];
                 }
