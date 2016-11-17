@@ -109,6 +109,7 @@ define([
             log.info("{Data} initViews");
 
             var self = this;
+            this.$utility.hide();
 
             DataEditor.init(this.$dataEditorEl, { lang:this.lang }, null);
 
@@ -121,6 +122,7 @@ define([
             });
 
             DataEditor.on("data:loaded", function () {
+                self.$utility.show();
                 Backbone.trigger("data:loaded");
             });
 
@@ -141,7 +143,8 @@ define([
                     DataEditor.setData(self.data, rowlimit);
                     log.info("{Data} But not the data!");
                 }
-
+                DataEditor.setStatus('loaded');
+                self.$utility.show();
             })
 
         },
@@ -157,7 +160,7 @@ define([
                 e.stopPropagation();
             });
 
-            log.info(' init file uploader');
+            log.info('init file uploader');
             this.fUpload = new FileUploader({accept: ['csv']});
             this.fUpload.render(s.dataFileUpload);
 
