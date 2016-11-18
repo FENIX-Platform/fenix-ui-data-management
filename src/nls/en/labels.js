@@ -102,7 +102,11 @@ define(function () {
 
         //DSD
         DSD_COPY_SUCCESS : "DSD copied successfully",
-        DSD_COPY_EMPTY_RESOURCE : "Resource does not contains columns"
+        DSD_COPY_EMPTY_RESOURCE : "Resource does not contains columns",
+
+        //Metadata
+        METADATA_COPY_EMPTY_RESOURCE : "Resource not found",
+        METADATA_COPY_SUCCESS : "Metadata copied successfully"
 
 
     }

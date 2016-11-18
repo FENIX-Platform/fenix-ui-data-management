@@ -24,7 +24,7 @@ define([
 
         // trace silent
 
-        log.setLevel('trace');
+        log.setLevel('silent');
 
         //log.setLevel('silent');
 
@@ -46,7 +46,7 @@ define([
             cache: cache,
             lang: lang,
             dsdEditor: DSDConf,
-            metadataEditor: MDConf,
+            //metadataEditor: MDConf,
             catalog: CataConf,
             config: {
                 contextSystem :"fenix_develop",

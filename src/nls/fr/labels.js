@@ -96,6 +96,10 @@ define(function () {
 
         //DSD
         DSD_COPY_SUCCESS : "DSD copié avec succès",
-        DSD_COPY_EMPTY_RESOURCE : "Ressource ne contient pas de colonnes"
+        DSD_COPY_EMPTY_RESOURCE : "Ressource ne contient pas de colonnes",
+
+        //Metadata
+        METADATA_COPY_EMPTY_RESOURCE : "Ressource introuvable",
+        METADATA_COPY_SUCCESS : "Métadonnées copiées avec succès"
     }
 });

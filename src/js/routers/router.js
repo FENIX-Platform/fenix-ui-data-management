@@ -235,6 +235,14 @@ define([
                 RM.saveMetadata();
             });
 
+            this.listenTo(Backbone, EVT.METADATA_COPY_EMPTY_RESOURCE, function () {
+                Notify['warning'](labels[this.lang][EVT.METADATA_COPY_EMPTY_RESOURCE]);
+            });
+
+            this.listenTo(Backbone, EVT.METADATA_COPY_SUCCESS, function () {
+                Notify['success'](labels[this.lang][EVT.METADATA_COPY_SUCCESS]);
+            });
+
             //DSD
 
             this.listenTo(Backbone, EVT.DSD_SAVE, function (dsd) {
@@ -246,7 +254,6 @@ define([
 
             this.listenTo(Backbone, EVT.DSD_COPY_EMPTY_RESOURCE, function (dsd) {
                 Notify['warning'](labels[this.lang][EVT.DSD_COPY_EMPTY_RESOURCE]);
-
             });
 
             this.listenTo(Backbone, EVT.DSD_COPY_SUCCESS, function (dsd) {

@@ -131,21 +131,19 @@ define([
                 }).then(
                     _.bind(function (resource) {
 
-
-                        return;
-
                         if (!resource) {
-                            Backbone.trigger(EVT.DSD_COPY_EMPTY_RESOURCE);
+                            Backbone.trigger(EVT.METADATA_COPY_EMPTY_RESOURCE);
                         } else {
 
-                            var metadata = resource.metadata || {},
-                                dsd = metadata.dsd || {};
+                            var metadata = resource.metadata || {};
 
-                            if (dsd && Array.isArray(dsd.columns) && dsd.columns.length > 0) {
-                                this.dsd.set(dsd.columns);
-                            }
+                            delete metadata.uid;
 
-                            Backbone.trigger(EVT.DSD_COPY_SUCCESS);
+                            delete metadata.version;
+
+                            this.MDE.setValues(metadata);
+
+                            Backbone.trigger(EVT.METADATA_COPY_SUCCESS);
                         }
 
                     }, this),
