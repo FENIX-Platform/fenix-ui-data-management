@@ -10,11 +10,13 @@ define([
 
     "use strict";
 
-    var s = {
+    var b = {
         btnMeta: "#btnMeta",
         btnDSD: "#btnDSD",
         btnData: "#btnData",
-        DManResHeader: "#DManResHeader"
+    },
+        s = {
+            DManResHeader: "#DManResHeader"
     };
 
     var HomeView = Backbone.View.extend({
@@ -54,36 +56,51 @@ define([
 
             this.cache = this.initial.cache;
             this.environment = this.initial.environment;
+            this.disabledSections = this.initial.disabledSections;
             this.lang = this.initial.lang.toLowerCase();
+
+            log.info('Disabled Sections', this.disabledSections);
         },
 
         _attach: function () {
+            var self = this;
             this.$el.html(template(labels));
             //i18n
-            this.$el.find(s.btnMeta).html(labels[this.lang]['btnMetadata']);
-            this.$el.find(s.btnDSD).html(labels[this.lang]['btnDSD']);
-            this.$el.find(s.btnData).html(labels[this.lang]['btnData']);
+            this.$el.find(b.btnMeta).html(labels[this.lang]['btnMetadata']);
+            this.$el.find(b.btnDSD).html(labels[this.lang]['btnDSD']);
+            this.$el.find(b.btnData).html(labels[this.lang]['btnData']);
+
             this.$el.find(s.DManResHeader).html(labels[this.lang]['DManResHeader']);
+
+            $.each(this.disabledSections, function(index,object){
+                // hide disabled buttons
+                self.$el.find(b[object]).parent().hide();
+            });
         },
 
         _bindEventListeners: function () {
 
-            this.$el.find(s.btnMeta).on("click", function () {
-                Backbone.trigger(EVT.SHOW_METADATA);
-            });
-            this.$el.find(s.btnDSD).on("click", function () {
-                Backbone.trigger(EVT.SHOW_DSD);
-            });
-            this.$el.find(s.btnData).on("click", function () {
-                Backbone.trigger(EVT.SHOW_DATA);
-            });
+            if (this.$el.find(b.btnMeta).is(":visible"))
+                this.$el.find(b.btnMeta).on("click", function () {
+                    Backbone.trigger(EVT.SHOW_METADATA);
+                });
+
+            if (this.$el.find(b.btnDSD).is(":visible"))
+                this.$el.find(b.btnDSD).on("click", function () {
+                    Backbone.trigger(EVT.SHOW_DSD);
+                });
+
+            if (this.$el.find(b.btnData).is(":visible"))
+                this.$el.find(b.btnData).on("click", function () {
+                    Backbone.trigger(EVT.SHOW_DATA);
+                });
 
         },
 
         _unbindEventListeners: function () {
-            this.$el.find(s.btnMeta).off();
-            this.$el.find(s.btnDSD).off();
-            this.$el.find(s.btnData).off();
+            this.$el.find(b.btnMeta).off();
+            this.$el.find(b.btnDSD).off();
+            this.$el.find(b.btnData).off();
         },
 
         accessControl: function (Resource) {

@@ -64,11 +64,15 @@ define([
         this.environment = this.initial.environment;
         this.lang = this.initial.lang || C.lang;
 
+        this.routes = this.initial.routes;
+        this.disabledSections = this.initial.disabledSections || [];
+
         this.catalogConfig = this.initial.catalog || CatalogConfig;
         this.dsdEditorConfig = this.initial.dsdEditor || DsdEditorConfig;
         this.dataEditorConfig = this.initial.dataEditor || DataEditorConfig;
         this.metadataEditorConfig = this.initial.metadataEditor || MetadataEditorConfig;
         this.config = this.initial.config || C.config;
+
     };
 
     DataManagement.prototype._start = function () {
@@ -79,11 +83,16 @@ define([
             environment: this.environment,
             lang: this.lang,
             config: this.config,
+            menuConfig: this.menuConfig,
             catalogConfig: this.catalogConfig,
             metadataEditorConfig: this.metadataEditorConfig,
             dsdEditorConfig: this.dsdEditorConfig,
-            dataEditorConfig: this.dataEditorConfig
+            dataEditorConfig: this.dataEditorConfig,
+            routes: this.routes,
+            disabledSections: this.disabledSections
         };
+
+        console.log(model);
 
         log.info("Router config:");
         log.info(model);

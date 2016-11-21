@@ -36,7 +36,8 @@ define([
         BTN_ELEMENT: "#fx-data-managment-update-button",
         HEADER: "#fx-data-managment-header-title",
         RES_TITLE: "#fx-data-managment-resource-title"
-    };
+    },
+        r = Routes;
 
     return Backbone.Router.extend({
 
@@ -59,7 +60,7 @@ define([
             log.info("Backbone.history.start() success");
         },
 
-        routes: Routes,
+        routes: r,
 
         _parseInput: function () {
 
@@ -76,6 +77,11 @@ define([
             this.catalogConfig = this.initial.catalogConfig || {};
             this.metadataEditorConfig = this.initial.metadataEditorConfig || {};
             this.dataEditorConfig = this.initial.dataEditorConfig || {};
+            this.menuConfig = this.initial.menuConfig || ConfigMenu;
+
+            this.disabledSections = this.initial.disabledSections || [];
+
+            r = this.initial.routes || r;
 
         },
 
@@ -106,7 +112,7 @@ define([
 
             this.menu = new Menu({
                 lang: this.lang,
-                config: ConfigMenu,
+                config: this.menuConfig,
                 container: s.MENU
             });
 
@@ -345,6 +351,7 @@ define([
                 el: this.container,
                 menu: "home",
                 lang: this.lang,
+                disabledSections: this.disabledSections,
                 environment: this.environment
             });
         },

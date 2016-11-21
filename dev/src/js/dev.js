@@ -48,6 +48,26 @@ define([
             dsdEditor: DSDConf,
             //metadataEditor: MDConf,
             catalog: CataConf,
+            routes: {
+                '(/)': 'onLanding',
+                '(/)landing(/)': 'onLanding',
+
+                '(/)home(/)': 'onMetadata',
+                '(/)add(/)': 'onAdd',
+
+                '(/)metadata(/)': 'onMetadata',
+
+                '(/)close(/)' : 'onClose',
+                '(/)delete(/)': 'onDelete',
+                '(/)search(/)': 'onSearch',
+                '(/)not-found(/)': 'onNotFound',
+
+                '(/)denied(/)': 'onDenied',
+
+                // fallback route
+                '(/)*path': 'onDefaultRoute'
+            },
+            disabledSections: ['btnDSD','btnData'],
             config: {
                 contextSystem :"fenix_develop",
                 datasources : ["D3S"],
