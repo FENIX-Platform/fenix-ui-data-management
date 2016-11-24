@@ -8,6 +8,8 @@
 @import 'themes/fx-variables';
 
 
+
+
 @import 'base/fx-buttons';
 @import 'base/fx-fonts-import';
 @import 'base/fx-icons';
@@ -99,7 +101,6 @@ $fx-secondary-color: desaturate( $fx-cool-blue, 50% );
 
 .datamng-welcome{
   text-align: center;
-  width: 350px;
   background-color: white;
   padding: 25px;
   position: relative;

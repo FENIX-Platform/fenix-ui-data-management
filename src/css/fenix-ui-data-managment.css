@@ -5471,7 +5471,6 @@ input[type="radio"]:disabled + label {
 
 .datamng-welcome {
   text-align: center;
-  width: 350px;
   background-color: white;
   padding: 25px;
   position: relative;
