@@ -46,8 +46,9 @@ define([
             cache: cache,
             lang: lang,
             dsdEditor: DSDConf,
-            //metadataEditor: MDConf,
+            metadataEditor: MDConf,
             catalog: CataConf,
+            /*
             routes: {
                 '(/)': 'onLanding',
                 '(/)landing(/)': 'onLanding',
@@ -68,6 +69,7 @@ define([
                 '(/)*path': 'onDefaultRoute'
             },
             disabledSections: ['btnDSD','btnData'],
+            */
             config: {
                 contextSystem :"fenix_develop",
                 datasources : ["D3S"],

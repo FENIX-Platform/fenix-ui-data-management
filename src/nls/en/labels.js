@@ -82,7 +82,7 @@ define(function () {
         "DManHeader": "FENIX Data Management",
         "DManResHeader" : "Edit Resource",
         "MetaHeader" : "Metadata Editor",
-        "MetaCopyHeader" : "Copy metadata from resource",
+        "MetaCopyHeader" : "Copy metadata from",
         "DSDHeader" : "Data Structure Definition Editor",
         "DataHeader" : "Data Editor",
         "CloseHeader" : "Resource Closed",

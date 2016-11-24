@@ -4,19 +4,18 @@
     </button>
     <ul class="dropdown-menu json-menu">
         <li class="js-menu dropdown-submenu">
-            <label id="lblUpload" for="dataFUpload">Upload</label>
-            <br>
-            <input type="file" name="filename" id="dataFUpload" />
-            <br>
-        </li>
-        <li class="js-menu dropdown-submenu">
             <label id="lblSeparator" for="csvSeparator">CSV Separator</label>
             <br>
             <select id="csvSeparator" name="csvSeparator" >
                 <option id="csvSeparatorComma" value="," selected="selected">Comma</option>
                 <option id="csvSeparatorSemi" value=";">Semicolon</option>
             </select>
-
+        </li>
+        <li class="js-menu dropdown-submenu">
+            <label id="lblUpload" for="dataFUpload">Upload</label>
+            <br>
+            <input type="file" name="filename" id="dataFUpload" accept=".csv" />
+            <br>
         </li>
     </ul>
 </div>

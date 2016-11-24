@@ -115,6 +115,7 @@ define([
 
             DataEditor.on("data:restoreupload", function(){
                 self.$utility.show();
+                self.$savebtn.prop("disabled",false);
             });
 
             DataEditor.on("error:showerrormsg", function (msg) {
@@ -123,6 +124,7 @@ define([
 
             DataEditor.on("data:loaded", function () {
                 self.$utility.show();
+                self.$savebtn.prop("disabled",false);
                 Backbone.trigger("data:loaded");
             });
 
@@ -145,6 +147,7 @@ define([
                 }
                 DataEditor.setStatus('loaded');
                 self.$utility.show();
+                self.$savebtn.prop("disabled",false);
             })
 
         },
@@ -201,6 +204,7 @@ define([
             log.info(' csv loaded ');
             this.fUpload.reset();
             this.$utility.hide();
+            this.$savebtn.prop("disabled",true);
             DataEditor.csvLoaded(data, {}, this.$csvSeparator.val());
         },
 
@@ -218,6 +222,7 @@ define([
         remove: function () {
             log.warn("{DATA} - Remove View");
             this._removeEventListeners();
+            this.$savebtn.prop("disabled",false);
             this.$utility.html('');
             this.$utility.show();
             Backbone.View.prototype.remove.apply(this, arguments);

@@ -8,8 +8,9 @@ define([
     "fenix-ui-filter",
     "fenix-ui-bridge",
     "../../html/metadata.hbs",
-    "../../config/events"
-], function ($, Backbone, _, log, Q, MDE, Filter, Bridge, template, EVT) {
+    "../../config/events",
+    '../../nls/labels',
+], function ($, Backbone, _, log, Q, MDE, Filter, Bridge, template, EVT, labels) {
 
     "use strict";
 
@@ -79,8 +80,8 @@ define([
 
         _attach: function () {
             this.$el.html(template({
-                copyTitle: "Copy Metadata from:"
-            })); //TODO i18n
+                copyTitle: labels[this.lang]['MetaCopyHeader']
+            }));
         },
 
         _initVariables: function () {

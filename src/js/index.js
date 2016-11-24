@@ -92,7 +92,7 @@ define([
             disabledSections: this.disabledSections
         };
 
-        console.log(model);
+        //console.log(model);
 
         log.info("Router config:");
         log.info(model);
