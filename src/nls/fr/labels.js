@@ -91,6 +91,7 @@ define(function () {
         "CopyMetaRID": "Code d'identification de la Ressource",
         "CopyMetaVer": "Version de la Ressource (si applicable)",
         "NoTitle": "Sans Titre",
+        "CopyDSD" : "Copier DSD à partir de:",
 
         metadataValidationWarning : "Veuillez remplir les champs obligatoires",
 

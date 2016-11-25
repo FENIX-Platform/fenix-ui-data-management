@@ -8,8 +8,9 @@ define([
     "fenix-ui-filter",
     "fenix-ui-bridge",
     "../../html/dsd.hbs",
-    "../../config/events"
-], function ($, Backbone, _, log, Q, DsdEditor, Filter, Bridge, template, EVT) {
+    "../../config/events",
+    '../../nls/labels',
+], function ($, Backbone, _, log, Q, DsdEditor, Filter, Bridge, template, EVT, labels) {
 
     "use strict";
 
@@ -52,7 +53,7 @@ define([
         _attach: function () {
             this.$el.html(template({
                 isEditable: this.isEditable,
-                copyTitle: "Copy DSD from:"
+                copyTitle:  labels[this.lang]['MetaCopyHeader']
             }));
         },
 
