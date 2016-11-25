@@ -235,9 +235,7 @@ define([
             this.listenTo(Backbone, EVT.METADATA_SAVE, function (res) {
 
                 log.info("[EVT] meta:saving");
-
                 RM.updateMetadata(res);
-
                 RM.saveMetadata();
             });
 
@@ -396,7 +394,6 @@ define([
             log.info("Add Resource");
 
             RM.unloadResource();
-
             RM.createResource(this.config)
 
         },

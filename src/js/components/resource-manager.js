@@ -80,6 +80,10 @@ define([
 
     // Controls
 
+    ResourceManager.prototype.isMetadataEmpty = function () {
+        return ((this.resource.metadata === undefined ));
+    };
+
     ResourceManager.prototype.isDSDEmpty = function () {
         return ((this.resource.metadata.dsd.columns === undefined ));
     };
@@ -111,6 +115,17 @@ define([
             return;
         }
 
+        if(this.isMetadataEmpty()) {
+            this.resource.metadata = {};
+            this.resource.metadata.meContent = {};
+            this.resource.metadata.dsd = {};
+            this.resource.metadata.dsd.contextSystem = opts.contextSystem;
+            this.resource.metadata.dsd.datasources = opts.datasources;
+            this.resource.metadata.meContent.resourceRepresentationType = opts.resourceRepresentationType;
+            if (!this.isMetadataEmpty()) Backbone.trigger(EVT.RESOURCE_CREATED);
+            return;
+        }
+
         this.bridge.saveMetadata({
             body: {
                 dsd: {
@@ -125,7 +140,6 @@ define([
                 log.info("Resource crated");
 
                 this.resource = {metadata: resource};
-
                 Backbone.trigger(EVT.RESOURCE_CREATED);
 
             }, this), function (xhr, textstatus) {
@@ -203,13 +217,9 @@ define([
         }
 
         this.assign(resource, "metadata.uid", this.getNestedProperty("uid", catalogModel.model));
-
         this.assign(resource, "metadata.version", this.getNestedProperty("version", catalogModel.model));
-
         this.assign(resource, "metadata.dsd.rid", this.getNestedProperty("dsd.rid", catalogModel.model));
-
         this.assign(resource, "metadata.meMaintenance.seUpdate.updateDate", this.getNestedProperty("meMaintenance.seUpdate.updateDate", catalogModel.model));
-
         this.assign(resource, "metadata.creationDate", this.getNestedProperty("creationDate", catalogModel.model));
 
         this.setResource(resource);
