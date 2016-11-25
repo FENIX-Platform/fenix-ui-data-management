@@ -5475,6 +5475,7 @@ input[type="radio"]:disabled + label {
   padding: 25px;
   position: relative;
   left: 50%;
+  width: 350px;
   -ms-transform: translateX(-50%);
   -webkit-transform: translateX(-50%);
   transform: translateX(-50%);

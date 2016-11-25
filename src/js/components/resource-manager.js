@@ -172,6 +172,7 @@ define([
 
     ResourceManager.prototype.unloadResource = function () {
         log.info("RM - unloadResource");
+        this.resource = {};
         Backbone.trigger(EVT.RESOURCE_UNLOADED);
     };
 
