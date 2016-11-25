@@ -104,6 +104,7 @@ define(function () {
         //DSD
         DSD_COPY_SUCCESS : "DSD copied successfully",
         DSD_COPY_EMPTY_RESOURCE : "Resource does not contains columns",
+        DSD_MINIMUM: "At least one column is required to save DSD",
 
         //Metadata
         METADATA_COPY_EMPTY_RESOURCE : "Resource not found",

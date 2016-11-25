@@ -291,6 +291,13 @@ define([
                 Notify['info'](out);
             });
 
+            this.listenTo(Backbone, EVT.DSD_INFO, function (code, xhr) {
+                log.info("EVT.DSD_INFO", code, xhr);
+                var out = labels[this.lang][code];
+                console.log(' EVT.DSD_INFO', out );
+                //Notify['info'](out);
+            });
+
             // BUTTONS
 
             this.listenTo(Backbone, EVT.SHOW_ADD, function () {

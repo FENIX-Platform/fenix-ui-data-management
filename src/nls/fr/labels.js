@@ -98,6 +98,7 @@ define(function () {
         //DSD
         DSD_COPY_SUCCESS : "DSD copié avec succès",
         DSD_COPY_EMPTY_RESOURCE : "Ressource ne contient pas de colonnes",
+        DSD_MINIMUM: "Au moins une colonne est nécessaire pour enregistrer DSD",
 
         //Metadata
         METADATA_COPY_EMPTY_RESOURCE : "Ressource introuvable",

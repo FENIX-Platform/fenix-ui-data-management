@@ -186,6 +186,8 @@ define([
 
         _onSaveClick: function () {
 
+            console.log('_onSaveClick');
+
             var obj = {
                 columns: this.dsd.get(),
                 datasources: this.config.datasources,
@@ -194,7 +196,12 @@ define([
 
             log.info("{DSD} saving", obj);
 
-            Backbone.trigger(EVT.DSD_SAVE, obj);
+            if (obj.columns.length > 0) {
+                Backbone.trigger(EVT.DSD_SAVE, obj);
+            } else {
+                Backbone.trigger(EVT.DSD_INFO, "DSD_MINIMUM");
+            }
+
         },
 
         _unbindEventListeners: function () {

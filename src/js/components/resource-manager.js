@@ -115,6 +115,7 @@ define([
             return;
         }
 
+        /*
         if(this.isMetadataEmpty()) {
             this.resource.metadata = {};
             this.resource.metadata.meContent = {};
@@ -123,8 +124,8 @@ define([
             this.resource.metadata.dsd.datasources = opts.datasources;
             this.resource.metadata.meContent.resourceRepresentationType = opts.resourceRepresentationType;
             if (!this.isMetadataEmpty()) Backbone.trigger(EVT.RESOURCE_CREATED);
-            return;
         }
+        */
 
         this.bridge.saveMetadata({
             body: {
