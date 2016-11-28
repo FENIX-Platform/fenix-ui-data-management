@@ -108,8 +108,10 @@ define(function () {
 
         //Metadata
         METADATA_COPY_EMPTY_RESOURCE : "Resource not found",
-        METADATA_COPY_SUCCESS : "Metadata copied successfully"
+        METADATA_COPY_SUCCESS : "Metadata copied successfully",
 
+        //DATA
+        CSVSEPARATOR : "Please select a CSV separator"
 
     }
 });

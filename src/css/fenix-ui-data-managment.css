@@ -5520,5 +5520,26 @@ input[type="radio"]:disabled + label {
     display: none;
   }
 }*/
+/* Data Entry */
+.csvDropdown {
+  padding: 7px; }
+
+#btnFileUploader.has-error {
+  background-color: red; }
+
+.csvSeparator.has-error {
+  position: relative;
+  margin-right: 20px;
+  color: red; }
+  .csvSeparator.has-error:after {
+    content: '';
+    display: block;
+    position: absolute;
+    top: 5px;
+    right: -15px;
+    height: 10px;
+    width: 10px;
+    background-color: red;
+    border-radius: 50%; }
 
 /*# sourceMappingURL=fenix-ui-data-managment.css.map */

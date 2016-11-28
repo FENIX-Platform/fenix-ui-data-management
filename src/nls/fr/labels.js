@@ -102,6 +102,9 @@ define(function () {
 
         //Metadata
         METADATA_COPY_EMPTY_RESOURCE : "Ressource introuvable",
-        METADATA_COPY_SUCCESS : "Métadonnées copiées avec succès"
+        METADATA_COPY_SUCCESS : "Métadonnées copiées avec succès",
+
+        //DATA
+        CSVSEPARATOR : "Veuillez sélectionner un séparateur CSV"
     }
 });

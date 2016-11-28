@@ -186,3 +186,34 @@ $fx-secondary-color: desaturate( $fx-cool-blue, 50% );
     display: none;
   }
 }*/
+
+/* Data Entry */
+
+.csvDropdown{
+  padding: 7px;
+}
+
+#btnFileUploader.has-error{
+  background-color: red;
+}
+
+.csvSeparator.has-error{
+  position: relative;
+  margin-right: 20px;
+  color: red;
+
+  &:after{
+    content: '';
+    display: block;
+    position: absolute;
+    top: 5px;
+    right: -15px;
+    height: 10px;
+    width: 10px;
+    background-color: red;
+    border-radius: 50%;
+  }
+
+
+}
+

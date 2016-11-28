@@ -158,7 +158,10 @@ define([
 
             this.$utility.html(templateFileUploader);
 
+            this.$btnFileUploader = this.$el.find(s.btnFileUploader);
             this.$csvSeparator = this.$el.find(s.csvSeparator);
+            this.$lblSeparator = this.$el.find(p.lblSeparator);
+            this.$dataFileUpload = this.$el.find(s.dataFileUpload);
 
             this.$csvSeparator.on("click", function(e){
                 e.stopPropagation();
@@ -203,10 +206,19 @@ define([
 
         _csvLoaded: function (data) {
             log.info(' csv loaded ');
-            this.fUpload.reset();
-            this.$utility.hide();
-            this.$savebtn.prop("disabled", true);
-            DataEditor.csvLoaded(data, {}, this.$csvSeparator.val());
+            if (this.$csvSeparator.val() === '') {
+                this.$btnFileUploader.addClass('has-error');
+                this.$lblSeparator.addClass('has-error');
+                Backbone.trigger("error:showerrormsg", labels[this.lang]['CSVSEPARATOR']);
+                this.$dataFileUpload.val('');
+            } else {
+                this.$btnFileUploader.removeClass('has-error');
+                this.$lblSeparator.removeClass('has-error');
+                this.fUpload.reset();
+                this.$utility.hide();
+                this.$savebtn.prop("disabled", true);
+                DataEditor.csvLoaded(data, {}, this.$csvSeparator.val());
+            }
         },
 
         accessControl: function (Resource) {
