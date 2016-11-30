@@ -19,6 +19,7 @@ define(function(){
         SHOW_SEARCH: "SHOW_SEARCH",
         SHOW_ADD: "SHOW_ADD",
 
+        METADATA_CREATE : "METADATA_CREATE",
         METADATA_SAVE : "METADATA_SAVE",
         METADATA_INFO : "METADATA_INFO",
 

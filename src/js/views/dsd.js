@@ -53,7 +53,7 @@ define([
         _attach: function () {
             this.$el.html(template({
                 isEditable: this.isEditable,
-                copyTitle:  labels[this.lang]['MetaCopyHeader']
+                copyTitle:  labels[this.lang]['CopyDSD']
             }));
         },
 
@@ -138,9 +138,7 @@ define([
 
         _bindEventListeners: function () {
             log.info("{DSD} bindEventListeners()");
-
             this.$saveButton.on("click", _.bind(this._onSaveClick, this));
-
             this.$copyButton.on("click", _.bind(this._onCopyClick, this));
         },
 

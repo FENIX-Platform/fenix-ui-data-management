@@ -81,7 +81,9 @@ define([
     // Controls
 
     ResourceManager.prototype.isMetadataEmpty = function () {
-        return ((this.resource.metadata === undefined ));
+        if (this.resource.metadata)
+            return ((this.resource.metadata.length > 0 ));
+            return true;
     };
 
     ResourceManager.prototype.isDSDEmpty = function () {
@@ -115,7 +117,7 @@ define([
             return;
         }
 
-        /*
+
         if(this.isMetadataEmpty()) {
             this.resource.metadata = {};
             this.resource.metadata.meContent = {};
@@ -123,34 +125,25 @@ define([
             this.resource.metadata.dsd.contextSystem = opts.contextSystem;
             this.resource.metadata.dsd.datasources = opts.datasources;
             this.resource.metadata.meContent.resourceRepresentationType = opts.resourceRepresentationType;
-            if (!this.isMetadataEmpty()) Backbone.trigger(EVT.RESOURCE_CREATED);
+            Backbone.trigger(EVT.RESOURCE_CREATED);
+            return;
         }
-        */
 
         this.bridge.saveMetadata({
-            body: {
-                dsd: {
-                    contextSystem: opts.contextSystem,
-                    datasources: opts.datasources
-                },
-                meContent: {
-                    resourceRepresentationType: opts.resourceRepresentationType
-                }
-            }
+            body: $.extend(true, {}, this.resource.metadata),
+            dsdRid: this.getNestedProperty("metadata.dsd.rid", this.resource)
         }).then(_.bind(function (resource) {
-                log.info("Resource crated");
-
-                this.resource = {metadata: resource};
-                Backbone.trigger(EVT.RESOURCE_CREATED);
+                log.info("Resource crated", resource);
+                Backbone.trigger(EVT.RESOURCE_UPDATED);
 
             }, this), function (xhr, textstatus) {
-
                 log.error("Error metadata update");
                 log.error(xhr);
                 log.error(textstatus);
                 Backbone.trigger("error:showerrorsrv", null, xhr);
             }
         );
+
 
     };
 

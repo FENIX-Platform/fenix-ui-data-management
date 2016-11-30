@@ -104,8 +104,13 @@ define([
             log.info("Metadata values:");
             log.info(values);
 
+
             if (!values.hasOwnProperty("valid")) {
-                Backbone.trigger(EVT.METADATA_SAVE, values);
+                if (values.uid === undefined ) {
+                    Backbone.trigger(EVT.METADATA_CREATE, values);
+                } else {
+                    Backbone.trigger(EVT.METADATA_SAVE, values);
+                }
             } else {
                 Backbone.trigger(EVT.METADATA_INFO, "metadataValidationWarning");
             }

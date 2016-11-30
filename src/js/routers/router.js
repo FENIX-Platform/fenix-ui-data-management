@@ -232,8 +232,14 @@ define([
 
             // METADATA
 
-            this.listenTo(Backbone, EVT.METADATA_SAVE, function (res) {
+            this.listenTo(Backbone, EVT.METADATA_CREATE, function (res) {
+                log.info("[EVT] meta:creating");
+                RM.updateMetadata(res);
+                RM.createResource(this.config);
+            });
 
+
+            this.listenTo(Backbone, EVT.METADATA_SAVE, function (res) {
                 log.info("[EVT] meta:saving");
                 RM.updateMetadata(res);
                 RM.saveMetadata();
