@@ -67,6 +67,8 @@ define([
         this.routes = this.initial.routes;
         this.disabledSections = this.initial.disabledSections || [];
 
+        this.menuConfig = this.initial.menuConfig;
+
         this.catalogConfig = this.initial.catalog || CatalogConfig;
         this.dsdEditorConfig = this.initial.dsdEditor || DsdEditorConfig;
         this.dataEditorConfig = this.initial.dataEditor || DataEditorConfig;

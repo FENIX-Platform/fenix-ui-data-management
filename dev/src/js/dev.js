@@ -48,6 +48,78 @@ define([
             dsdEditor: DSDConf,
             //metadataEditor: MDConf,
             catalog: CataConf,
+            menuConfig: {
+                "items": [
+                    {
+                        "attrs": {
+                            "id": "landing"
+                        },
+                        "label": {
+                            "EN": "Data Management",
+                            "FR": "Gestion des Données"
+                        }
+                    },
+                    {
+                        "attrs": {
+                            "id": "search"
+                        },
+                        "label": {
+                            "EN": "Search",
+                            "FR": "Rechercher"
+                        }
+                    },
+                    {
+                        "attrs": {
+                            "id": "add"
+                        },
+                        "label": {
+                            "EN": "Add",
+                            "FR": "Ajouter"
+                        }
+                    },
+                    {
+                        "attrs": {
+                            "id": "home"
+                        },
+                        "label": {
+                            "EN": "Home",
+                            "FR": "Accueil"
+                        }
+                    },
+                    {
+                        "attrs": {
+                            "id": "metadata"
+                        },
+                        "label": {
+                            "EN": "Metadata",
+                            "FR": "Métadonnées"
+                        }
+                    },
+                    {
+                        "attrs": {
+                            "id": "delete"
+                        },
+                        "label": {
+                            "EN": "Delete",
+                            "FR": "Supprimer"
+                        }
+                    },
+                    {
+                        "attrs": {
+                            "id": "close"
+                        },
+                        "label": {
+                            "EN": "Close",
+                            "FR": "Terminer"
+                        }
+                    }
+                ],
+                "languages": [],
+                "active": [
+                    "landing",
+                    "search"
+                ]
+            },
             /*
             routes: {
                 '(/)': 'onLanding',
