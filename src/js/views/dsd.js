@@ -53,7 +53,9 @@ define([
         _attach: function () {
             this.$el.html(template({
                 isEditable: this.isEditable,
-                copyTitle:  labels[this.lang]['CopyDSD']
+                copyTitle:  labels[this.lang]['CopyDSD'],
+                copyAlt: labels[this.lang]['CopyDSDAlt'],
+                saveBtn: labels[this.lang]['btnUpdateResource']
             }));
         },
 
@@ -95,6 +97,8 @@ define([
         _initDsdEditor: function () {
             log.info("{DSD} initViews");
 
+            var self = this;
+
             this.dsd = DsdEditor;
 
             this.dsd.init(this.$el.find(s.DSD_EL), this.config, null);
@@ -106,6 +110,14 @@ define([
             log.info('{DSD} is editable', this.isEditable);
 
             this.dsd.editable(this.isEditable);
+
+            this.dsd.on("dsd:columnsumary", function(){
+                self.$saveButton.prop("disabled", false);
+            });
+
+            this.dsd.on("dsd:columneditor", function(){
+                self.$saveButton.prop("disabled", true);
+            });
 
         },
 

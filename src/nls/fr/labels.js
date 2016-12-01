@@ -73,6 +73,7 @@ define(function () {
         "dataEditEnd": "Enregistrer",
         //2.0
         "btnSave" : "Enregistrer",
+        "btnUpdateResource" : "Mettre à jour la ressource",
 
 
         //Headers
@@ -80,6 +81,7 @@ define(function () {
         "DManResHeader": "Éditer la Ressource",
         "MetaHeader": "Éditeur des Métadonnées",
         "MetaCopyHeader": "Copier les métadonnées",
+        "MetaCopyAlt": "Copier les métadonnées",
         "DSDHeader": "Éditeur de la Définition de la Structure des Données",
         "DataHeader": "Éditeur des Données",
         "CloseHeader": "Ressource fermée",
@@ -92,6 +94,7 @@ define(function () {
         "CopyMetaVer": "Version de la Ressource (si applicable)",
         "NoTitle": "Sans Titre",
         "CopyDSD" : "Copier DSD à partir de:",
+        "CopyDSDAlt" : "Copier DSD",
 
         metadataValidationWarning : "Veuillez remplir les champs obligatoires",
 

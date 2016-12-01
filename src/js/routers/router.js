@@ -258,7 +258,6 @@ define([
             this.listenTo(Backbone, EVT.DSD_SAVE, function (dsd) {
                 log.info("[EVT] dsd:saving");
                 RM.updateDsd(dsd);
-
                 RM.saveDsd();
             });
 

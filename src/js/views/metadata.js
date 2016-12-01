@@ -80,22 +80,20 @@ define([
 
         _attach: function () {
             this.$el.html(template({
-                copyTitle: labels[this.lang]['MetaCopyHeader']
+                copyTitle: labels[this.lang]['MetaCopyHeader'],
+                copyAlt: labels[this.lang]['MetaCopyAlt'],
+                saveBtn: labels[this.lang]['btnUpdateResource']
             }));
         },
 
         _initVariables: function () {
             this.$savebtn = this.$el.find(s.SAVE_BUTTON);
-
             this.$copyButton = this.$el.find(s.COPY_BUTTON);
         },
 
         _bindEventListeners: function () {
-
             this.$savebtn.on("click", _.bind(this._onSaveClick, this));
-
             this.$copyButton.on("click", _.bind(this._onCopyClick, this));
-
         },
 
         _onSaveClick : function () {

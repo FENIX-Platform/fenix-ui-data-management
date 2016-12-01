@@ -91,7 +91,9 @@ define([
         },
 
         _attach: function () {
-            this.$el.html(template(labels)); //TODO i18n
+            this.$el.html(template({
+                saveBtn: labels[this.lang]['btnUpdateResource']
+            }));
 
         },
 
@@ -156,7 +158,12 @@ define([
         _initFileUploader: function () {
 
 
-            this.$utility.html(templateFileUploader);
+            this.$utility.html(templateFileUploader({
+                uploadCSV: labels[this.lang]['DatalblUpload'],
+                csvSparator: labels[this.lang]['DatalblSeparator'],
+                csvSeparatorComma: labels[this.lang]['DatalblcsvSeparatorComma'],
+                csvSeparatorSemi: labels[this.lang]['DatalblcsvSeparatorSemi']
+            }));
 
             this.$btnFileUploader = this.$el.find(s.btnFileUploader);
             this.$csvSeparator = this.$el.find(s.csvSeparator);
@@ -170,12 +177,6 @@ define([
             log.info('init file uploader');
             this.fUpload = new FileUploader({accept: ['csv']});
             this.fUpload.render(s.dataFileUpload);
-
-            //i18n
-            this.$utility.find(p.lblUpload).html(labels[this.lang]['DatalblUpload']);
-            this.$utility.find(p.lblSeparator).html(labels[this.lang]['DatalblSeparator']);
-            this.$utility.find(p.csvSeparatorComma).html(labels[this.lang]['DatalblcsvSeparatorComma']);
-            this.$utility.find(p.csvSeparatorSemi).html(labels[this.lang]['DatalblcsvSeparatorSemi']);
 
         },
 
@@ -235,6 +236,7 @@ define([
         remove: function () {
             log.warn("{DATA} - Remove View");
             this._removeEventListeners();
+            DataEditor.destroy();
             this.$utility.html('');
             this.$utility.show();
             this.$savebtn.prop("disabled", false);

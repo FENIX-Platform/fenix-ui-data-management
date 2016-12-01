@@ -125,6 +125,7 @@ define([
             this.resource.metadata.dsd.contextSystem = opts.contextSystem;
             this.resource.metadata.dsd.datasources = opts.datasources;
             this.resource.metadata.meContent.resourceRepresentationType = opts.resourceRepresentationType;
+
             Backbone.trigger(EVT.RESOURCE_CREATED);
             return;
         }
@@ -134,8 +135,9 @@ define([
             dsdRid: this.getNestedProperty("metadata.dsd.rid", this.resource)
         }).then(_.bind(function (resource) {
                 log.info("Resource crated", resource);
+                this.resource.metadata.uid = resource.uid;
+                //$.extend(true, this.resource.metadata, resource);
                 Backbone.trigger(EVT.RESOURCE_UPDATED);
-
             }, this), function (xhr, textstatus) {
                 log.error("Error metadata update");
                 log.error(xhr);
@@ -308,7 +310,6 @@ define([
         }, this));
 
         _.each(metadataEntities, _.bind(function (m) {
-
             if (metadata[m]) {
                 this.assign(this.resource, "metadata." + m, metadata[m]);
             }

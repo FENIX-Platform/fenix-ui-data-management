@@ -26,11 +26,8 @@ define([
 
             if (valid === true) {
                 log.info("Rendering View - Landing", this);
-
                 this._attach();
-
                 this._bindEventListeners();
-
                 return this;
             } else {
                 log.error("Impossible to render Landing");
@@ -39,12 +36,12 @@ define([
         },
 
         _attach: function () {
-            this.$el.html(Template);
-            //i18n
-            this.$el.find(s.btnSearch).html(labels[this.lang]['btnSearch']);
-            this.$el.find(s.btnAdd).html(labels[this.lang]['btnAdd']);
-            this.$el.find(s.DManHeader).html(labels[this.lang]['DManHeader']);
-            this.$el.find(s.DManIntro).html(labels[this.lang]['DManIntro']);
+            this.$el.html(Template({
+                dManHeader: labels[this.lang]['DManHeader'],
+                dManIntro: labels[this.lang]['DManIntro'],
+                searchBtn: labels[this.lang]['btnSearch'],
+                addBtn: labels[this.lang]['btnAdd']
+            }));
         },
 
         _validateInput: function () {

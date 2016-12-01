@@ -75,6 +75,7 @@ define(function () {
         "dataEditEnd" : "Save",
         //2.0
         "btnSave" : "Save",
+        "btnUpdateResource" : "Update Resource",
 
 
 
@@ -83,6 +84,7 @@ define(function () {
         "DManResHeader" : "Edit Resource",
         "MetaHeader" : "Metadata Editor",
         "MetaCopyHeader" : "Copy metadata from",
+        "MetaCopyAlt" : "Copy metadata",
         "DSDHeader" : "Data Structure Definition Editor",
         "DataHeader" : "Data Editor",
         "CloseHeader" : "Resource Closed",
@@ -97,6 +99,7 @@ define(function () {
         "CopyMetaVer" : "Resource Version (if applicable)",
         "NoTitle": "Untitled",
         "CopyDSD" : "Copy DSD from:",
+        "CopyDSDAlt" : "Copy DSD",
 
         //metadata validation
         metadataValidationWarning : "Please fill the mandatory fields",

@@ -1,19 +1,19 @@
 <div data-role="menu" class="dropdown">
-    <button id="btnFileUploader" class="btn btn-floating fx-background-color-primary-color" type="button" data-toggle="dropdown" aria-expanded="true">
+    <button title="{{uploadCSV}}" id="btnFileUploader" class="btn btn-floating fx-background-color-primary-color" type="button" data-toggle="dropdown" aria-expanded="true">
         <span class="icojam_cloud_upload"></span>
     </button>
     <ul class="dropdown-menu json-menu csvDropdown">
         <li class="js-menu dropdown-submenu">
-            <label id="lblSeparator" class="csvSeparator" for="csvSeparator">CSV Separator</label>
+            <label id="lblSeparator" class="csvSeparator" for="csvSeparator">{{csvSparator}}</label>
             <br>
             <select id="csvSeparator" name="csvSeparator" >
                 <option id="csvSeparatorNull" value=""></option>
-                <option id="csvSeparatorComma" value=",">Comma</option>
-                <option id="csvSeparatorSemi" value=";">Semicolon</option>
+                <option id="csvSeparatorComma" value=",">{{csvSeparatorComma}}</option>
+                <option id="csvSeparatorSemi" value=";">{{csvSeparatorSemi}}</option>
             </select>
         </li>
         <li class="js-menu dropdown-submenu">
-            <label id="lblUpload" for="dataFUpload">Upload</label>
+            <label id="lblUpload" for="dataFUpload">{{uploadCSV}}</label>
             <br>
             <input type="file" name="filename" id="dataFUpload" accept=".csv" />
             <br>

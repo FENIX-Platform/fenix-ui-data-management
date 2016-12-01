@@ -64,13 +64,12 @@ define([
 
         _attach: function () {
             var self = this;
-            this.$el.html(template(labels));
-            //i18n
-            this.$el.find(b.btnMeta).html(labels[this.lang]['btnMetadata']);
-            this.$el.find(b.btnDSD).html(labels[this.lang]['btnDSD']);
-            this.$el.find(b.btnData).html(labels[this.lang]['btnData']);
-
-            this.$el.find(s.DManResHeader).html(labels[this.lang]['DManResHeader']);
+            this.$el.html(template({
+                btnMeta: labels[this.lang]['btnMetadata'],
+                btnDSD: labels[this.lang]['btnDSD'],
+                btnData: labels[this.lang]['btnData'],
+                DManResHeader: labels[this.lang]['DManResHeader']
+            }));
 
             $.each(this.disabledSections, function(index,object){
                 // hide disabled buttons
