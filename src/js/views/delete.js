@@ -67,15 +67,21 @@ define([
 
             this.$confirmButton = this.$el.find(s.BTN_CONFIRM);
             this.$undoButton = this.$el.find(s.BTN_UNDO);
-
+            this.deleteMetadata = this.initial.deleteMetadata || false;
+            log.info("Delete Metadata is ",this.deleteMetadata);
         },
 
         _bindEventListeners: function () {
             log.info("{DELETE} bindEventListeners()");
-
+            var self = this;
             this.$confirmButton.on("click", function () {
-                Backbone.trigger(EVT.RESOURCE_DELETE);
+                if (self.deleteMetadata) {
+                    Backbone.trigger(EVT.METADATA_DELETE)
+                } else {
+                    Backbone.trigger(EVT.RESOURCE_DELETE);
+                }
             });
+
             this.$undoButton.on("click", function () {
                 Backbone.trigger(EVT.RESOURCE_DELETE_UNDO);
             });

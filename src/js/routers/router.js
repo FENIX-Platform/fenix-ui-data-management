@@ -189,13 +189,9 @@ define([
             // When a resource is loaded (fully)
             this.listenTo(Backbone, EVT.RESOURCE_LOADED, function () {
                 log.info("[EVT] resource:loaded ");
-
                 this.waiting = false;
-
                 self._activateValidResourceMenuItems();
-
                 Notify['success'](labels[self.lang]['resourceLoaded']);
-
                 self.goTo("#/home");
             });
 
@@ -251,6 +247,12 @@ define([
 
             this.listenTo(Backbone, EVT.METADATA_COPY_SUCCESS, function () {
                 Notify['success'](labels[this.lang][EVT.METADATA_COPY_SUCCESS]);
+            });
+
+            // When a metadata is in tentative deletion (still there)
+            this.listenTo(Backbone, EVT.METADATA_DELETE, function () {
+                log.info("[EVT] METADATA_DELETE ");
+                RM.deleteMetadata();
             });
 
             //DSD
@@ -415,14 +417,18 @@ define([
         onMetadata: function () {
             log.info("Metadata View");
 
+            //console.log('metadata!', RM.getMetadata());
+
             // Init Buttons
             this.switchView(MetadataView, {
                 el: this.container,
                 menu: "metadata",
+                copy: this.config.copyMeta,
                 lang: this.lang,
                 environment: this.environment,
                 config: this.metadataEditorConfig,
-                model: RM.getMetadata()
+                model: RM.getMetadata(),
+                label: this.config.labelMeta,
             });
         },
 
@@ -474,7 +480,18 @@ define([
                 el: this.container,
                 menu: "delete",
                 lang: this.lang,
-                environment: this.environment
+                environment: this.environment,
+            });
+        },
+
+        onDeleteMetadata: function () {
+            log.info("Delete Metadata");
+            this.switchView(DeleteView, {
+                el: this.container,
+                menu: "delete",
+                lang: this.lang,
+                environment: this.environment,
+                deleteMetadata: true
             });
         },
 

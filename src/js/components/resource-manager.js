@@ -149,6 +149,22 @@ define([
 
     };
 
+    ResourceManager.prototype.deleteMetadata = function () {
+        this.bridge.deleteMetadata({
+            uid: this.resource.metadata.uid,
+            version: this.resource.metadata.version
+        }).then(
+            _.bind(function () {
+                this.resource = {};
+                Backbone.trigger(EVT.RESOURCE_DELETED);
+            }, this),
+            _.bind(function () {
+                Backbone.trigger("error:showerrorsrv", null);
+            }, this)
+        );
+
+    };
+
     ResourceManager.prototype.deleteResource = function () {
 
         this.bridge.deleteResource({

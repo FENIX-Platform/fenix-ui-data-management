@@ -76,13 +76,19 @@ define([
             this.lang = this.initial.lang.toLowerCase();
             this.model = this.initial.model;
             this.config = this.initial.config;
+            this.label = this.initial.label || "";
+            this.copy = (this.initial.copy === undefined) ? true : this.initial.copy;
+
         },
 
         _attach: function () {
             this.$el.html(template({
+                lblMeta: this.label,
+                label: (this.label.length),
                 copyTitle: labels[this.lang]['MetaCopyHeader'],
                 copyAlt: labels[this.lang]['MetaCopyAlt'],
-                saveBtn: labels[this.lang]['btnUpdateResource']
+                saveBtn: labels[this.lang]['btnUpdateResource'],
+                copyMeta: this.copy
             }));
         },
 

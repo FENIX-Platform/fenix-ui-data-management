@@ -196,8 +196,6 @@ define([
 
         _onSaveClick: function () {
 
-            console.log('_onSaveClick');
-
             var obj = {
                 columns: this.dsd.get(),
                 datasources: this.config.datasources,

@@ -12,10 +12,10 @@ define(function(){
                     id: "dropdown",
                     source: [
                         {value: "fenix_develop", label: "FENIX develop"},
-                        {value: "uneca", label: "UNECA"},
+                        {value: "gift", label: "GIFT"},
                         {value: "cstat_training", label: "CountrySTAT Training"}
                     ],
-                    default: ["fenix_develop"],
+                    default: ["gift"],
                     hideSummary: true,
                     config: {
                         plugins: ['remove_button'],

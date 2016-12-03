@@ -12,6 +12,9 @@ define(function() {
                resourceRepresentationType: "dataset"
            },
 
+           copyMeta: true,
+           copyDSD: true,
+
            menuItems : ['home', 'landing', 'search', 'add', 'metadata', 'dsd', 'data', 'delete', 'close'],
            menuItemsEnabledOnStart : ['add', 'search', 'landing'],
            menuItemsEnableOnValidResource : ['delete', 'metadata', 'dsd', 'data', 'home', 'close']

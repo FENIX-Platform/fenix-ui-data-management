@@ -4,8 +4,9 @@ define([
     '../../../src/js/index',
     '../config/dsd',
     '../config/fenix_metadata',
+    '../config/gift_metadata',
     '../config/catalog'
-], function (log, $, DataManagement, DSDConf, MDConf, CataConf) {
+], function (log, $, DataManagement, DSDConf, MDConf, GIFT, CataConf) {
 
     'use strict';
 
@@ -13,7 +14,7 @@ define([
             DATA_MNG: "#data-mng"
         },
         cache = false,
-        lang = "FR",
+        lang = "EN",
         environment = "production"; // develop production [demo is not available]
 
     function Dev() {
@@ -24,9 +25,9 @@ define([
 
         // trace silent
 
-        log.setLevel('silent');
+        //log.setLevel('trace');
 
-        //log.setLevel('silent');
+        log.setLevel('silent');
 
         this.start();
     }
@@ -48,6 +49,9 @@ define([
             dsdEditor: DSDConf,
             //metadataEditor: MDConf,
             catalog: CataConf,
+
+            //GIFT
+            metadataEditor: GIFT,
             menuConfig: {
                 "items": [
                     {
@@ -57,33 +61,6 @@ define([
                         "label": {
                             "EN": "Data Management",
                             "FR": "Gestion des Données"
-                        }
-                    },
-                    {
-                        "attrs": {
-                            "id": "search"
-                        },
-                        "label": {
-                            "EN": "Search",
-                            "FR": "Rechercher"
-                        }
-                    },
-                    {
-                        "attrs": {
-                            "id": "add"
-                        },
-                        "label": {
-                            "EN": "Add",
-                            "FR": "Ajouter"
-                        }
-                    },
-                    {
-                        "attrs": {
-                            "id": "home"
-                        },
-                        "label": {
-                            "EN": "Home",
-                            "FR": "Accueil"
                         }
                     },
                     {
@@ -120,7 +97,6 @@ define([
                     "search"
                 ]
             },
-            /*
             routes: {
                 '(/)': 'onLanding',
                 '(/)landing(/)': 'onLanding',
@@ -131,7 +107,7 @@ define([
                 '(/)metadata(/)': 'onMetadata',
 
                 '(/)close(/)' : 'onClose',
-                '(/)delete(/)': 'onDelete',
+                '(/)delete(/)': 'onDeleteMetadata',
                 '(/)search(/)': 'onSearch',
                 '(/)not-found(/)': 'onNotFound',
 
@@ -141,9 +117,9 @@ define([
                 '(/)*path': 'onDefaultRoute'
             },
             disabledSections: ['btnDSD','btnData'],
-            */
+
             config: {
-                contextSystem :"fenix_develop",
+                contextSystem :"gift",
                 datasources : ["D3S"],
                 resourceRepresentationType: "dataset"
             }
