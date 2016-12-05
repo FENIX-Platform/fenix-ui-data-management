@@ -79,6 +79,8 @@ define([
             this.dataEditorConfig = this.initial.dataEditorConfig || {};
             this.menuConfig = this.initial.menuConfig || ConfigMenu;
 
+            this.metadataConverters = this.initial.metadataConverters;
+
             this.disabledSections = this.initial.disabledSections || [];
 
             r = this.initial.routes || r;
@@ -419,6 +421,8 @@ define([
 
             //console.log('metadata!', RM.getMetadata());
 
+            console.log(this.metadataConverters);
+
             // Init Buttons
             this.switchView(MetadataView, {
                 el: this.container,
@@ -428,6 +432,7 @@ define([
                 environment: this.environment,
                 config: this.metadataEditorConfig,
                 model: RM.getMetadata(),
+                converters: this.metadataConverters,
                 label: this.config.labelMeta,
             });
         },

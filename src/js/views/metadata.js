@@ -78,6 +78,9 @@ define([
             this.config = this.initial.config;
             this.label = this.initial.label || "";
             this.copy = (this.initial.copy === undefined) ? true : this.initial.copy;
+            this.converters = this.initial.converters;
+
+            console.log(this.converters);
 
         },
 
@@ -201,6 +204,7 @@ define([
                 lang: this.lang,
                 config: this.config,
                 cache: this.cache,
+                converters: this.converters,
                 environment: this.environment,
                 model: this.model
             };

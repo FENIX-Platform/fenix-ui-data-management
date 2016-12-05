@@ -73,11 +73,14 @@ define([
         this.dsdEditorConfig = this.initial.dsdEditor || DsdEditorConfig;
         this.dataEditorConfig = this.initial.dataEditor || DataEditorConfig;
         this.metadataEditorConfig = this.initial.metadataEditor || MetadataEditorConfig;
+        this.metadataConverters = this.initial.metadataConverters;
         this.config = this.initial.config || C.config;
 
     };
 
     DataManagement.prototype._start = function () {
+
+        console.log(this.metadataConverters);
 
         var model = {
             $el: this.$el,
@@ -88,6 +91,7 @@ define([
             menuConfig: this.menuConfig,
             catalogConfig: this.catalogConfig,
             metadataEditorConfig: this.metadataEditorConfig,
+            metadataConverters: this.metadataConverters,
             dsdEditorConfig: this.dsdEditorConfig,
             dataEditorConfig: this.dataEditorConfig,
             routes: this.routes,
