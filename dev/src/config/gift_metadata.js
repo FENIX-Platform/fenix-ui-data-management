@@ -1,9 +1,9 @@
 define(
     function () {
 
-        var IANA = {uid: 'IANAcharacterSet'},
-            ROLE = {uid: "ResponsiblePartyRole"},
+        var ROLE = {uid: "ResponsiblePartyRole"},
             GAUL = {uid: 'GAUL0', version: "2014"},
+            DataAdjustment = {uid: 'CL_ADJUSTMENT', version: "1.1"},
             Languages = {uid: 'GIFT_ISO639-2', version: "1998"},
             TypeOfCollection = {uid: 'GIFT_TypeOfCollection'},
             StatusConfidenciality = {uid: 'GIFT_ConfidentialityStatus'},
@@ -17,7 +17,7 @@ define(
             GIFT_QuantityReporting = {uid: 'GIFT_QuantityReporting'},
             GIFT_Macronutrients = {uid: 'GIFT_Macronutrients'},
             GIFT_Micronutrients = {uid: 'GIFT_Micronutrients'},
-            YESNO = {uid: "YesNo"}
+            YESNO = {uid: "YesNo"};
 
         return {
 
@@ -703,18 +703,19 @@ define(
                                         "output": "label"
                                     }
                                 },
+
                                 "dataAdjustment": {
+                                    "cl": DataAdjustment,
                                     "selector": {
-                                        "id": "textarea",
+                                        "id": "dropdown"
+                                    },
+                                    "format": {
+                                        "output": "codes"
                                     },
                                     "template": {
                                         "title": "Any other alteration from the original data",
                                         "hideDescription": true,
                                         "footer": "Report (if any) any adjustments or alterations of the original dataset",
-
-                                    },
-                                    "format": {
-                                        "output": "label"
                                     }
                                 }
                             }
