@@ -80,8 +80,6 @@ define([
 
     DataManagement.prototype._start = function () {
 
-        console.log(this.metadataConverters);
-
         var model = {
             $el: this.$el,
             cache: this.cache,

@@ -303,7 +303,7 @@ define([
             this.listenTo(Backbone, EVT.DSD_INFO, function (code, xhr) {
                 log.info("EVT.DSD_INFO", code, xhr);
                 var out = labels[this.lang][code];
-                console.log(' EVT.DSD_INFO', out );
+                //console.log(' EVT.DSD_INFO', out );
                 //Notify['info'](out);
             });
 
@@ -420,8 +420,6 @@ define([
             log.info("Metadata View");
 
             //console.log('metadata!', RM.getMetadata());
-
-            console.log(this.metadataConverters);
 
             // Init Buttons
             this.switchView(MetadataView, {

@@ -47,10 +47,11 @@ define([
             cache: cache,
             lang: lang,
             dsdEditor: DSDConf,
-            metadataEditor: GIFT,
+            metadataEditor: MDConf,
             catalog: CataConf,
-
+/*
             //GIFT
+            metadataEditor: GIFT,
             menuConfig: {
                 "items": [
                     {
@@ -204,10 +205,13 @@ define([
                 '(/)*path': 'onDefaultRoute'
             },
             disabledSections: ['btnDSD','btnData'],
-
+*/
             config: {
+                /*
                 labelMeta: "Save",
                 contextSystem :"gift",
+                */
+                contextSystem :"fenix_develop",
                 datasources : ["D3S"],
                 resourceRepresentationType: "dataset"
             }
