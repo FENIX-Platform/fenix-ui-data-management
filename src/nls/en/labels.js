@@ -3,7 +3,7 @@ define(function () {
     'use strict';
     return {
         //Generic
-        "confirmDataRemove": "Do you want to remove all your data?",
+        "confirmDataRemove": "Do you want to delete all your data?",
         "success": "Success",
         "resourceNew":"Resource created",
         "resourceSaved":"Resource saved",
@@ -41,11 +41,11 @@ define(function () {
         "btnDataMergeCancel" : "Cancel",
         "DataEditorMainContainer" : "LOADING...",
         "DataDeleteAll":"Delete all",
-        "DatalblUpload":"Upload",
+        "DatalblUpload":"Upload the CSV",
         "DatalblSeparator":"CSV Separator",
         "DatalblcsvSeparatorSemi" : "Semicolon",
         "DatalblcsvSeparatorComma" : "Comma",
-        "csvLoaded": "CSV Loaded",
+        "csvLoaded": "CSV file Loaded",
 
 
         //DataValidator

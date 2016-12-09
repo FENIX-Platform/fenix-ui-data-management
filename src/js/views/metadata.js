@@ -177,18 +177,22 @@ define([
                     uid: {
                         selector: {
                             id: "input",
-                            type: "text",
-                            source: [{label: "Uid"}]
+                            type: "text"
                         },
                         constraints: {
                             presence: true
+                        },
+                        template: {
+                            title: "UID"
                         }
                     },
                     version: {
                         selector: {
                             id: "input",
-                            type: "text",
-                            source: [{label: "Version"}]
+                            type: "text"
+                        },
+                        template: {
+                            title: "Version"
                         }
                     }
                 }

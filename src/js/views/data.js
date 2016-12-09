@@ -218,6 +218,7 @@ define([
                 this.fUpload.reset();
                 this.$utility.hide();
                 this.$savebtn.prop("disabled", true);
+                this.$btnFileUploader.click();
                 DataEditor.csvLoaded(data, {}, this.$csvSeparator.val());
             }
         },
