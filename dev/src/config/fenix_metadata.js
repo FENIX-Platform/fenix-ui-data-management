@@ -16,7 +16,6 @@ define(
             UpdatePeriodicity = {uid: 'FAO_Period', version: "1.0"},
             CoverageSector = {uid: 'CSTAT_Core'};
 
-
         return {
 
             "selectors": {

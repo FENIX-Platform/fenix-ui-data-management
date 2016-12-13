@@ -191,7 +191,6 @@ define([
                     }, this),
                     _.bind(function (msg) {
                         Backbone.trigger("error:showerrormsg", msg);
-
                     }, this)
                 );
             }

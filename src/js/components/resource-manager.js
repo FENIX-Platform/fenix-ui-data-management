@@ -136,6 +136,7 @@ define([
         }).then(_.bind(function (resource) {
                 log.info("Resource crated", resource);
                 this.resource.metadata.uid = resource.uid;
+                this.resource.metadata.dsd.rid = resource.dsd.rid;
                 //$.extend(true, this.resource.metadata, resource);
                 Backbone.trigger(EVT.RESOURCE_UPDATED);
             }, this), function (xhr, textstatus) {
@@ -345,6 +346,7 @@ define([
     };
 
     ResourceManager.prototype.updateDsd = function (dsd) {
+
 
         var dsdRid = this.getNestedProperty("metadata.dsd.rid", this.resource);
 
