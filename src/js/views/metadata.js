@@ -109,9 +109,6 @@ define([
             log.info("Metadata values:");
             log.info(values);
 
-            // Adding UpdateDate
-            if (values.meMaintenance.seUpdate.updateDate === undefined)
-                values.meMaintenance.seUpdate.updateDate = new Date().getTime();
 
             if (!values.hasOwnProperty("valid")) {
                 if (values.uid === undefined ) {

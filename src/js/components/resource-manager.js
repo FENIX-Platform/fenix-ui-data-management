@@ -233,7 +233,8 @@ define([
         this.assign(resource, "metadata.uid", this.getNestedProperty("uid", catalogModel.model));
         this.assign(resource, "metadata.version", this.getNestedProperty("version", catalogModel.model));
         this.assign(resource, "metadata.dsd.rid", this.getNestedProperty("dsd.rid", catalogModel.model));
-        this.assign(resource, "metadata.meMaintenance.seUpdate.updateDate", this.getNestedProperty("meMaintenance.seUpdate.updateDate", catalogModel.model));
+        var updDate = this.getNestedProperty("meMaintenance.seUpdate.updateDate", catalogModel.model);
+        this.assign(resource, "metadata.meMaintenance.seUpdate.updateDate", updDate);
         this.assign(resource, "metadata.creationDate", this.getNestedProperty("creationDate", catalogModel.model));
 
         this.setResource(resource);
