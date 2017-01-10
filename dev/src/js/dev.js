@@ -25,7 +25,7 @@ define([
 
         // trace silent
 
-        log.setLevel('silent');
+        log.setLevel('trace');
 
         //log.setLevel('silent');
 
@@ -47,9 +47,9 @@ define([
             cache: cache,
             lang: lang,
             dsdEditor: DSDConf,
-//            metadataEditor: MDConf,
+            metadataEditor: MDConf,
             catalog: CataConf,
-
+/*
             //GIFT
             metadataEditor: GIFT,
             menuConfig: {
@@ -205,13 +205,13 @@ define([
                 '(/)*path': 'onDefaultRoute'
             },
             disabledSections: ['btnDSD','btnData'],
-
+*/
             config: {
 
-                labelMeta: "Save",
-                contextSystem :"gift",
+                //labelMeta: "Save",
+                //contextSystem :"gift",
 
-                //contextSystem :"fenix_develop",
+                contextSystem :"cstat_training",
                 datasources : ["D3S"],
                 resourceRepresentationType: "dataset"
             }

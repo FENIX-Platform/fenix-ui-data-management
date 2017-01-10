@@ -276,7 +276,7 @@ define([
             // ERRORS
 
             this.listenTo(Backbone, "error:showerrormsg", function (message) {
-                log.info("[EVT] error:showerrormsg ");
+                log.info("[EVT] error:showerrormsg >>", message);
                 Notify['error'](message);
 
                 self.waiting = false;

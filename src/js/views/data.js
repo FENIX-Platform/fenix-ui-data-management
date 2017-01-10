@@ -190,7 +190,7 @@ define([
                 if (!!exist) {
                     Backbone.trigger("data:saving",exist);
                 } else {
-                    Backbone.trigger("error:showerror", "invalidData");
+                    Backbone.trigger("error:showerror", labels[this.lang]['invalidData']);
                 }
             });
 
