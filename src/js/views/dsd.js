@@ -72,9 +72,7 @@ define([
 
         },
         _initVariables: function () {
-
             this.$saveButton = this.$el.find(s.SAVE_BUTTON);
-
             this.$copyButton = this.$el.find(s.COPY_BUTTON);
         },
 
@@ -98,9 +96,7 @@ define([
             log.info("{DSD} initViews");
 
             var self = this;
-
             this.dsd = DsdEditor;
-
             this.dsd.init(this.$el.find(s.DSD_EL), this.config, null);
 
             if (this.model && Array.isArray(this.model.columns) && this.model.columns.length > 0) {
@@ -117,6 +113,10 @@ define([
 
             this.dsd.on("dsd:columneditor", function(){
                 self.$saveButton.prop("disabled", true);
+            });
+
+            this.dsd.on("error:showerrormsg", function (msg) {
+                Backbone.trigger("error:showerrormsg", msg);
             });
 
         },
@@ -199,18 +199,21 @@ define([
 
         _onSaveClick: function () {
 
-            var obj = {
-                columns: this.dsd.get(),
-                datasources: this.config.datasources,
-                contextSystem: this.config.contextSystem
-            };
+            if ( this.dsd.validate() ) {
 
-            log.info("{DSD} saving", obj);
+                var obj = {
+                    columns: this.dsd.get(),
+                    datasources: this.config.datasources,
+                    contextSystem: this.config.contextSystem
+                };
 
-            if (obj.columns.length > 0) {
-                Backbone.trigger(EVT.DSD_SAVE, obj);
-            } else {
-                Backbone.trigger(EVT.DSD_INFO, "DSD_MINIMUM");
+                log.info("{DSD} saving", obj);
+
+                if (obj.columns.length > 0) {
+                    Backbone.trigger(EVT.DSD_SAVE, obj);
+                } else {
+                    Backbone.trigger(EVT.DSD_INFO, "DSD_MINIMUM");
+                }
             }
 
         },
