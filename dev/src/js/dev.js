@@ -2,7 +2,8 @@ define([
     'loglevel',
     'jquery',
     '../../../src/js/index',
-    '../config/dsd',
+//    '../config/dsd',
+    '../config/dsd_cstat',
     '../config/fenix_metadata',
     '../config/gift_metadata',
     '../config/catalog'

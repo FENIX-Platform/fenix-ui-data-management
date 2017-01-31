@@ -15,7 +15,7 @@ define(function(){
                         {value: "gift", label: "GIFT"},
                         {value: "cstat_training", label: "CountrySTAT Training"}
                     ],
-                    default: ["gift"],
+                    default: ["cstat_training"],
                     hideSummary: true,
                     config: {
                         plugins: ['remove_button'],
