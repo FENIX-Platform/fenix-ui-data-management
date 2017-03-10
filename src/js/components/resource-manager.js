@@ -68,6 +68,16 @@ define([
         return true
     };
 
+    ResourceManager.prototype.DSDExist = function () {
+        if (this.resource.metadata.dsd.columns !== undefined ) return this.resource.metadata.dsd.columns.length;
+        return 0;
+    };
+
+    ResourceManager.prototype.dataExist = function () {
+        if (this.resource.data !== undefined) return this.resource.data.length;
+        return 0;
+    };
+
     ResourceManager.prototype.isDataValid = function (DataRes) {
         //TODO: There's no logic here with the current form of the Data Editor
         return true
@@ -277,7 +287,6 @@ define([
             _.bind(function (data) {
                 log.info("Success metadata update");
                 log.info(data);
-
                 Backbone.trigger(EVT.RESOURCE_UPDATED);
 
             }, this),
@@ -322,6 +331,7 @@ define([
                 "additions"
             ],
             resourceRepresentationType = this.getNestedProperty("metadata.meContent.resourceRepresentationType", this.resource) || C.config.resourceRepresentationType;
+            // metadata.meMaintenance.seMetadataMaintenance.metadataLastUpdate
 
         _.each(fields, _.bind(function (f) {
             this.assign(this.resource, "metadata." + f, metadata[f]);
@@ -334,8 +344,12 @@ define([
 
         }, this));
 
+
+        //var hammer = + new Date();
+        //console.log('It\'s ' + hammer + ' time!' );
         //force resourceRepresentationType
         this.assign(this.resource, "metadata.meContent.resourceRepresentationType", resourceRepresentationType);
+        //this.assign(this.resource, "metadata.meMaintenance.seMetadataMaintenance.metadataLastUpdate", hammer);
 
     };
 

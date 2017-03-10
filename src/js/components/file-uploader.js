@@ -4,6 +4,7 @@ define([
     'backbone'
 ],function ($, log, Backbone) {
         var widgetName = 'data';
+        var evtTextFileUploading = 'uploading';
         var evtTextFileUploaded = 'uploaded';
         var defConfig = {
             accept: [],
@@ -55,6 +56,7 @@ define([
                 }
                 if (e.target.files != undefined) {
                     var reader = new FileReader();
+                    Backbone.trigger(widgetName+":"+evtTextFileUploading);
                     reader.onload = function (e) {
                         var str = e.target.result;
                         log.info("{FUH} event triggering ");

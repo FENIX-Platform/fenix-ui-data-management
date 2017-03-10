@@ -193,6 +193,10 @@ define([
                     Backbone.trigger("error:showerror", labels[this.lang]['invalidData']);
                 }
             });
+            this.listenTo(Backbone, "data:uploading", function () {
+                log.info("{DATA}[EVT] data:uploading ");
+                DataEditor.setStatus('loading');
+            });
 
             this.listenTo(Backbone, "data:uploaded", function (str) {
                 log.info("{DATA}[EVT] data:uploaded ");

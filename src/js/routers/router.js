@@ -169,22 +169,19 @@ define([
 
                 if (this.waiting === true) {
                     log.warn("Abort loading resource because another one is already loading");
-
                     Notify['info'](labels[self.lang]['alreadyLoading']);
-
                     return;
                 }
 
                 this.waiting = true;
 
                 RM.unloadResource();
-
                 RM.loadResource(res);
             });
 
             // When a resource is in tentative deletion (still there)
             this.listenTo(Backbone, EVT.RESOURCE_DELETE, function () {
-                log.info("[EVT] resource:delete ");
+                log.info("[EVT] resource:delete");
                 RM.deleteResource();
             });
 
@@ -461,18 +458,23 @@ define([
 
         onData: function () {
             log.info("Data View");
-
-            this.switchView(DataView, {
-                el: this.container,
-                menu: "data",
-                config : this.dataEditorConfig,
-                lang: this.lang,
-                codelists: RM.getCurrentResourceCodelists(),
-                dsd: RM.getDSD(),
-                data: RM.getData(),
-                generator: RM.generateDSDStructure(),
-                environment: this.environment
-            });
+            // Check if DSD is Enabled
+            if(RM.DSDExist()) {
+                this.switchView(DataView, {
+                    el: this.container,
+                    menu: "data",
+                    config: this.dataEditorConfig,
+                    lang: this.lang,
+                    codelists: RM.getCurrentResourceCodelists(),
+                    dsd: RM.getDSD(),
+                    data: RM.getData(),
+                    generator: RM.generateDSDStructure(),
+                    environment: this.environment
+                });
+            } else {
+                Notify['error'](labels[this.lang]['errorDSDisEmpty']);
+                this.goTo("#/home");
+            }
         },
 
         // Delete Resource
