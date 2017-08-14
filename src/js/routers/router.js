@@ -99,7 +99,7 @@ define([
         _initComponents: function () {
             log.info("Render common views");
 
-            Notify.options = this.notifyConfig;
+            Notify.options = this.notifyConfig.errors;
 
             RM.init({
                 environment: this.environment,
@@ -153,7 +153,7 @@ define([
             // When a resource is created (new button)
             this.listenTo(Backbone, EVT.RESOURCE_CREATED, function () {
                 log.info("[EVT] resource:new");
-                Notify['info'](labels[self.lang]['resourceNew']);
+                Notify['info'](labels[self.lang]['resourceNew'], "" ,this.notifyConfig.info);
                 self._activateValidResourceMenuItems();
                 self.goTo("#/metadata");
             });
@@ -161,7 +161,7 @@ define([
             // When a resource is deleted (confirm is deletion)
             this.listenTo(Backbone, EVT.RESOURCE_DELETED, function () {
                 log.info("[EVT] resource:deleted ", RM.resource);
-                Notify['success'](labels[self.lang]['resourceDeleted']);
+                Notify['success'](labels[self.lang]['resourceDeleted'], "" ,this.notifyConfig.info);
                 self._activateInitialMenuItems();
                 self.goTo("#/landing");
             });
@@ -171,7 +171,7 @@ define([
 
                 if (this.waiting === true) {
                     log.warn("Abort loading resource because another one is already loading");
-                    Notify['info'](labels[self.lang]['alreadyLoading']);
+                    Notify['info'](labels[self.lang]['alreadyLoading'], "" ,this.notifyConfig.info);
                     return;
                 }
 
@@ -192,7 +192,7 @@ define([
                 log.info("[EVT] resource:loaded ");
                 this.waiting = false;
                 self._activateValidResourceMenuItems();
-                Notify['success'](labels[self.lang]['resourceLoaded']);
+                Notify['success'](labels[self.lang]['resourceLoaded'], "" ,this.notifyConfig.info);
                 self.goTo("#/home");
             });
 
@@ -205,7 +205,7 @@ define([
             // When the save button is clicked
             this.listenTo(Backbone, EVT.RESOURCE_UPDATED, function () {
                 log.info("[EVT] resource:updated ", RM.resource);
-                Notify['success'](labels[self.lang]['resourceSaved']);
+                Notify['success'](labels[self.lang]['resourceSaved'], "" ,this.notifyConfig.info);
                 self.goTo("#/home");
             });
 
@@ -218,7 +218,7 @@ define([
 
             this.listenTo(Backbone, "data:loaded", function () {
                 log.info("[EVT] data:loaded ");
-                Notify['success'](labels[self.lang]['csvLoaded']);
+                Notify['success'](labels[self.lang]['csvLoaded'], "" ,this.notifyConfig.info);
             });
 
             this.listenTo(Backbone, "data:saving", function (res) {
@@ -243,11 +243,11 @@ define([
             });
 
             this.listenTo(Backbone, EVT.METADATA_COPY_EMPTY_RESOURCE, function () {
-                Notify['warning'](labels[this.lang][EVT.METADATA_COPY_EMPTY_RESOURCE]);
+                Notify['warning'](labels[this.lang][EVT.METADATA_COPY_EMPTY_RESOURCE], "" ,this.notifyConfig.info);
             });
 
             this.listenTo(Backbone, EVT.METADATA_COPY_SUCCESS, function () {
-                Notify['success'](labels[this.lang][EVT.METADATA_COPY_SUCCESS]);
+                Notify['success'](labels[this.lang][EVT.METADATA_COPY_SUCCESS], "" ,this.notifyConfig.info);
             });
 
             // When a metadata is in tentative deletion (still there)
@@ -265,11 +265,11 @@ define([
             });
 
             this.listenTo(Backbone, EVT.DSD_COPY_EMPTY_RESOURCE, function (dsd) {
-                Notify['warning'](labels[this.lang][EVT.DSD_COPY_EMPTY_RESOURCE]);
+                Notify['warning'](labels[this.lang][EVT.DSD_COPY_EMPTY_RESOURCE], "" ,this.notifyConfig.info);
             });
 
             this.listenTo(Backbone, EVT.DSD_COPY_SUCCESS, function (dsd) {
-                Notify['success'](labels[this.lang][EVT.DSD_COPY_SUCCESS]);
+                Notify['success'](labels[this.lang][EVT.DSD_COPY_SUCCESS], "" ,this.notifyConfig.info);
             });
 
             // ERRORS
@@ -397,7 +397,7 @@ define([
 
             if (!$.isEmptyObject(RM.resource)) {
                 RM.unloadResource();
-                Notify['success'](labels[this.lang]['CloseHeader']);
+                Notify['success'](labels[this.lang]['CloseHeader'], "" ,this.notifyConfig.info);
             }
 
             this.goTo("#/landing");
