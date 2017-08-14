@@ -18,6 +18,7 @@ define(function () {
         "errorMetaMinimum": "Veuillez remplir l'ensemble minimale de métadonnées dans les sections \"Identification\" et \"Contacts\"",
         "errorParsingJson": "Erreur d'analyse du fichier Json, veuillez vérifier la structure et essayer de nouveau",
         "errorDSDisEmpty" : "DSD n'a pas de colonnes. Veuillez remplir DSD avant d'utiliser l'éditeur de données",
+        "errorMDisEmpty" : "Les métadonnées sont vides. Remplissez métadonnées avant d'utiliser l'éditeur DSD",
 
         "errorLoadinResource": "Erreur de chargement de la ressource",
         "errorSavingResource": "Erreur d'enregistrement de la ressource",

@@ -76,6 +76,8 @@ define([
         this.metadataConverters = this.initial.metadataConverters;
         this.config = this.initial.config || C.config;
 
+        this.notifyConfig = this.initial.notifyConfig;
+
     };
 
     DataManagement.prototype._start = function () {
@@ -93,7 +95,8 @@ define([
             dsdEditorConfig: this.dsdEditorConfig,
             dataEditorConfig: this.dataEditorConfig,
             routes: this.routes,
-            disabledSections: this.disabledSections
+            disabledSections: this.disabledSections,
+            notifyConfig: this.notifyConfig
         };
 
         //console.log(model);

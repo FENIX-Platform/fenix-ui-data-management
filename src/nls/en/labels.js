@@ -18,6 +18,7 @@ define(function () {
         "errorMetaMinimum" : "Please fill the minimum set of metadata in the \"Identification\" and \"Contacts\" sections",
         "errorParsingJson": "Error parsing JSON file, check the structure and try again",
         "errorDSDisEmpty" : "DSD has no columns. Please fill DSD before using the Data Editor",
+        "errorMDisEmpty" : "Metadata is empty. Please fill Metadata before using the DSD Editor",
 
         "errorLoadinResource": "Error loading the resource",
         "errorSavingResource": "Error saving the resource",

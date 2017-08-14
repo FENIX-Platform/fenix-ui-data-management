@@ -71,6 +71,8 @@ define([
             this.lang = this.initial.lang;
             this.lang = this.lang.toLowerCase();
 
+            this.notifyConfig = this.initial.notifyConfig || NotifyConfig;
+
             this.config = this.initial.config;
 
             this.dsdEditorConfig = this.initial.dsdEditorConfig || {};
@@ -97,7 +99,7 @@ define([
         _initComponents: function () {
             log.info("Render common views");
 
-            Notify.options = NotifyConfig;
+            Notify.options = this.notifyConfig;
 
             RM.init({
                 environment: this.environment,
@@ -437,21 +439,28 @@ define([
         onDSD: function () {
 
             log.info("DSD View");
+            // Check if MD is Enabled
 
-            // Init Buttons
-            this.switchView(DSDView, {
-                el: this.container,
-                menu: "dsd",
-                lang: this.lang,
-                environment: this.environment,
-                config: $.extend(true, this.dsdEditorConfig, {
-                    lang : this.lang,
-                    contextSystem: this.config.contextSystem,
-                    datasources: this.config.datasources
-                }),
-                model: RM.getDSD(),
-                isEditable: RM.isDSDEditable()
-            });
+            if (RM.MetadataExist()) {
+
+                // Init Buttons
+                this.switchView(DSDView, {
+                    el: this.container,
+                    menu: "dsd",
+                    lang: this.lang,
+                    environment: this.environment,
+                    config: $.extend(true, this.dsdEditorConfig, {
+                        lang : this.lang,
+                        contextSystem: this.config.contextSystem,
+                        datasources: this.config.datasources
+                    }),
+                    model: RM.getDSD(),
+                    isEditable: RM.isDSDEditable()
+                });
+            } else {
+                Notify['error'](labels[this.lang]['errorMDisEmpty']);
+                this.goTo("#/home");
+            }
         },
 
         // Data View

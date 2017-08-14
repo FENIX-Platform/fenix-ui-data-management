@@ -68,6 +68,11 @@ define([
         return true
     };
 
+    ResourceManager.prototype.MetadataExist = function () {
+        if ( (this.resource.metadata !== undefined) && (this.resource.metadata.uid !== undefined) ) return true;
+        return 0;
+    };
+
     ResourceManager.prototype.DSDExist = function () {
         if (this.resource.metadata.dsd.columns !== undefined ) return this.resource.metadata.dsd.columns.length;
         return 0;
