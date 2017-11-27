@@ -152,6 +152,8 @@ define([
 
                             delete metadata.version;
 
+                            delete metadata.title;
+
                             this.MDE.setValues(metadata);
 
                             Backbone.trigger(EVT.METADATA_COPY_SUCCESS);
