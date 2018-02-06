@@ -26,6 +26,8 @@ define([
         render: function (o) {
             $.extend(true, this, {initial: o});
 
+            console.log(this.initial);
+
             this._parseInput();
 
             var valid = this._validateInput();

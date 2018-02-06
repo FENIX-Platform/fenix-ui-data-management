@@ -23,15 +23,19 @@ define([
         log.info("Resource manager config:");
         log.info(opts);
 
+        if (opts.extra) this.extra = opts.extra;
+
         this.bridge = new Bridge({
             environment: opts.environment,
-            cache: opts.cache
+            cache: opts.cache,
+            extra: opts.extra
         });
     };
 
     ResourceManager.prototype.getEnvironment = function () {
         log.info("FENIX DM - Current Environment: " + this.environment);
         log.info("FENIX DM - Current Bridge Environment: " + this.bridge.environment);
+        log.info("FENIX DM - Current DataManagment Environment: " + this.dmEnvironment);
         return this.environment;
     };
 
@@ -114,6 +118,8 @@ define([
 
     ResourceManager.prototype.createResource = function (opts) {
 
+        var body = $.extend(true, {}, this.resource.metadata);
+
         if (!opts.contextSystem) {
             log.error("Impossible to find context system");
             alert("Impossible to find context system");
@@ -145,8 +151,11 @@ define([
             return;
         }
 
+        if (this.extra != undefined) body = $.extend(true, {}, { metadata : body } , this.extra);
+
+
         this.bridge.saveMetadata({
-            body: $.extend(true, {}, this.resource.metadata),
+            body: body,
             dsdRid: this.getNestedProperty("metadata.dsd.rid", this.resource)
         }).then(_.bind(function (resource) {
                 log.info("Resource crated", resource);

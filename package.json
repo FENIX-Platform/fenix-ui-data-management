@@ -1,6 +1,6 @@
 {
   "name": "fenix-ui-data-management",
-  "version": "2.0.0-beta.127",
+  "version": "2.0.0-beta.128",
   "description": "FENIX Data Management component",
   "homepage": "https://github.com/FENIX-Platform/fenix-ui-data-management",
   "author": "FENIX team (http://fenix.fao.org/)",
@@ -21,8 +21,8 @@
     "backbone": "^1.3.3",
     "fenix-ui-DSDEditor": "^2.0.0-beta.36",
     "fenix-ui-DataEditor": "^2.0.0-beta.81",
-    "fenix-ui-bridge": "^1.0.0-beta.20",
-    "fenix-ui-catalog": "^2.0.0-beta.47",
+    "fenix-ui-bridge": "^1.0.0-beta.22",
+    "fenix-ui-catalog": "^2.0.0-beta.50",
     "fenix-ui-filter": "^3.0.0-beta.97",
     "fenix-ui-menu": "^3.0.0-beta.4",
     "fenix-ui-metadata-editor": "^2.0.0-beta.61",
@@ -41,7 +41,7 @@
   },
   "devDependencies": {
     "chai": "^3.5.0",
-    "clean-webpack-plugin": "^0.1.10",
+    "clean-webpack-plugin": "^0.1.18",
     "css-loader": "^0.25.0",
     "extract-text-webpack-plugin": "^1.0.1",
     "file-loader": "^0.9.0",

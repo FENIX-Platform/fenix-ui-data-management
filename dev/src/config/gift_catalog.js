@@ -1,13 +1,9 @@
-define(function () {
+define(function(){
 
     'use strict';
-
     return {
-
         defaultSelectors: ['freeText', 'resourceType', 'contextSystem'],
-
         hideCloseButton: true,
-
         pluginRegistry: {
             contextSystem: {
                 selector: {
@@ -17,7 +13,7 @@ define(function () {
                         {value: "gift", label: "GIFT"},
                         {value: "cstat_training", label: "CountrySTAT Training"}
                     ],
-                    default: ["fenix_develop"],
+                    default: ["gift"],
                     hideSummary: true,
                     config: {
                         plugins: ['remove_button'],
@@ -34,7 +30,16 @@ define(function () {
                     metadataAttribute: "dsd.contextSystem"
                 }
             }
-        }
-
+        },
+        extraBridge: {
+            user : {
+            "forumId": 0,
+            "name": "string",
+            "username": "string",
+            "role": "GUEST",
+            "institution": "string",
+            "email": "string",
+            "jwt": "string"
+        }}
     }
 });

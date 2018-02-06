@@ -78,6 +78,12 @@ define([
 
         this.notifyConfig = this.initial.notifyConfig;
 
+        this.metadataEnvironment = this.initial.metadataEnvironment || this.environment;
+        this.catalogEnvironment = this.initial.catalogEnvironment || this.environment;
+        this.dmEnvironment = this.initial.dmEnvironment || this.environment;
+
+        this.extraBridge = this.initial.extraBridge || false;
+
     };
 
     DataManagement.prototype._start = function () {
@@ -96,7 +102,11 @@ define([
             dataEditorConfig: this.dataEditorConfig,
             routes: this.routes,
             disabledSections: this.disabledSections,
-            notifyConfig: this.notifyConfig
+            notifyConfig: this.notifyConfig,
+            metadataEnvironment : this.metadataEnvironment,
+            catalogEnvironment : this.catalogEnvironment,
+            dmEnvironment : this.dmEnvironment,
+            extraBridge : this.extraBridge
         };
 
         //console.log(model);

@@ -85,6 +85,12 @@ define([
 
             this.disabledSections = this.initial.disabledSections || [];
 
+            this.metadataEnvironment = this.initial.metadataEnvironment || this.environment;
+            this.catalogEnvironment = this.initial.catalogEnvironment || this.environment;
+            this.dmEnvironment = this.initial.dmEnvironment || this.environment;
+
+            this.extraBridge = this.initial.extraBridge || false;
+
             r = this.initial.routes || r;
 
         },
@@ -102,8 +108,9 @@ define([
             Notify.options = this.notifyConfig.errors;
 
             RM.init({
-                environment: this.environment,
-                cache: this.cache
+                environment: this.dmEnvironment,
+                cache: this.cache,
+                extra: this.extraBridge
             });
 
             this._initMenu();
@@ -224,7 +231,6 @@ define([
             this.listenTo(Backbone, "data:saving", function (res) {
                 log.info("[EVT] data:saving");
                 RM.setData(res);
-                //TODO: Do some stuff here;
             });
 
             // METADATA
@@ -289,13 +295,13 @@ define([
 
             this.listenTo(Backbone, "error:showerrorsrv", function (code, xhr) {
                 log.info("[EVT] error:showerrorsrv ", code, xhr);
-                var out = labels[this.lang][code] || "Server: " + JSON.stringify(xhr.responseJSON) || "Generic Error";
+                var out = labels[this.lang][code] || "Server: " + JSON.stringify((xhr.responseJSON != undefined)? xhr.statusText : xhr.responseJSON) || "Generic Error";
                 Notify['error'](out);
             });
 
             this.listenTo(Backbone, EVT.METADATA_INFO, function (code, xhr) {
                 log.info("[EVT] error:showerrorsrv ", code, xhr);
-                var out = labels[this.lang][code] || "Server: " + JSON.stringify(xhr.responseJSON) || "Generic Error";
+                var out = labels[this.lang][code] || "Server: " + JSON.stringify((xhr.responseJSON != undefined)? xhr.statusText : xhr.responseJSON) || "Generic Error";
                 Notify['info'](out);
             });
 
@@ -379,7 +385,7 @@ define([
                 menu: "search",
                 lang: this.lang,
                 cache: this.cache,
-                environment: this.environment,
+                environment: this.catalogEnvironment,
                 catalog: this.catalogConfig
             });
         },
@@ -426,7 +432,7 @@ define([
                 menu: "metadata",
                 copy: this.config.copyMeta,
                 lang: this.lang,
-                environment: this.environment,
+                environment: this.metadataEnvironment,
                 config: this.metadataEditorConfig,
                 model: RM.getMetadata(),
                 converters: this.metadataConverters,
@@ -504,7 +510,7 @@ define([
                 el: this.container,
                 menu: "delete",
                 lang: this.lang,
-                environment: this.environment,
+                environment: this.metadataEnvironment,
                 deleteMetadata: true
             });
         },

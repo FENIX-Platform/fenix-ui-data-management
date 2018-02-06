@@ -6,8 +6,9 @@ define([
     '../config/dsd_cstat',
     '../config/fenix_metadata',
     '../config/gift_metadata',
-    '../config/catalog'
-], function (log, $, DataManagement, DSDConf, MDConf, GIFT, CataConf) {
+    '../config/catalog',
+    '../config/gift_catalog'
+], function (log, $, DataManagement, DSDConf, MDConf, GIFT, CataConf, CataGIFT) {
 
     'use strict';
 
@@ -16,7 +17,9 @@ define([
         },
         cache = false,
         lang = "EN",
-        environment = "production"; // develop production [demo is not available]
+        gift_environment = "gift",
+        environment = "production"; // develop production
+
 
     function Dev() {
 
@@ -48,9 +51,11 @@ define([
             cache: cache,
             lang: lang,
             dsdEditor: DSDConf,
+            /*
             metadataEditor: MDConf,
-            catalog: CataConf,
-/*
+            catalog: CataConf
+            */
+            catalog: CataGIFT,
             //GIFT
             metadataEditor: GIFT,
             menuConfig: {
@@ -206,16 +211,25 @@ define([
                 '(/)*path': 'onDefaultRoute'
             },
             disabledSections: ['btnDSD','btnData'],
-*/
+            dmEnvironment: gift_environment,
+            catalogEnvironment: gift_environment,
             config: {
-
-                //labelMeta: "Save",
-                //contextSystem :"gift",
-
-                contextSystem :"cstat_training",
+                labelMeta: "Save",
+                contextSystem :"gift",
+                //contextSystem :"cstat_training",
                 datasources : ["D3S"],
                 resourceRepresentationType: "dataset"
-            }
+            },
+            extraBridge :{
+                user : {
+                    "forumId": 0,
+                    "name": "string",
+                    "username": "string",
+                    "role": "GUEST",
+                    "institution": "string",
+                    "email": "string",
+                    "jwt": "string"
+                }}
         });
 
     };
