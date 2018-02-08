@@ -31,15 +31,14 @@ define(function(){
                 }
             }
         },
-        extraBridge: {
+        extraBridge :{
             user : {
-            "forumId": 0,
-            "name": "string",
-            "username": "string",
-            "role": "GUEST",
-            "institution": "string",
-            "email": "string",
-            "jwt": "string"
-        }}
+                "forumId": 0,
+                "name": "lalliop",
+                "username": "lalliop",
+                "role": "GUEST",
+                "institution": "FAO",
+                "email": "lalliop@lalliop.la"
+            }}
     }
 });

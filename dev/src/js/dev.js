@@ -223,12 +223,11 @@ define([
             extraBridge :{
                 user : {
                     "forumId": 0,
-                    "name": "string",
-                    "username": "string",
+                    "name": "lalliop",
+                    "username": "lalliop",
                     "role": "GUEST",
-                    "institution": "string",
-                    "email": "string",
-                    "jwt": "string"
+                    "institution": "FAO",
+                    "email": "lalliop@lalliop.la"
                 }}
         });
 
