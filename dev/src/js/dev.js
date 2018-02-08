@@ -52,11 +52,14 @@ define([
             lang: lang,
             dsdEditor: DSDConf,
             /*
+            //CSTAT
             metadataEditor: MDConf,
             catalog: CataConf
+            //CSTAT
             */
-            catalog: CataGIFT,
+
             //GIFT
+            catalog: CataGIFT,
             metadataEditor: GIFT,
             menuConfig: {
                 "items": [
@@ -228,7 +231,10 @@ define([
                     "role": "GUEST",
                     "institution": "FAO",
                     "email": "lalliop@lalliop.la"
-                }}
+                }
+            }
+            // GIFT
+
         });
 
     };
