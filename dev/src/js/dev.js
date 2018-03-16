@@ -5,7 +5,9 @@ define([
 //    '../config/dsd',
     '../config/dsd_cstat',
     '../config/fenix_metadata',
-    '../config/gift_metadata',
+     // '../config/gift_metadata',
+    '../config/newgift_metadata',
+    // '../config/test2',
     '../config/catalog',
     '../config/gift_catalog'
 ], function (log, $, DataManagement, DSDConf, MDConf, GIFT, CataConf, CataGIFT) {
@@ -29,9 +31,9 @@ define([
 
         // trace silent
 
-        //log.setLevel('trace');
+        log.setLevel('trace');
 
-        log.setLevel('silent');
+        //log.setLevel('silent');
 
         this.start();
     }
@@ -59,6 +61,7 @@ define([
             */
 
             //GIFT
+            resourceManager: "gift",
             catalog: CataGIFT,
             metadataEditor: GIFT,
             menuConfig: {
@@ -161,10 +164,76 @@ define([
                             var list = {};
                             list["EN"] = value;
                             ogg[key] = list;
+                            console.log(ogg)
                         });
                         return ogg;
                     });
                     this._assign(result, key, value ? value : undefined);
+                },
+                "grsurveyed" : function( key, value, label, result, selectors, id, path){
+                    value = value.map(function (o) {
+                        var ogg = {};
+
+                        var list = {};
+                        list["EN"] = o;
+                        ogg["PopulationGroupsList"] = list;
+                        return ogg;
+                    });
+                    console.log(value);
+
+                    this._assign(result, key, value);
+                    // this._assign(result, key, [
+                    //     {
+                    //         "PopulationGroupsList":{
+                    //             "EN":"ppo"
+                    //         }
+                    //     },
+                    //     {
+                    //         "PopulationGroupsList":{
+                    //             "EN":"ppo2"
+                    //         }
+                    //     }
+                    // ])
+                    //this._assign(result, key, value ? value : undefined);
+                },
+                "purposegr" : function( key, value, label, result, selectors, id, path){
+                    value = value.map(function (o) {
+                        var ogg = {};
+
+                        var list = {};
+                        list["EN"] = o;
+                        ogg["PurposedlyGroupsList"] = list;
+                        return ogg;
+                    });
+                    console.log(value);
+
+                    this._assign(result, key, value);
+                },
+                "macrondet" : function( key, value, label, result, selectors, id, path){
+                    value = value.map(function (o) {
+                        var ogg = {};
+
+                        var list = {};
+                        list["EN"] = o;
+                        ogg["MacroDietaryComponentsDetailsList"] = list;
+                        return ogg;
+                    });
+                    console.log(value);
+
+                    this._assign(result, key, value);
+                },
+                "microndet" : function( key, value, label, result, selectors, id, path){
+                    value = value.map(function (o) {
+                        var ogg = {};
+
+                        var list = {};
+                        list["EN"] = o;
+                        ogg["MicroDietaryComponentsDetailsList"] = list;
+                        return ogg;
+                    });
+                    console.log(value);
+
+                    this._assign(result, key, value);
                 },
                 "array<yesno>" : function( key, value, label, result, selectors, id, path){
                     var c = {};
@@ -224,6 +293,7 @@ define([
                 resourceRepresentationType: "dataset"
             },
             extraBridge :{
+                /*
                 user : {
                     "forumId": 0,
                     "name": "lalliop",
@@ -231,6 +301,15 @@ define([
                     "role": "GUEST",
                     "institution": "FAO",
                     "email": "lalliop@lalliop.la"
+                }
+                */
+                user : {
+                    "forumId": 0,
+                    "name": "faodomain/lanzi",
+                    "username": "faodomain/lanzi",
+                    "role": "ADMIN",
+                    "institution": "FAO",
+                    "email": "lanzi@dispostable.com"
                 }
             }
             // GIFT

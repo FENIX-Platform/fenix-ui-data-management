@@ -32,6 +32,7 @@ define(function(){
             }
         },
         extraBridge :{
+            /*
             user : {
                 "forumId": 0,
                 "name": "lalliop",
@@ -39,6 +40,16 @@ define(function(){
                 "role": "GUEST",
                 "institution": "FAO",
                 "email": "lalliop@lalliop.la"
-            }}
+            }
+            */
+            user : {
+                "forumId": 0,
+                "name": "faodomain/lanzi",
+                "username": "faodomain/lanzi",
+                "role": "ADMIN",
+                "institution": "FAO",
+                "email": "lanzi@dispostable.com"
+            }
+        }
     }
 });

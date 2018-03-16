@@ -20,10 +20,11 @@ define([
     '../views/data',
     '../views/home',
     '../components/resource-manager',
+    '../components/resource-manager-gift',
     '../../nls/labels'
 ], function ($, Backbone, _, log, Notify, NotifyConfig, Routes, C, EVT, Menu, ConfigMenu,
              LandingView, SearchView, NotFoundView, DeleteView, MetadataView, DSDView, DataView, HomeView,
-             RM,
+             RM, RMGift,
              labels) {
 
     'use strict';
@@ -91,6 +92,12 @@ define([
 
             this.extraBridge = this.initial.extraBridge || false;
 
+            this.resourceManager = this.initial.resourceManager || "default";
+
+            (this.resourceManager == "default") ? this.RM = RM : this.RM = RMGift;
+
+            console.log(this.RM);
+
             r = this.initial.routes || r;
 
         },
@@ -107,7 +114,7 @@ define([
 
             Notify.options = this.notifyConfig.errors;
 
-            RM.init({
+            this.RM.init({
                 environment: this.dmEnvironment,
                 cache: this.cache,
                 extra: this.extraBridge
@@ -167,7 +174,7 @@ define([
 
             // When a resource is deleted (confirm is deletion)
             this.listenTo(Backbone, EVT.RESOURCE_DELETED, function () {
-                log.info("[EVT] resource:deleted ", RM.resource);
+                log.info("[EVT] resource:deleted ", this.RM.resource);
                 Notify['success'](labels[self.lang]['resourceDeleted'], "" ,this.notifyConfig.info);
                 self._activateInitialMenuItems();
                 self.goTo("#/landing");
@@ -184,14 +191,14 @@ define([
 
                 this.waiting = true;
 
-                RM.unloadResource();
-                RM.loadResource(res);
+                this.RM.unloadResource();
+                this.RM.loadResource(res);
             });
 
             // When a resource is in tentative deletion (still there)
             this.listenTo(Backbone, EVT.RESOURCE_DELETE, function () {
                 log.info("[EVT] resource:delete");
-                RM.deleteResource();
+                this.RM.deleteResource();
             });
 
             // When a resource is loaded (fully)
@@ -205,13 +212,13 @@ define([
 
             // When a resource is unloaded (search or new is triggered)
             this.listenTo(Backbone, EVT.RESOURCE_UNLOADED, function () {
-                log.info("[EVT] resource:unloaded ", RM.resource);
+                log.info("[EVT] resource:unloaded ", this.RM.resource);
                 self._activateInitialMenuItems();
             });
 
             // When the save button is clicked
             this.listenTo(Backbone, EVT.RESOURCE_UPDATED, function () {
-                log.info("[EVT] resource:updated ", RM.resource);
+                log.info("[EVT] resource:updated ", this.RM.resource);
                 Notify['success'](labels[self.lang]['resourceSaved'], "" ,this.notifyConfig.info);
                 self.goTo("#/home");
             });
@@ -230,22 +237,22 @@ define([
 
             this.listenTo(Backbone, "data:saving", function (res) {
                 log.info("[EVT] data:saving");
-                RM.setData(res);
+                this.RM.setData(res);
             });
 
             // METADATA
 
             this.listenTo(Backbone, EVT.METADATA_CREATE, function (res) {
                 log.info("[EVT] meta:creating");
-                RM.updateMetadata(res);
-                RM.createResource(this.config);
+                this.RM.updateMetadata(res);
+                this.RM.createResource(this.config);
             });
 
 
             this.listenTo(Backbone, EVT.METADATA_SAVE, function (res) {
                 log.info("[EVT] meta:saving");
-                RM.updateMetadata(res);
-                RM.saveMetadata();
+                this.RM.updateMetadata(res);
+                this.RM.saveMetadata();
             });
 
             this.listenTo(Backbone, EVT.METADATA_COPY_EMPTY_RESOURCE, function () {
@@ -259,15 +266,15 @@ define([
             // When a metadata is in tentative deletion (still there)
             this.listenTo(Backbone, EVT.METADATA_DELETE, function () {
                 log.info("[EVT] METADATA_DELETE ");
-                RM.deleteMetadata();
+                this.RM.deleteMetadata();
             });
 
             //DSD
 
             this.listenTo(Backbone, EVT.DSD_SAVE, function (dsd) {
                 log.info("[EVT] dsd:saving");
-                RM.updateDsd(dsd);
-                RM.saveDsd();
+                this.RM.updateDsd(dsd);
+                this.RM.saveDsd();
             });
 
             this.listenTo(Backbone, EVT.DSD_COPY_EMPTY_RESOURCE, function (dsd) {
@@ -401,8 +408,8 @@ define([
         onClose: function () {
             log.info("Close - Routing to Landing");
 
-            if (!$.isEmptyObject(RM.resource)) {
-                RM.unloadResource();
+            if (!$.isEmptyObject(this.RM.resource)) {
+                this.RM.unloadResource();
                 Notify['success'](labels[this.lang]['CloseHeader'], "" ,this.notifyConfig.info);
             }
 
@@ -414,8 +421,8 @@ define([
         onAdd: function () {
             log.info("Add Resource");
 
-            RM.unloadResource();
-            RM.createResource(this.config)
+            this.RM.unloadResource();
+            this.RM.createResource(this.config)
 
         },
 
@@ -434,7 +441,7 @@ define([
                 lang: this.lang,
                 environment: this.metadataEnvironment,
                 config: this.metadataEditorConfig,
-                model: RM.getMetadata(),
+                model: this.RM.getMetadata(),
                 converters: this.metadataConverters,
                 label: this.config.labelMeta,
             });
@@ -447,7 +454,7 @@ define([
             log.info("DSD View");
             // Check if MD is Enabled
 
-            if (RM.MetadataExist()) {
+            if (this.RM.MetadataExist()) {
 
                 // Init Buttons
                 this.switchView(DSDView, {
@@ -460,8 +467,8 @@ define([
                         contextSystem: this.config.contextSystem,
                         datasources: this.config.datasources
                     }),
-                    model: RM.getDSD(),
-                    isEditable: RM.isDSDEditable()
+                    model: this.RM.getDSD(),
+                    isEditable: this.RM.isDSDEditable()
                 });
             } else {
                 Notify['error'](labels[this.lang]['errorMDisEmpty']);
@@ -474,16 +481,16 @@ define([
         onData: function () {
             log.info("Data View");
             // Check if DSD is Enabled
-            if(RM.DSDExist()) {
+            if(this.RM.DSDExist()) {
                 this.switchView(DataView, {
                     el: this.container,
                     menu: "data",
                     config: this.dataEditorConfig,
                     lang: this.lang,
-                    codelists: RM.getCurrentResourceCodelists(),
-                    dsd: RM.getDSD(),
-                    data: RM.getData(),
-                    generator: RM.generateDSDStructure(),
+                    codelists: this.RM.getCurrentResourceCodelists(),
+                    dsd: this.RM.getDSD(),
+                    data: this.RM.getData(),
+                    generator: this.RM.generateDSDStructure(),
                     environment: this.environment
                 });
             } else {
@@ -549,8 +556,8 @@ define([
                 candidate = new View(o);
 
             if (typeof candidate.accessControl === "function") {
-                log.info("View has access control", RM.resource);
-                candidate.accessControl(RM.resource).then(
+                log.info("View has access control", this.RM.resource);
+                candidate.accessControl(this.RM.resource).then(
                     function () {
                         log.warn("Access control: GRANTED");
                         self.resetView();
@@ -597,10 +604,10 @@ define([
 
             this.$header.html(head);
 
-            if ($.isPlainObject(RM.resource.metadata)) {
-                if (RM.resource.metadata.title) {
-                    log.info(RM.resource.metadata.title);
-                    stringTitle = ' / ' + (RM.resource.metadata.title[this.lang.toUpperCase()] || RM.resource.metadata.title['EN']);
+            if ($.isPlainObject(this.RM.resource.metadata)) {
+                if (this.RM.resource.metadata.title) {
+                    log.info(this.RM.resource.metadata.title);
+                    stringTitle = ' / ' + (this.RM.resource.metadata.title[this.lang.toUpperCase()] || this.RM.resource.metadata.title['EN']);
                 } else {
                     stringTitle = ' / ' + labels[this.lang.toLowerCase()]['NoTitle'];
                 }

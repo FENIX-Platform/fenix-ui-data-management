@@ -23,6 +23,8 @@ module.exports = {
         root: Path.resolve(__dirname),
         alias: {
             'bootstrap-table' : Path.join(__dirname, 'node_modules/bootstrap-table/dist/bootstrap-table.min.js'),
+            //'fenix-ui-filter': Path.join(__dirname, 'node_modules/fenix-ui-filter/src/js/index.js'),
+            'fenix-ui-metadata-editor': Path.join(__dirname, 'node_modules/fenix-ui-metadata-editor/src/js/index.js'),
             handlebars: Path.join(__dirname, 'node_modules/handlebars/dist/handlebars.js'),
             jquery: Path.join(__dirname, 'node_modules/jquery/dist/jquery')
         }

@@ -76,6 +76,8 @@ define([
         this.metadataConverters = this.initial.metadataConverters;
         this.config = this.initial.config || C.config;
 
+        this.resourceManager = this.initial.resourceManager || "default";
+
         this.notifyConfig = this.initial.notifyConfig;
 
         this.metadataEnvironment = this.initial.metadataEnvironment || this.environment;
@@ -106,7 +108,8 @@ define([
             metadataEnvironment : this.metadataEnvironment,
             catalogEnvironment : this.catalogEnvironment,
             dmEnvironment : this.dmEnvironment,
-            extraBridge : this.extraBridge
+            extraBridge : this.extraBridge,
+            resourceManager : this.resourceManager
         };
 
         //console.log(model);

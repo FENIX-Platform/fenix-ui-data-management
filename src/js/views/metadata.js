@@ -108,6 +108,7 @@ define([
         _onSaveClick : function () {
 
             var values = this.MDE.getValues();
+
             log.info("Metadata values:");
             log.info(values);
 
