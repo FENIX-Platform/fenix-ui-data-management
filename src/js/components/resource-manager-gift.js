@@ -195,8 +195,8 @@ define([
             Backbone.trigger("error:showerrormsg", "Resource is empty");
         }
 
-        console.log(resource);
-
+        //To visualize the title on the page. Current metadata structure save the title in the survey name field
+        this.assign(resource, "title", resource.generalInformation.surveyName);
         this.assign(resource, "uid", resource.administration.uid);
         this.assign(resource, "creationDate", resource.administration.creationDate);
         this.assign(resource, "metadataLastUpdate", resource.administration.metadataLastUpdate);
@@ -204,20 +204,6 @@ define([
 
         originalCreationDate = resource.administration.creationDate;
 
-       // [
-            //     {
-            //         "PopulationGroupsList":{
-            //             "EN":"ppo"
-            //         }
-            //     },
-            //     {
-            //         "PopulationGroupsList":{
-            //             "EN":"ppo2"
-            //         }
-            //     }
-            // ]
-
-        console.log(resource.sampledPopulationInfo.groupsSurveyed)
         if(resource.sampledPopulationInfo.groupsSurveyed !== undefined){
 
             var array = [];
@@ -227,7 +213,6 @@ define([
                     value = o["PopulationGroupsList"]["EN"];
                 return value;
             });
-            console.log(array);
             resource.sampledPopulationInfo.groupsSurveyed = array;
         }
 
@@ -240,7 +225,6 @@ define([
                     value = o["PurposedlyGroupsList"]["EN"];
                 return value;
             });
-            console.log(array);
             resource.sampledPopulationInfo.purposelyGroups = array;
         }
 
@@ -253,7 +237,6 @@ define([
                     value = o["MacroDietaryComponentsDetailsList"]["EN"];
                 return value;
             });
-            console.log(array);
             resource.foodCompositionInfo.macronutrientDetails = array;
         }
 
@@ -266,7 +249,6 @@ define([
                     value = o["MicroDietaryComponentsDetailsList"]["EN"];
                 return value;
             });
-            console.log(array);
             resource.foodCompositionInfo.micronutrientDetails = array;
         }
 
