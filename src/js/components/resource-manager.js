@@ -28,6 +28,7 @@ define([
         this.bridge = new Bridge({
             environment: opts.environment,
             cache: opts.cache,
+            serviceProvider: opts.serviceProvider,
             extra: opts.extra
         });
     };

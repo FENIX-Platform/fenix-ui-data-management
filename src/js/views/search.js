@@ -53,6 +53,7 @@ define([
             this.cache = this.initial.cache;
             this.environment = this.initial.environment;
             this.lang = this.initial.lang.toLowerCase();
+            this.serviceProvider = this.initial.serviceProvider || undefined ;
 
             this.catalogConfig = $.extend(true, CatalogConfig, this.initial.catalog);
         },
@@ -72,6 +73,8 @@ define([
             }, this.catalogConfig);
 
             this.catalog = new Catalog(model);
+
+            console.log("this model: ", model);
         },
 
         _bindEventListeners: function () {

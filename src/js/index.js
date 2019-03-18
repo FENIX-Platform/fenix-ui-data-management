@@ -86,6 +86,8 @@ define([
 
         this.extraBridge = this.initial.extraBridge || false;
 
+        this.serviceProvider = this.initial.serviceProvider || undefined ;
+
     };
 
     DataManagement.prototype._start = function () {
@@ -109,7 +111,8 @@ define([
             catalogEnvironment : this.catalogEnvironment,
             dmEnvironment : this.dmEnvironment,
             extraBridge : this.extraBridge,
-            resourceManager : this.resourceManager
+            resourceManager : this.resourceManager,
+            serviceProvider : this.serviceProvider
         };
 
         //console.log(model);

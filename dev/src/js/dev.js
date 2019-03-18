@@ -53,13 +53,14 @@ define([
             cache: cache,
             lang: lang,
             dsdEditor: DSDConf,
-            /*
+            serviceProvider: "http://mav.dev",
+
             //CSTAT
             metadataEditor: MDConf,
             catalog: CataConf
             //CSTAT
-            */
 
+            /*
             //GIFT
             resourceManager: "gift",
             catalog: CataGIFT,
@@ -293,16 +294,6 @@ define([
                 resourceRepresentationType: "dataset"
             },
             extraBridge :{
-                /*
-                user : {
-                    "forumId": 0,
-                    "name": "lalliop",
-                    "username": "lalliop",
-                    "role": "GUEST",
-                    "institution": "FAO",
-                    "email": "lalliop@lalliop.la"
-                }
-                */
                 user : {
                     "forumId": 0,
                     "name": "faodomain/lanzi",
@@ -313,7 +304,7 @@ define([
                 }
             }
             // GIFT
-
+            */
         });
 
     };
