@@ -30,7 +30,8 @@ define([
         this.bridge = new Bridge({
             environment: opts.environment,
             cache: opts.cache,
-            extra: opts.extra
+            extra: opts.extra,
+            serviceProvider : opts.serviceProvider
         });
     };
 

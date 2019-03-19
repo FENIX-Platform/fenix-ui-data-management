@@ -96,7 +96,11 @@ define([
 
             (this.resourceManager == "default") ? this.RM = RM : this.RM = RMGift;
 
-            console.log(this.RM);
+            this.serviceProvider = this.initial.serviceProvider || undefined ;
+
+            //console.log(this.RM);
+
+            console.log("SERV", this.serviceProvider);
 
             r = this.initial.routes || r;
 
@@ -117,7 +121,8 @@ define([
             this.RM.init({
                 environment: this.dmEnvironment,
                 cache: this.cache,
-                extra: this.extraBridge
+                extra: this.extraBridge,
+                serviceProvider : this.serviceProvider
             });
 
             this._initMenu();

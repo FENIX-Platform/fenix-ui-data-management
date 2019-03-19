@@ -55,7 +55,8 @@ define([
 
             this.bridge = new Bridge({
                 cache: this.cache,
-                environment: this.environment
+                environment: this.environment,
+                serviceProvider : this.serviceProvider
             });
 
             this._initMetadataEditor();
@@ -81,6 +82,8 @@ define([
             this.label = this.initial.label || "";
             this.copy = (this.initial.copy === undefined) ? true : this.initial.copy;
             this.converters = this.initial.converters;
+
+            this.serviceProvider = this.initial.serviceProvider || undefined ;
 
         },
 

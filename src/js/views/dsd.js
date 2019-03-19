@@ -63,7 +63,8 @@ define([
 
             this.bridge = new Bridge({
                 cache: this.cache,
-                environment: this.environment
+                environment: this.environment,
+                serviceProvider : this.serviceProvider
             });
 
             this._initDsdEditor();
@@ -90,6 +91,7 @@ define([
             this.config = this.initial.config;
             this.model = this.initial.model;
             this.isEditable = this.initial.isEditable;
+            this.serviceProvider = this.initial.serviceProvider || undefined ;
         },
 
         _initDsdEditor: function () {

@@ -23,14 +23,16 @@ define([
         log.info("Resource manager config:");
         log.info(opts);
 
+
         if (opts.extra) this.extra = opts.extra;
 
         this.bridge = new Bridge({
             environment: opts.environment,
             cache: opts.cache,
-            serviceProvider: opts.serviceProvider,
-            extra: opts.extra
+            extra: opts.extra,
+            serviceProvider: opts.serviceProvider
         });
+
     };
 
     ResourceManager.prototype.getEnvironment = function () {
