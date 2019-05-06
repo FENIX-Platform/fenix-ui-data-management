@@ -30,14 +30,14 @@ define([
     'use strict';
 
     var s = {
-        MENU: '#fx-data-management-menu',
-        CONTAINER: '#fx-data-management-content',
-        HOLDER: "#fx-data-management-content-holder",
-        BTN_CONTAINER: "#fx-data-managment-update-model-holder",
-        BTN_ELEMENT: "#fx-data-managment-update-button",
-        HEADER: "#fx-data-managment-header-title",
-        RES_TITLE: "#fx-data-managment-resource-title"
-    },
+            MENU: '#fx-data-management-menu',
+            CONTAINER: '#fx-data-management-content',
+            HOLDER: "#fx-data-management-content-holder",
+            BTN_CONTAINER: "#fx-data-managment-update-model-holder",
+            BTN_ELEMENT: "#fx-data-managment-update-button",
+            HEADER: "#fx-data-managment-header-title",
+            RES_TITLE: "#fx-data-managment-resource-title"
+        },
         r = Routes;
 
     return Backbone.Router.extend({
@@ -100,7 +100,7 @@ define([
 
             //console.log(this.RM);
 
-            console.log("SERV", this.serviceProvider);
+            //console.log("SERV", this.serviceProvider);
 
             r = this.initial.routes || r;
 
@@ -383,7 +383,8 @@ define([
                 menu: "home",
                 lang: this.lang,
                 disabledSections: this.disabledSections,
-                environment: this.environment
+                environment: this.environment,
+                serviceProvider : this.serviceProvider
             });
         },
 
@@ -445,6 +446,7 @@ define([
                 copy: this.config.copyMeta,
                 lang: this.lang,
                 environment: this.metadataEnvironment,
+                serviceProvider : this.serviceProvider,
                 config: this.metadataEditorConfig,
                 model: this.RM.getMetadata(),
                 converters: this.metadataConverters,
@@ -467,6 +469,7 @@ define([
                     menu: "dsd",
                     lang: this.lang,
                     environment: this.environment,
+                    serviceProvider : this.serviceProvider,
                     config: $.extend(true, this.dsdEditorConfig, {
                         lang : this.lang,
                         contextSystem: this.config.contextSystem,
@@ -496,7 +499,8 @@ define([
                     dsd: this.RM.getDSD(),
                     data: this.RM.getData(),
                     generator: this.RM.generateDSDStructure(),
-                    environment: this.environment
+                    environment: this.environment,
+                    serviceProvider : this.serviceProvider
                 });
             } else {
                 Notify['error'](labels[this.lang]['errorDSDisEmpty']);
@@ -513,6 +517,7 @@ define([
                 menu: "delete",
                 lang: this.lang,
                 environment: this.environment,
+                serviceProvider : this.serviceProvider,
             });
         },
 

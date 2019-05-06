@@ -216,6 +216,7 @@ define([
                 cache: this.cache,
                 converters: this.converters,
                 environment: this.environment,
+                serviceProvider: this.serviceProvider,
                 model: this.model
             };
 
